@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="80" width="162" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/">
+ <defs>
+  <radialGradient id="radialGradient9964-0" gradientUnits="userSpaceOnUse" cy="-48.545" cx="77.914" gradientTransform="matrix(1.5089497,0,0,1.3582164,-39.028917,76.957747)" r="146">
+   <stop stop-color="#dddce9" offset="0"/>
+   <stop stop-color="#5664a3" offset="0.37"/>
+   <stop stop-color="#000" offset="1"/>
+  </radialGradient>
+ </defs>
+ <g transform="translate(0,-972.36218)">
+  <g transform="matrix(0.21128421,0,0,0.21128421,49.307368,995.45944)">
+   <ellipse d="m 296,80 c 0,41.97364 -65.36643,76 -146,76 C 69.366427,156 4,121.97364 4,80 4,38.026359 69.366427,4 150,4 230.63357,4 296,38.026359 296,80 z" rx="146" ry="76" stroke="url(#radialGradient9964-0)" cy="80" cx="150" stroke-width="5.5" fill="#6c7eb7"/>
+   <path id="p-5" stroke-linejoin="round" d="m45,125,16-81,37,0c16,1,24,9,24,23,0,24-19,38-36,37h-18l-4,21h-19zm27-36,5-30,13,0c7,0,12,3,12,9-1,17-9,20-18,21h-12z" fill-rule="evenodd" stroke="#FFF" stroke-width="2"/>
+   <path stroke-linejoin="round" d="m116,104,16-81,19,0-4,21,18,0c16,1,22,9,20,19l-7,41h-20l7-37c1-5,1-8-6-8h-15l-9,45h-19z" stroke="#FFF" stroke-width="2"/>
+   <use xlink:href="#p-5" transform="translate(134,0)" height="1" width="1" y="0" x="0"/>
+  </g>
+ </g>
+</svg>
