@@ -11,13 +11,13 @@
   <meta name="description" content="This article will cover some really cool techniques and useful tricks which I learned during developing Docker containers.">
 
   
-  <link href="/assets/1419879819705/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/assets/1419884799926/css/bootstrap.min.css" rel="stylesheet">
   
 
   
 
    
-  <link rel="stylesheet" href="/assets/1419879819705/css/main.css">
+  <link rel="stylesheet" href="/assets/1419884799926/css/main.css">
   
   <link rel="canonical" href="http://www.czerasz.com/2014/11/13/docker-tip-and-tricks/">
   <link rel="alternate" type="application/atom+xml" title="Web IT Services" href="http://www.czerasz.com/feed.xml" />
@@ -106,9 +106,8 @@
 
 <p>Later in our <a href="#what-is-a-docker-startinit-script">Docker start/init script</a> (which is used while running the container) we symlink those files/libraries where they are supposed to be:</p>
 
-<pre><code># Create symlinks to libraries downloaded through composer
-ln -s /usr/lib/composer/vendor /var/www/vendor
-</code></pre>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># Create symlinks to libraries downloaded through composer</span>
+ln -s /usr/lib/composer/vendor /var/www/vendor</code></pre></div>
 
 <p>This allows us to spin up containers really fast!</p>
 
@@ -127,39 +126,37 @@ ln -s /usr/lib/composer/vendor /var/www/vendor
 
 <p>You can check the maximum limit of commits with the following script:</p>
 
-<pre><code># Remove the commit if it exists
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># Remove the commit if it exists</span>
 docker rmi czerasz/aufs-layers-test
 
-# Create a base container
-docker run --name="aufs-layers-test-container" \
+<span class="c"># Create a base container</span>
+docker run --name<span class="o">=</span><span class="s2">&quot;aufs-layers-test-container&quot;</span> <span class="se">\</span>
            ubuntu /bin/mkdir /data
 
-# Commit the changes to a new image
-docker commit --message='First commit' 'aufs-layers-test-container' czerasz/aufs-layers-test
+<span class="c"># Commit the changes to a new image</span>
+docker commit --message<span class="o">=</span><span class="s1">&#39;First commit&#39;</span> <span class="s1">&#39;aufs-layers-test-container&#39;</span> czerasz/aufs-layers-test
 
-# Remove the container
-docker rm 'aufs-layers-test-container'
+<span class="c"># Remove the container</span>
+docker rm <span class="s1">&#39;aufs-layers-test-container&#39;</span>
 
-for i in {1..1000}
-do
+<span class="k">for</span> i in <span class="o">{</span>1..1000<span class="o">}</span>
+<span class="k">do</span>
 
-echo -e "\n$i build\n"
+<span class="nb">echo</span> -e <span class="s2">&quot;\n$i build\n&quot;</span>
 
-# Add another commit
-cat &lt;&lt;-EOF |
-FROM czerasz/aufs-layers-test
+<span class="c"># Add another commit</span>
+cat <span class="s">&lt;&lt;-EOF |</span>
+<span class="s">FROM czerasz/aufs-layers-test</span>
 
-RUN /bin/echo -e "test\n" &gt;&gt; /data/test
-EOF
+<span class="s">RUN /bin/echo -e &quot;test\n&quot; &gt;&gt; /data/test</span>
+<span class="s">EOF</span>
 docker build -t czerasz/aufs-layers-test -
 
-done
-</code></pre>
+<span class="k">done</span></code></pre></div>
 
 <p>On my machine it returned:</p>
 
-<pre><code>Cannot create container with more than 127 parents
-</code></pre>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">Cannot create container with more than <span class="m">127</span> parents</code></pre></div>
 
 <p>Which means that there are only <code>127</code> commits possible.</p>
 
@@ -167,17 +164,16 @@ done
 
 <p>A real word example (which I use in <a href="https://registry.hub.docker.com/u/czerasz/base/">my base image</a>) is presented below:</p>
 
-<pre><code>RUN apt-get install -y build-essential &amp;&amp; \
-    apt-get install -y software-properties-common &amp;&amp; \
-    apt-get install -y pwgen \
-                       python-software-properties \
-                       vim \
-                       curl \
-                       wget \
-                       git \
-                       unzip \
-                       tree
-</code></pre>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">RUN apt-get install -y build-essential <span class="o">&amp;&amp;</span> <span class="se">\</span>
+    apt-get install -y software-properties-common <span class="o">&amp;&amp;</span> <span class="se">\</span>
+    apt-get install -y pwgen <span class="se">\</span>
+                       python-software-properties <span class="se">\</span>
+                       vim <span class="se">\</span>
+                       curl <span class="se">\</span>
+                       wget <span class="se">\</span>
+                       git <span class="se">\</span>
+                       unzip <span class="se">\</span>
+                       tree</code></pre></div>
 
 <p>The downside of this construction is that whenever I need to remove/add a package, Docker is not able to use it’s cache feature and all packages need to be installed from the scratch. And this takes time.</p>
 
@@ -187,42 +183,41 @@ done
 
 <p>Analyze this Wordpress <code>Dockerfile</code> as an example:</p>
 
-<pre><code># --- PHP ---
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># --- PHP ---</span>
 
-# Install PHP
-RUN apt-get install -y php5-fpm \
-                       php5-mysql \
+<span class="c"># Install PHP</span>
+RUN apt-get install -y php5-fpm <span class="se">\</span>
+                       php5-mysql <span class="se">\</span>
                        php-apc
 
-# Wordpress Requirements
-RUN apt-get install -y php5-curl \
-                       php5-gd \
-                       php5-intl \
-                       php-pear \
-                       php5-imagick \
-                       php5-imap \
-                       php5-mcrypt \
-                       php5-memcache \
-                       php5-ming \
-                       php5-ps \
-                       php5-pspell \
-                       php5-recode \
-                       php5-sqlite \
-                       php5-tidy \
-                       php5-xmlrpc \
+<span class="c"># Wordpress Requirements</span>
+RUN apt-get install -y php5-curl <span class="se">\</span>
+                       php5-gd <span class="se">\</span>
+                       php5-intl <span class="se">\</span>
+                       php-pear <span class="se">\</span>
+                       php5-imagick <span class="se">\</span>
+                       php5-imap <span class="se">\</span>
+                       php5-mcrypt <span class="se">\</span>
+                       php5-memcache <span class="se">\</span>
+                       php5-ming <span class="se">\</span>
+                       php5-ps <span class="se">\</span>
+                       php5-pspell <span class="se">\</span>
+                       php5-recode <span class="se">\</span>
+                       php5-sqlite <span class="se">\</span>
+                       php5-tidy <span class="se">\</span>
+                       php5-xmlrpc <span class="se">\</span>
                        php5-xsl
 
-# --- NGINX ---
+<span class="c"># --- NGINX ---</span>
 
 ....
 
-# ------ PHP-FPM CONFIGURATION ------
+<span class="c"># ------ PHP-FPM CONFIGURATION ------</span>
 RUN mkdir -p /var/log/php5-fpm/
-# Configure the php5-fpm  process and the default pool
+<span class="c"># Configure the php5-fpm  process and the default pool</span>
 ADD ./config/php-fpm/php-fpm.conf /etc/php5/fpm/php-fpm.conf
 ADD ./config/php-fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.conf
-ADD ./config/php-fpm/php.ini /etc/php5/fpm/php.ini
-</code></pre>
+ADD ./config/php-fpm/php.ini /etc/php5/fpm/php.ini</code></pre></div>
 
 <p>When we change the PHP configuration the build process will still work really fast, because the most time consuming part, the package installation is cached.</p>
 
@@ -246,13 +241,12 @@ ADD ./config/php-fpm/php.ini /etc/php5/fpm/php.ini
 
 <p>Consider the following <code>Dockerfile</code>:</p>
 
-<pre><code>FROM ubuntu
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">FROM ubuntu
 
-# Set the reset cache variable
+<span class="c"># Set the reset cache variable</span>
 ENV REFRESHED_AT 2014-11-01
 
-...
-</code></pre>
+...</code></pre></div>
 
 <p>By changing the value of the <code>REFRESHED_AT</code> variable you are able to flush the whole cache.</p>
 
@@ -262,31 +256,30 @@ ENV REFRESHED_AT 2014-11-01
 
 <p>A sample <code>/etc/supervisor/conf.d/supervisord.conf</code> which manages Serf, PHP-FPM, Nginx is presented below:</p>
 
-<pre><code>[supervisord]
-pidfile=/tmp/supervisord.pid ; (supervisord pidfile;default supervisord.pid)
-nodaemon=true                ; (start in foreground if true;default false)
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>supervisord<span class="o">]</span>
+<span class="nv">pidfile</span><span class="o">=</span>/tmp/supervisord.pid <span class="p">;</span> <span class="o">(</span>supervisord pidfile<span class="p">;</span>default supervisord.pid<span class="o">)</span>
+<span class="nv">nodaemon</span><span class="o">=</span><span class="nb">true</span>                <span class="p">;</span> <span class="o">(</span>start in foreground <span class="k">if</span> <span class="nb">true</span><span class="p">;</span>default <span class="nb">false</span><span class="o">)</span>
 
 
-[program:php5-fpm]
-command=/usr/sbin/php5-fpm -c /etc/php5/fpm
-autorestart=true
+<span class="o">[</span>program:php5-fpm<span class="o">]</span>
+<span class="nb">command</span><span class="o">=</span>/usr/sbin/php5-fpm -c /etc/php5/fpm
+<span class="nv">autorestart</span><span class="o">=</span><span class="nb">true</span>
 
-[program:nginx]
-command=nginx
-autostart=true
-autorestart=true
+<span class="o">[</span>program:nginx<span class="o">]</span>
+<span class="nb">command</span><span class="o">=</span>nginx
+<span class="nv">autostart</span><span class="o">=</span><span class="nb">true</span>
+<span class="nv">autorestart</span><span class="o">=</span><span class="nb">true</span>
 
-[program:serf]
-command=/etc/serf/serf-start.sh
-numprocs=1
-autostart=true
-autorestart=true
+<span class="o">[</span>program:serf<span class="o">]</span>
+<span class="nb">command</span><span class="o">=</span>/etc/serf/serf-start.sh
+<span class="nv">numprocs</span><span class="o">=</span>1
+<span class="nv">autostart</span><span class="o">=</span><span class="nb">true</span>
+<span class="nv">autorestart</span><span class="o">=</span><span class="nb">true</span>
 
-[program:serf-join]
-command=/etc/serf/serf-join.sh
-autorestart=true
-exitcodes=0
-</code></pre>
+<span class="o">[</span>program:serf-join<span class="o">]</span>
+<span class="nb">command</span><span class="o">=</span>/etc/serf/serf-join.sh
+<span class="nv">autorestart</span><span class="o">=</span><span class="nb">true</span>
+<span class="nv">exitcodes</span><span class="o">=</span>0</code></pre></div>
 
 <h2 id="use-image-inheritance">Use Image Inheritance</h2>
 
@@ -308,22 +301,20 @@ exitcodes=0
 
 <p>Create data container:</p>
 
-<pre><code>docker run -v /data/uploads \
-           --name czerasz-data-container \
-           -d debian chown -R www-data:www-data /data/uploads
-</code></pre>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run -v /data/uploads <span class="se">\</span>
+           --name czerasz-data-container <span class="se">\</span>
+           -d debian chown -R www-data:www-data /data/uploads</code></pre></div>
 
 <p>Create a Wordpress container and attach to it the <code>/data/uploads</code> directory from the data container:</p>
 
-<pre><code>docker run \
-       -v `pwd`/app:/var/www \
-       --volumes-from czerasz-data-container \
-       --link czerasz-database:db \
-       -p 80:80 \
-       --name czerasz-site \
-       -d czerasz/wordpress-base \
-       /usr/local/bin/init.sh production
-</code></pre>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run <span class="se">\</span>
+       -v <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/app:/var/www <span class="se">\</span>
+       --volumes-from czerasz-data-container <span class="se">\</span>
+       --link czerasz-database:db <span class="se">\</span>
+       -p 80:80 <span class="se">\</span>
+       --name czerasz-site <span class="se">\</span>
+       -d czerasz/wordpress-base <span class="se">\</span>
+       /usr/local/bin/init.sh production</code></pre></div>
 
 <blockquote>
   <p><strong>Tip</strong>
@@ -342,10 +333,9 @@ drwx------ 8 www-data www-data 4096 Nov  2 01:25 2014
 
 <p>If you have a lot of environment varaiables which need to be passed to the container use the <code>--env-file</code> option. It allows you to import variables from a file formated like this:</p>
 
-<pre><code>primary=mongo_1532
-number_of_replicas=3
-...
-</code></pre>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">primary</span><span class="o">=</span>mongo_1532
+<span class="nv">number_of_replicas</span><span class="o">=</span>3
+...</code></pre></div>
 
 <h2 id="always-remove-temporary-containers">Always Remove Temporary Containers</h2>
 
@@ -355,10 +345,9 @@ number_of_replicas=3
 
 <p>A real world example (which was borrowed from <a href="https://registry.hub.docker.com/_/mysql/">here</a>) is presented below:</p>
 
-<pre><code>docker run -it \
-            --link some-mysql:mysql \
-            --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
-</code></pre>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run -it <span class="se">\</span>
+            --link some-mysql:mysql <span class="se">\</span>
+            --rm mysql sh -c <span class="s1">&#39;exec mysql -h&quot;$MYSQL_PORT_3306_TCP_ADDR&quot; -P&quot;$MYSQL_PORT_3306_TCP_PORT&quot; -uroot -p&quot;$MYSQL_ENV_MYSQL_ROOT_PASSWORD&quot;&#39;</span></code></pre></div>
 
 <h2 id="simplify-communication-by-using-the-hostname">Simplify Communication by Using the Hostname</h2>
 
@@ -366,42 +355,40 @@ number_of_replicas=3
 
 <p>The example below shows a simple usecase. First we spin up a server container:</p>
 
-<pre><code>docker run --hostname="web-server" \
-           --rm \
-           --name host-communication-test-web-server \
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run --hostname<span class="o">=</span><span class="s2">&quot;web-server&quot;</span> <span class="se">\</span>
+           --rm <span class="se">\</span>
+           --name host-communication-test-web-server <span class="se">\</span>
            -it ubuntu bash
 
-root@web-server:/# echo "Response from: "`hostname` &gt; index.html &amp;&amp; python3 -m http.server 8000
-</code></pre>
+root@web-server:/# <span class="nb">echo</span> <span class="s2">&quot;Response from: &quot;</span><span class="sb">`</span>hostname<span class="sb">`</span> &gt; index.html <span class="o">&amp;&amp;</span> python3 -m http.server 8000</code></pre></div>
 
 <p>Then we spin up a client server which requests the web server:</p>
 
-<pre><code>docker run --hostname="web-client" \
-           --rm \
-           --link host-communication-test-web-server:web-server \
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run --hostname<span class="o">=</span><span class="s2">&quot;web-client&quot;</span> <span class="se">\</span>
+           --rm <span class="se">\</span>
+           --link host-communication-test-web-server:web-server <span class="se">\</span>
            -it ubuntu bash 
 
-root@web-client:/# apt-get update &amp;&amp; apt-get install -y curl
+root@web-client:/# apt-get update <span class="o">&amp;&amp;</span> apt-get install -y curl
 root@web-client:/# curl -v web-server:8000/index.html
 * Hostname was NOT found in DNS cache
 *   Trying 172.17.1.57...
-* Connected to web-server (172.17.1.57) port 8000 (#0)
+* Connected to web-server <span class="o">(</span>172.17.1.57<span class="o">)</span> port <span class="m">8000</span> <span class="o">(</span><span class="c">#0)</span>
 &gt; GET /index.html HTTP/1.1
 &gt; User-Agent: curl/7.35.0
 &gt; Host: web-server:8000
 &gt; Accept: */*
 &gt; 
 * HTTP 1.0, assume close after body
-&lt; HTTP/1.0 200 OK
+&lt; HTTP/1.0 <span class="m">200</span> OK
 &lt; Server: SimpleHTTP/0.6 Python/3.4.0
-&lt; Date: Tue, 25 Nov 2014 11:41:52 GMT
+&lt; Date: Tue, <span class="m">25</span> Nov <span class="m">2014</span> 11:41:52 GMT
 &lt; Content-type: text/html
 &lt; Content-Length: 26
-&lt; Last-Modified: Tue, 25 Nov 2014 11:40:14 GMT
+&lt; Last-Modified: Tue, <span class="m">25</span> Nov <span class="m">2014</span> 11:40:14 GMT
 &lt; 
 Response from: web-server
-* Closing connection 0
-</code></pre>
+* Closing connection 0</code></pre></div>
 
 <p>As you can see we don’t have to use any environment variables (which we by the way don’t have if no port is exposed). We can just rely on the hostname.</p>
 
@@ -411,8 +398,7 @@ Response from: web-server
 
 <p>The script can be called manually while one runs a container:</p>
 
-<pre><code>docker run -it user_name/image_name /usr/lib/init-script-name.sh
-</code></pre>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run -it user_name/image_name /usr/lib/init-script-name.sh</code></pre></div>
 
 <p>Or through one of the <code>Dockerfile</code> directives:
 - <a href="http://docs.docker.com/reference/builder/#entrypoint"><code>ENTRYPOINT</code></a>
@@ -481,32 +467,32 @@ Response from: web-server
           <div class="footer__social-icons">
             <a href="https://twitter.com/czerasz">
               <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's twitter page">
-                <use xlink:href="/assets/1419879819705/img/svg/social.svg#icon-twitter"></use>
+                <use xlink:href="/assets/1419884799926/img/svg/social.svg#icon-twitter"></use>
               </svg>
             </a>
             <a href="https://github.com/czerasz">
               <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's github profile page">
-                <use xlink:href="/assets/1419879819705/img/svg/social.svg#icon-github"></use>
+                <use xlink:href="/assets/1419884799926/img/svg/social.svg#icon-github"></use>
               </svg>
             </a>
             <a href="http://stackoverflow.com/users/325852/czerasz">
               <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's stackoverflow profile page">
-                <use xlink:href="/assets/1419879819705/img/svg/social.svg#icon-stackoverflow"></use>
+                <use xlink:href="/assets/1419884799926/img/svg/social.svg#icon-stackoverflow"></use>
               </svg>
             </a>
             <a href="https://www.linkedin.com/in/czerasz">
               <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's linkedin profile page">
-                <use xlink:href="/assets/1419879819705/img/svg/social.svg#icon-linkedin"></use>
+                <use xlink:href="/assets/1419884799926/img/svg/social.svg#icon-linkedin"></use>
               </svg>
             </a>
             <a href="https://delicious.com/czerasz">
               <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's delicious profile page">
-                <use xlink:href="/assets/1419879819705/img/svg/social.svg#icon-delicious"></use>
+                <use xlink:href="/assets/1419884799926/img/svg/social.svg#icon-delicious"></use>
               </svg>
             </a>
             <a href="#">
               <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's google plus profile page">
-                <use xlink:href="/assets/1419879819705/img/svg/social.svg#icon-google-plus"></use>
+                <use xlink:href="/assets/1419884799926/img/svg/social.svg#icon-google-plus"></use>
               </svg>
             </a>
           </div>
@@ -539,7 +525,7 @@ Response from: web-server
 
     
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="/assets/1419879819705/js/bootstrap.min.js"></script>
+    <script src="/assets/1419884799926/js/bootstrap.min.js"></script>
     
 
 

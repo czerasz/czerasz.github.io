@@ -6,8 +6,8 @@
 </description>
     <link>http://www.czerasz.com/</link>
     <atom:link href="http://www.czerasz.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 29 Dec 2014 20:03:42 +0100</pubDate>
-    <lastBuildDate>Mon, 29 Dec 2014 20:03:42 +0100</lastBuildDate>
+    <pubDate>Mon, 29 Dec 2014 21:26:46 +0100</pubDate>
+    <lastBuildDate>Mon, 29 Dec 2014 21:26:46 +0100</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -44,7 +44,7 @@
 
 &lt;p&gt;The diagram below helps you understand this simple but effective logic:&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1419879819705/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1419884799926/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;requirements&quot;&gt;Requirements&lt;/h3&gt;
 
@@ -304,17 +304,6 @@ sys 0m4.949s&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
     &lt;a class=&quot;btn  btn-lg  btn-success&quot; href=&quot;/contact&quot;&gt;Contact Me&lt;/a&gt;
 &lt;/section&gt;
 
-&lt;p&gt;&amp;lt;% comment %&amp;gt;
-## TODO&lt;/p&gt;
-
-&lt;p&gt;Describe the following plugins:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/fgrehm/vagrant-notify&quot;&gt;vagrant-notify&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://github.com/dotless-de/vagrant-vbguest&quot;&gt;vagrant-vbguest&lt;/a&gt;
-&amp;lt;% commentend %&amp;gt;&lt;/li&gt;
-&lt;/ul&gt;
-
 &lt;h2 id=&quot;resources&quot;&gt;Resources:&lt;/h2&gt;
 
 &lt;ul&gt;
@@ -330,7 +319,7 @@ sys 0m4.949s&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
     
       <item>
         <title>Monitoring Systems and Applications with Monit</title>
-        <description>&lt;p class=&quot;post__tldr&quot;&gt;In this article we will focus on &lt;a href=&quot;https://mmonit.com/monit/&quot; target=&quot;_blank&quot;&gt;Monit&lt;/a&gt; which is a system monitoring and error recovery tool. We will also cover the topic of deploying Monit&#39;s configuration files with Ansible.&lt;/p&gt;
+        <description>&lt;p class=&quot;post__tldr&quot;&gt;In this article we will focus on &lt;a href=&quot;https://mmonit.com/monit/&quot; target=&quot;_blank&quot;&gt;Monit&lt;/a&gt; which is a system monitoring and error recovery tool.&lt;/p&gt;
 
 &lt;p&gt;Let’s start with a simple question:&lt;/p&gt;
 
@@ -378,13 +367,11 @@ sys 0m4.949s&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Install Monit on Gentoo with the following command:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;emerge monit
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;emerge monit&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;On Gentoo You can always do a installation dry-run:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;emerge --pretend monit
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;emerge --pretend monit&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
@@ -402,19 +389,18 @@ sys 0m4.949s&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;If you don’t want to visit that link, here is a short version:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;apt-get install -y libssl-dev
-cd /tmp/
-curl &#39;https://mmonit.com/monit/dist/monit-5.10.tar.gz&#39; -O
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;apt-get install -y libssl-dev
+&lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /tmp/
+curl &lt;span class=&quot;s1&quot;&gt;&amp;#39;https://mmonit.com/monit/dist/monit-5.10.tar.gz&amp;#39;&lt;/span&gt; -O
 tar -xzvf monit-5.10.tar.gz
 rm monit-5.10.tar.gz
-cd monit-5.10/
-./configure --bindir=/usr/bin/
-make &amp;amp;&amp;amp; make install
-# Create required files
+&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;monit-5.10/
+./configure --bindir&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/bin/
+make &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; make install
+&lt;span class=&quot;c&quot;&gt;# Create required files&lt;/span&gt;
 mkdir -p /var/lib/monit
-# Make the init file executable
-chmod 755 /etc/init.d/monit
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class=&quot;c&quot;&gt;# Make the init file executable&lt;/span&gt;
+chmod &lt;span class=&quot;m&quot;&gt;755&lt;/span&gt; /etc/init.d/monit&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;file-structure&quot;&gt;File Structure&lt;/h2&gt;
 
@@ -422,7 +408,7 @@ chmod 755 /etc/init.d/monit
 
 &lt;p&gt;A standard file structure, to which I got used to looks like this:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;/etc/monit
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;/etc/monit
 ├── conf.d       - Monit configuration files
 │   ├── apps     - in-house applications
 │   ├── services - services like nginx, elasticsearch
@@ -432,8 +418,7 @@ chmod 755 /etc/init.d/monit
 │   └── services - services like nginx, elasticsearch
 ├── monitrc      - main configuration file
 ├── monitrc.d    - directory with examples
-└── templates
-&lt;/code&gt;&lt;/pre&gt;
+└── templates&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
@@ -454,49 +439,48 @@ chmod 755 /etc/init.d/monit
 
 &lt;p&gt;An example is presented below:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;# Monit &amp;lt;application name&amp;gt; configuration
-
-check &amp;lt;application name&amp;gt; matching &quot;&amp;lt;phrase which should exits in the ps output&amp;gt;&quot;
-    start program = &quot;/bin/su &amp;lt;user&amp;gt; -c &#39;/usr/lib/&amp;lt;application name&amp;gt;/current/bin/start.sh&#39;&quot;
-    stop program  = &quot;/bin/su &amp;lt;user&amp;gt; -c &#39;/usr/lib/&amp;lt;application name&amp;gt;/current/bin/stop.sh&#39;&quot;
-    # CPU
-    if cpu &amp;gt; 5% for 2 cycles then alert
-    # RAM
-    if mem &amp;gt; 80 MB for 5 cycles then alert
-
-# Check if the application directory exists
-check directory &amp;lt;application name&amp;gt;-dir path /usr/lib/&amp;lt;application name&amp;gt;/current/
-    if failed uid &amp;lt;user&amp;gt; then alert
-    if failed gid &amp;lt;user&amp;gt; then alert
-    if failed permission 0755 then alert
-    if does not exist then alert
-
-# --- --- --- --- --- --- --- --- --- --- --- --- 
-# Configuration
-# Check if the configuration directory is present
-check &amp;lt;application name&amp;gt;-conf-dir path /usr/lib/&amp;lt;application name&amp;gt;/current/config/
-    if failed uid &amp;lt;user&amp;gt; then alert
-    if failed gid &amp;lt;user&amp;gt; then alert
-    if failed permission 0775 then alert
-    if does not exist then alert
-
-# Check if the unicorn configuration file is present
-check &amp;lt;application name&amp;gt;-conf-file-unicorn with path /usr/lib/&amp;lt;application name&amp;gt;/current/config/unicorn.rb
-    if failed uid &amp;lt;user&amp;gt; then alert
-    if failed gid &amp;lt;user&amp;gt; then alert
-    if failed permission 0775 then alert
-    if does not exist then alert
-    if changed checksum then alert
-
-# --- --- --- --- --- --- --- --- --- --- --- --- 
-# Logs
-# Check if the log file is present
-check file &amp;lt;application name&amp;gt;-log-file path /var/log/&amp;lt;application name&amp;gt;/access.log
-    if failed uid &amp;lt;user&amp;gt; then alert
-    if failed gid &amp;lt;user&amp;gt; then alert
-    if failed permission 0644 then alert
-    if does not exist then alert
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Monit &amp;lt;application name&amp;gt; configuration&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; check &amp;lt;application name&amp;gt; matching &lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;lt;phrase which should exits in the ps output&amp;gt;&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt;     start &lt;span class=&quot;nv&quot;&gt;program&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;/bin/su &amp;lt;user&amp;gt; -c &amp;#39;/usr/lib/&amp;lt;application name&amp;gt;/current/bin/start.sh&amp;#39;&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt;     stop &lt;span class=&quot;nv&quot;&gt;program&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;/bin/su &amp;lt;user&amp;gt; -c &amp;#39;/usr/lib/&amp;lt;application name&amp;gt;/current/bin/stop.sh&amp;#39;&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt;     &lt;span class=&quot;c&quot;&gt;# CPU&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; cpu &amp;gt; 5% &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; cycles &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;     &lt;span class=&quot;c&quot;&gt;# RAM&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; mem &amp;gt; &lt;span class=&quot;m&quot;&gt;80&lt;/span&gt; MB &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;5&lt;/span&gt; cycles &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Check if the application directory exists&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt; check directory &amp;lt;application name&amp;gt;-dir path /usr/lib/&amp;lt;application name&amp;gt;/current/
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; failed uid &amp;lt;user&amp;gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; failed gid &amp;lt;user&amp;gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; failed permission &lt;span class=&quot;m&quot;&gt;0755&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; does not exist &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# --- --- --- --- --- --- --- --- --- --- --- --- &lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Configuration&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Check if the configuration directory is present&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;21&lt;/span&gt; check &amp;lt;application name&amp;gt;-conf-dir path /usr/lib/&amp;lt;application name&amp;gt;/current/config/
+&lt;span class=&quot;lineno&quot;&gt;22&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; failed uid &amp;lt;user&amp;gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;23&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; failed gid &amp;lt;user&amp;gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;24&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; failed permission &lt;span class=&quot;m&quot;&gt;0775&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;25&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; does not exist &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;26&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;27&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Check if the unicorn configuration file is present&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;28&lt;/span&gt; check &amp;lt;application name&amp;gt;-conf-file-unicorn with path /usr/lib/&amp;lt;application name&amp;gt;/current/config/unicorn.rb
+&lt;span class=&quot;lineno&quot;&gt;29&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; failed uid &amp;lt;user&amp;gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;30&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; failed gid &amp;lt;user&amp;gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;31&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; failed permission &lt;span class=&quot;m&quot;&gt;0775&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;32&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; does not exist &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;33&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; changed checksum &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;34&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;35&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# --- --- --- --- --- --- --- --- --- --- --- --- &lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;36&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Logs&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;37&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Check if the log file is present&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;38&lt;/span&gt; check file &amp;lt;application name&amp;gt;-log-file path /var/log/&amp;lt;application name&amp;gt;/access.log
+&lt;span class=&quot;lineno&quot;&gt;39&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; failed uid &amp;lt;user&amp;gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;40&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; failed gid &amp;lt;user&amp;gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;41&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; failed permission &lt;span class=&quot;m&quot;&gt;0644&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert
+&lt;span class=&quot;lineno&quot;&gt;42&lt;/span&gt;     &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; does not exist &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; alert&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;I would recommend to spend some time with Monit’s &lt;a href=&quot;http://mmonit.com/monit/documentation/monit.html&quot;&gt;documentation&lt;/a&gt;.&lt;/p&gt;
 
@@ -515,41 +499,38 @@ check file &amp;lt;application name&amp;gt;-log-file path /var/log/&amp;lt;appli
 
 &lt;p&gt;A sample Ruby start script template which uses &lt;a href=&quot;http://rvm.io/&quot;&gt;RVM&lt;/a&gt; is presented below:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;#!/bin/bash
-
-# &amp;lt;application name&amp;gt; Start Script
-# This script is executed by the &quot;&amp;lt;user&amp;gt;&quot; user
-
-# Define the project directory
-project_directory=&#39;/home/&amp;lt;user&amp;gt;/&amp;lt;application name&amp;gt;&#39;
-
-# Define ruby related details
-ruby_version=&#39;ruby-2.0.0-p195&#39;
-ruby_gemset=&#39;&amp;lt;gemset name&amp;gt;&#39;
-
-
-# Start the application server
-env LANG=&#39;en_US.UTF-8&#39; \
-rvm_path=$HOME/.rvm/ \
-$HOME/.rvm/bin/rvm-shell \
-&quot;$ruby_version@$ruby_gemset&quot; \
--c &quot;cd $project_directory/current; RAILS_ENV=production $project_directory/current/bin/unicorn -c $project_directory/current/config/unicorn.rb -E production -D&quot;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# &amp;lt;application name&amp;gt; Start Script&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# This script is executed by the &amp;quot;&amp;lt;user&amp;gt;&amp;quot; user&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Define the project directory&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;project_directory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;/home/&amp;lt;user&amp;gt;/&amp;lt;application name&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Define ruby related details&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;ruby_version&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;ruby-2.0.0-p195&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;ruby_gemset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;lt;gemset name&amp;gt;&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Start the application server&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt; env &lt;span class=&quot;nv&quot;&gt;LANG&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;en_US.UTF-8&amp;#39;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;rvm_path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.rvm/ &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.rvm/bin/rvm-shell &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$ruby_version@$ruby_gemset&amp;quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt; -c &lt;span class=&quot;s2&quot;&gt;&amp;quot;cd $project_directory/current; RAILS_ENV=production $project_directory/current/bin/unicorn -c $project_directory/current/config/unicorn.rb -E production -D&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And just the relevant part for a &lt;a href=&quot;http://www.sinatrarb.com/&quot;&gt;Sinatra&lt;/a&gt; application:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;# Start the application server
-env LANG=&#39;en_US.UTF-8&#39; \
-rvm_path=$HOME/.rvm/ \
-$HOME/.rvm/bin/rvm-shell \
-&quot;$ruby_version@$ruby_gemset&quot; \
--c &quot;cd $project_directory/current; bundle exec rackup $project_directory/current/config.ru --env staging --pid $project_directory/current/tmp/pids/sinatra.pid --port 8080  &amp;gt;&amp;gt; /var/log/&amp;lt;application name&amp;gt;/out.log 2&amp;gt;&amp;gt; /var/log/&amp;lt;application name&amp;gt;/error.log &amp;amp;&quot;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# Start the application server&lt;/span&gt;
+env &lt;span class=&quot;nv&quot;&gt;LANG&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;en_US.UTF-8&amp;#39;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;rvm_path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.rvm/ &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;$HOME&lt;/span&gt;/.rvm/bin/rvm-shell &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+&lt;span class=&quot;s2&quot;&gt;&amp;quot;$ruby_version@$ruby_gemset&amp;quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+-c &lt;span class=&quot;s2&quot;&gt;&amp;quot;cd $project_directory/current; bundle exec rackup $project_directory/current/config.ru --env staging --pid $project_directory/current/tmp/pids/sinatra.pid --port 8080  &amp;gt;&amp;gt; /var/log/&amp;lt;application name&amp;gt;/out.log 2&amp;gt;&amp;gt; /var/log/&amp;lt;application name&amp;gt;/error.log &amp;amp;&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The most important part here is the usage of &lt;code&gt;rvm-shell&lt;/code&gt; which syntax looks like this:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;rvm-shell &quot;&amp;lt;ruby version&amp;gt;@&amp;lt;ruby gemset&amp;gt;&quot; -c &quot;&amp;lt;command which starts the ruby process&amp;gt;&quot;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;rvm-shell &lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;lt;ruby version&amp;gt;@&amp;lt;ruby gemset&amp;gt;&amp;quot;&lt;/span&gt; -c &lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;lt;command which starts the ruby process&amp;gt;&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;debugging-monit-configurations&quot;&gt;Debugging Monit Configurations&lt;/h2&gt;
 
@@ -557,44 +538,40 @@ $HOME/.rvm/bin/rvm-shell \
 
 &lt;p&gt;The first thing we need to do is adjust Monit’s poll cycle length in the &lt;code&gt;/etc/monit/monitrc&lt;/code&gt; file: &lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;set daemon 10 # Number in seconds
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nb&quot;&gt;set &lt;/span&gt;daemon &lt;span class=&quot;m&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Number in seconds&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This value represents the time which Monit sleeps after each check. We need to keep it low for debugging purposes.&lt;/p&gt;
 
 &lt;p&gt;Then add a configuration file &lt;code&gt;/etc/monit/conf.d/apps/monit-test-app.conf&lt;/code&gt; with the following content:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;check process monit-test-app with pidfile &quot;/usr/lib/monit-test-app/pids/process.pid&quot;
-  start = &quot;/usr/lib/monit-test-app/bin/start.sh&quot;
-  if does not exist then start
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;check process monit-test-app with pidfile &lt;span class=&quot;s2&quot;&gt;&amp;quot;/usr/lib/monit-test-app/pids/process.pid&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;nv&quot;&gt;start&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;/usr/lib/monit-test-app/bin/start.sh&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; does not exist &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt; start&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Enable it by adding the following line to &lt;code&gt;/etc/monit/monitrc&lt;/code&gt;:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;include /etc/monit/conf.d/apps/*.conf
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;include /etc/monit/conf.d/apps/*.conf&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Our application start script is located under &lt;code&gt;/usr/lib/monit-test-app/bin/start.sh&lt;/code&gt; and looks like this:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;#!/bin/bash
-
-application_name=&#39;monit-test-app&#39;
-script_dirirectory=&quot;$( cd &quot;$( dirname &quot;$0&quot; )&quot; &amp;amp;&amp;amp; pwd )&quot;
-application_dirirectory=$script_dirirectory/..
-
-log_file=&quot;/var/log/$application_name/stdout.log&quot;
-pid_file=&quot;/var/run/$application_name.pid&quot;
- 
-echo -e &quot;\n`date +&quot;%y%m%d %H:%M:%S&quot;` - start script&quot; &amp;gt;&amp;gt; $log_file
- 
-echo $BASHPID &amp;gt;&amp;gt; $pid_file
- 
-echo &quot;`date +&quot;%y%m%d %H:%M:%S&quot;` - sleep 5s&quot; &amp;gt;&amp;gt; $log_file
-sleep 5
- 
-echo &quot;`date +&quot;%y%m%d %H:%M:%S&quot;` - remove pid file&quot; &amp;gt;&amp;gt; $log_file
-rm $pid_file
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;application_name&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;monit-test-app&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;script_dirirectory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;$( cd &amp;quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt; dirname &lt;span class=&quot;s2&quot;&gt;&amp;quot;$0&amp;quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot; &amp;amp;&amp;amp; pwd )&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;application_dirirectory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$script_dirirectory&lt;/span&gt;/..
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;log_file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;/var/log/$application_name/stdout.log&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;pid_file&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;/var/run/$application_name.pid&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; -e &lt;span class=&quot;s2&quot;&gt;&amp;quot;\n`date +&amp;quot;&lt;/span&gt;%y%m%d %H:%M:%S&lt;span class=&quot;s2&quot;&gt;&amp;quot;` - start script&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class=&quot;nv&quot;&gt;$log_file&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$BASHPID&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class=&quot;nv&quot;&gt;$pid_file&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;`date +&amp;quot;&lt;/span&gt;%y%m%d %H:%M:%S&lt;span class=&quot;s2&quot;&gt;&amp;quot;` - sleep 5s&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class=&quot;nv&quot;&gt;$log_file&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt; sleep 5
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;`date +&amp;quot;&lt;/span&gt;%y%m%d %H:%M:%S&lt;span class=&quot;s2&quot;&gt;&amp;quot;` - remove pid file&amp;quot;&lt;/span&gt; &amp;gt;&amp;gt; &lt;span class=&quot;nv&quot;&gt;$log_file&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt; rm &lt;span class=&quot;nv&quot;&gt;$pid_file&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
@@ -603,55 +580,49 @@ rm $pid_file
 
 &lt;p&gt;Finally start Monit with (if not already started):&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;service monit start # or: /etc/init.d/monit start
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;service monit start &lt;span class=&quot;c&quot;&gt;# or: /etc/init.d/monit start&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And reload Monit’s configuration:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;monit reload
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;monit reload&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Monit should start the &lt;code&gt;start.sh&lt;/code&gt; over and over again.&lt;/p&gt;
 
 &lt;p&gt;Check if Monit does it’s job by checking the logs:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;$ tail -f /var/log/monit.log /var/log/monit-test-app/*
-==&amp;gt; /var/log/monit.log &amp;lt;==
-[UTC Nov 27 08:07:57] error    : &#39;monit-test-app&#39; process is not running
-[UTC Nov 27 08:07:57] info     : &#39;monit-test-app&#39; start: /usr/lib/monit-test-app/bin/start.sh
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;tail -f /var/log/monit.log /var/log/monit-test-app/*
+&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&amp;gt; /var/log/monit.log &amp;lt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;UTC Nov &lt;span class=&quot;m&quot;&gt;27&lt;/span&gt; 08:07:57&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; error    : &lt;span class=&quot;s1&quot;&gt;&amp;#39;monit-test-app&amp;#39;&lt;/span&gt; process is not running
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;UTC Nov &lt;span class=&quot;m&quot;&gt;27&lt;/span&gt; 08:07:57&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; info     : &lt;span class=&quot;s1&quot;&gt;&amp;#39;monit-test-app&amp;#39;&lt;/span&gt; start: /usr/lib/monit-test-app/bin/start.sh
 
-==&amp;gt; /var/log/monit-test-app/stdout.log &amp;lt;==
+&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&amp;gt; /var/log/monit-test-app/stdout.log &amp;lt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;
 
-141127 08:07:57 - start script
-141127 08:07:57 - sleep 5s
-141127 08:08:02 - remove pid file
+&lt;span class=&quot;m&quot;&gt;141127&lt;/span&gt; 08:07:57 - start script
+&lt;span class=&quot;m&quot;&gt;141127&lt;/span&gt; 08:07:57 - sleep 5s
+&lt;span class=&quot;m&quot;&gt;141127&lt;/span&gt; 08:08:02 - remove pid &lt;span class=&quot;nv&quot;&gt;file&lt;/span&gt;
 
-==&amp;gt; /var/log/monit.log &amp;lt;==
-[UTC Nov 27 08:08:27] error    : &#39;monit-test-app&#39; failed to start (exit status 0) -- no output
-[UTC Nov 27 08:08:37] error    : &#39;monit-test-app&#39; process is not running
-[UTC Nov 27 08:08:37] info     : &#39;monit-test-app&#39; start: /usr/lib/monit-test-app/bin/start.sh
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;&amp;gt; /var/log/monit.log &amp;lt;&lt;span class=&quot;o&quot;&gt;==&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;UTC Nov &lt;span class=&quot;m&quot;&gt;27&lt;/span&gt; 08:08:27&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; error    : &lt;span class=&quot;s1&quot;&gt;&amp;#39;monit-test-app&amp;#39;&lt;/span&gt; failed to start &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;exit &lt;/span&gt;status 0&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; -- no output
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;UTC Nov &lt;span class=&quot;m&quot;&gt;27&lt;/span&gt; 08:08:37&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; error    : &lt;span class=&quot;s1&quot;&gt;&amp;#39;monit-test-app&amp;#39;&lt;/span&gt; process is not running
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;UTC Nov &lt;span class=&quot;m&quot;&gt;27&lt;/span&gt; 08:08:37&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; info     : &lt;span class=&quot;s1&quot;&gt;&amp;#39;monit-test-app&amp;#39;&lt;/span&gt; start: /usr/lib/monit-test-app/bin/start.sh&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;I also like to keep an eye on Monit’s summary in a separate terminal:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;$ watch -n1 &#39;monit summary&#39;
-Every 1.0s: monit summary                                                                                                                                                            Thu Nov 27 00:47:43 2014
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;watch -n1 &lt;span class=&quot;s1&quot;&gt;&amp;#39;monit summary&amp;#39;&lt;/span&gt;
+Every 1.0s: monit summary                                                                                                                                                            Thu Nov &lt;span class=&quot;m&quot;&gt;27&lt;/span&gt; 00:47:43 2014
 
 The Monit daemon 5.10 uptime: 26m
 
-Process &#39;monit-test-app&#39;            Execution failed
-System &#39;6934259efb99&#39;               Running
-&lt;/code&gt;&lt;/pre&gt;
+Process &lt;span class=&quot;s1&quot;&gt;&amp;#39;monit-test-app&amp;#39;&lt;/span&gt;            Execution failed
+System &lt;span class=&quot;s1&quot;&gt;&amp;#39;6934259efb99&amp;#39;&lt;/span&gt;               Running&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Sometimes it’s helpful to run Monit in a verbose mode. Simply change the init file with this command:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;sed -i &#39;s/^MONIT_OPTS=$/MONIT_OPTS=&quot;-v&quot;/&#39; /etc/init.d/monit
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;sed -i &lt;span class=&quot;s1&quot;&gt;&amp;#39;s/^MONIT_OPTS=$/MONIT_OPTS=&amp;quot;-v&amp;quot;/&amp;#39;&lt;/span&gt; /etc/init.d/monit&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;And restart Monit so that the change can take place:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;service monit restart
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;service monit restart&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;useful-monit-commands&quot;&gt;Useful Monit Commands&lt;/h2&gt;
 
@@ -686,20 +657,6 @@ System &#39;6934259efb99&#39;               Running
 &lt;/code&gt;&lt;/pre&gt;
   &lt;/li&gt;
 &lt;/ul&gt;
-
-&lt;h2 id=&quot;deploying-monit-configuration-with-ansible&quot;&gt;Deploying Monit Configuration with Ansible&lt;/h2&gt;
-
-&lt;p&gt;Why Ansible?&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;because of it’s easy yaml configuration&lt;/li&gt;
-  &lt;li&gt;because it comes with a good predefined server structure&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
-&lt;br /&gt;Note Monit has to be configured through the root user. Use &lt;code&gt;sudo su -&lt;/code&gt; to login as root user.&lt;/p&gt;
-&lt;/blockquote&gt;
 
 &lt;p&gt;Resources:&lt;/p&gt;
 
@@ -738,9 +695,8 @@ System &#39;6934259efb99&#39;               Running
 
 &lt;p&gt;Later in our &lt;a href=&quot;#what-is-a-docker-startinit-script&quot;&gt;Docker start/init script&lt;/a&gt; (which is used while running the container) we symlink those files/libraries where they are supposed to be:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;# Create symlinks to libraries downloaded through composer
-ln -s /usr/lib/composer/vendor /var/www/vendor
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# Create symlinks to libraries downloaded through composer&lt;/span&gt;
+ln -s /usr/lib/composer/vendor /var/www/vendor&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;This allows us to spin up containers really fast!&lt;/p&gt;
 
@@ -759,39 +715,37 @@ ln -s /usr/lib/composer/vendor /var/www/vendor
 
 &lt;p&gt;You can check the maximum limit of commits with the following script:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;# Remove the commit if it exists
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# Remove the commit if it exists&lt;/span&gt;
 docker rmi czerasz/aufs-layers-test
 
-# Create a base container
-docker run --name=&quot;aufs-layers-test-container&quot; \
+&lt;span class=&quot;c&quot;&gt;# Create a base container&lt;/span&gt;
+docker run --name&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;aufs-layers-test-container&amp;quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
            ubuntu /bin/mkdir /data
 
-# Commit the changes to a new image
-docker commit --message=&#39;First commit&#39; &#39;aufs-layers-test-container&#39; czerasz/aufs-layers-test
+&lt;span class=&quot;c&quot;&gt;# Commit the changes to a new image&lt;/span&gt;
+docker commit --message&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;First commit&amp;#39;&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;aufs-layers-test-container&amp;#39;&lt;/span&gt; czerasz/aufs-layers-test
 
-# Remove the container
-docker rm &#39;aufs-layers-test-container&#39;
+&lt;span class=&quot;c&quot;&gt;# Remove the container&lt;/span&gt;
+docker rm &lt;span class=&quot;s1&quot;&gt;&amp;#39;aufs-layers-test-container&amp;#39;&lt;/span&gt;
 
-for i in {1..1000}
-do
+&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; i in &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;1..1000&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
 
-echo -e &quot;\n$i build\n&quot;
+&lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; -e &lt;span class=&quot;s2&quot;&gt;&amp;quot;\n$i build\n&amp;quot;&lt;/span&gt;
 
-# Add another commit
-cat &amp;lt;&amp;lt;-EOF |
-FROM czerasz/aufs-layers-test
+&lt;span class=&quot;c&quot;&gt;# Add another commit&lt;/span&gt;
+cat &lt;span class=&quot;s&quot;&gt;&amp;lt;&amp;lt;-EOF |&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;FROM czerasz/aufs-layers-test&lt;/span&gt;
 
-RUN /bin/echo -e &quot;test\n&quot; &amp;gt;&amp;gt; /data/test
-EOF
+&lt;span class=&quot;s&quot;&gt;RUN /bin/echo -e &amp;quot;test\n&amp;quot; &amp;gt;&amp;gt; /data/test&lt;/span&gt;
+&lt;span class=&quot;s&quot;&gt;EOF&lt;/span&gt;
 docker build -t czerasz/aufs-layers-test -
 
-done
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;On my machine it returned:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;Cannot create container with more than 127 parents
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;Cannot create container with more than &lt;span class=&quot;m&quot;&gt;127&lt;/span&gt; parents&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Which means that there are only &lt;code&gt;127&lt;/code&gt; commits possible.&lt;/p&gt;
 
@@ -799,17 +753,16 @@ done
 
 &lt;p&gt;A real word example (which I use in &lt;a href=&quot;https://registry.hub.docker.com/u/czerasz/base/&quot;&gt;my base image&lt;/a&gt;) is presented below:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;RUN apt-get install -y build-essential &amp;amp;&amp;amp; \
-    apt-get install -y software-properties-common &amp;amp;&amp;amp; \
-    apt-get install -y pwgen \
-                       python-software-properties \
-                       vim \
-                       curl \
-                       wget \
-                       git \
-                       unzip \
-                       tree
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;RUN apt-get install -y build-essential &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    apt-get install -y software-properties-common &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+    apt-get install -y pwgen &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       python-software-properties &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       vim &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       curl &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       wget &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       git &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       unzip &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       tree&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;The downside of this construction is that whenever I need to remove/add a package, Docker is not able to use it’s cache feature and all packages need to be installed from the scratch. And this takes time.&lt;/p&gt;
 
@@ -819,42 +772,41 @@ done
 
 &lt;p&gt;Analyze this Wordpress &lt;code&gt;Dockerfile&lt;/code&gt; as an example:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;# --- PHP ---
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# --- PHP ---&lt;/span&gt;
 
-# Install PHP
-RUN apt-get install -y php5-fpm \
-                       php5-mysql \
+&lt;span class=&quot;c&quot;&gt;# Install PHP&lt;/span&gt;
+RUN apt-get install -y php5-fpm &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php5-mysql &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
                        php-apc
 
-# Wordpress Requirements
-RUN apt-get install -y php5-curl \
-                       php5-gd \
-                       php5-intl \
-                       php-pear \
-                       php5-imagick \
-                       php5-imap \
-                       php5-mcrypt \
-                       php5-memcache \
-                       php5-ming \
-                       php5-ps \
-                       php5-pspell \
-                       php5-recode \
-                       php5-sqlite \
-                       php5-tidy \
-                       php5-xmlrpc \
+&lt;span class=&quot;c&quot;&gt;# Wordpress Requirements&lt;/span&gt;
+RUN apt-get install -y php5-curl &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php5-gd &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php5-intl &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php-pear &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php5-imagick &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php5-imap &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php5-mcrypt &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php5-memcache &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php5-ming &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php5-ps &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php5-pspell &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php5-recode &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php5-sqlite &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php5-tidy &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+                       php5-xmlrpc &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
                        php5-xsl
 
-# --- NGINX ---
+&lt;span class=&quot;c&quot;&gt;# --- NGINX ---&lt;/span&gt;
 
 ....
 
-# ------ PHP-FPM CONFIGURATION ------
+&lt;span class=&quot;c&quot;&gt;# ------ PHP-FPM CONFIGURATION ------&lt;/span&gt;
 RUN mkdir -p /var/log/php5-fpm/
-# Configure the php5-fpm  process and the default pool
+&lt;span class=&quot;c&quot;&gt;# Configure the php5-fpm  process and the default pool&lt;/span&gt;
 ADD ./config/php-fpm/php-fpm.conf /etc/php5/fpm/php-fpm.conf
 ADD ./config/php-fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.conf
-ADD ./config/php-fpm/php.ini /etc/php5/fpm/php.ini
-&lt;/code&gt;&lt;/pre&gt;
+ADD ./config/php-fpm/php.ini /etc/php5/fpm/php.ini&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;When we change the PHP configuration the build process will still work really fast, because the most time consuming part, the package installation is cached.&lt;/p&gt;
 
@@ -878,13 +830,12 @@ ADD ./config/php-fpm/php.ini /etc/php5/fpm/php.ini
 
 &lt;p&gt;Consider the following &lt;code&gt;Dockerfile&lt;/code&gt;:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;FROM ubuntu
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;FROM ubuntu
 
-# Set the reset cache variable
+&lt;span class=&quot;c&quot;&gt;# Set the reset cache variable&lt;/span&gt;
 ENV REFRESHED_AT 2014-11-01
 
-...
-&lt;/code&gt;&lt;/pre&gt;
+...&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;By changing the value of the &lt;code&gt;REFRESHED_AT&lt;/code&gt; variable you are able to flush the whole cache.&lt;/p&gt;
 
@@ -894,31 +845,30 @@ ENV REFRESHED_AT 2014-11-01
 
 &lt;p&gt;A sample &lt;code&gt;/etc/supervisor/conf.d/supervisord.conf&lt;/code&gt; which manages Serf, PHP-FPM, Nginx is presented below:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;[supervisord]
-pidfile=/tmp/supervisord.pid ; (supervisord pidfile;default supervisord.pid)
-nodaemon=true                ; (start in foreground if true;default false)
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;supervisord&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;pidfile&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/tmp/supervisord.pid &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;supervisord pidfile&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;default supervisord.pid&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;nodaemon&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;                &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;start in foreground &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;default &lt;span class=&quot;nb&quot;&gt;false&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;
 
 
-[program:php5-fpm]
-command=/usr/sbin/php5-fpm -c /etc/php5/fpm
-autorestart=true
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;program:php5-fpm&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/sbin/php5-fpm -c /etc/php5/fpm
+&lt;span class=&quot;nv&quot;&gt;autorestart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
 
-[program:nginx]
-command=nginx
-autostart=true
-autorestart=true
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;program:nginx&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;nginx
+&lt;span class=&quot;nv&quot;&gt;autostart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;autorestart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
 
-[program:serf]
-command=/etc/serf/serf-start.sh
-numprocs=1
-autostart=true
-autorestart=true
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;program:serf&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/etc/serf/serf-start.sh
+&lt;span class=&quot;nv&quot;&gt;numprocs&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1
+&lt;span class=&quot;nv&quot;&gt;autostart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;autorestart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
 
-[program:serf-join]
-command=/etc/serf/serf-join.sh
-autorestart=true
-exitcodes=0
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;program:serf-join&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;command&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/etc/serf/serf-join.sh
+&lt;span class=&quot;nv&quot;&gt;autorestart&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;nv&quot;&gt;exitcodes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;0&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;use-image-inheritance&quot;&gt;Use Image Inheritance&lt;/h2&gt;
 
@@ -940,22 +890,20 @@ exitcodes=0
 
 &lt;p&gt;Create data container:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;docker run -v /data/uploads \
-           --name czerasz-data-container \
-           -d debian chown -R www-data:www-data /data/uploads
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;docker run -v /data/uploads &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           --name czerasz-data-container &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           -d debian chown -R www-data:www-data /data/uploads&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Create a Wordpress container and attach to it the &lt;code&gt;/data/uploads&lt;/code&gt; directory from the data container:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;docker run \
-       -v `pwd`/app:/var/www \
-       --volumes-from czerasz-data-container \
-       --link czerasz-database:db \
-       -p 80:80 \
-       --name czerasz-site \
-       -d czerasz/wordpress-base \
-       /usr/local/bin/init.sh production
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;docker run &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+       -v &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;/app:/var/www &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+       --volumes-from czerasz-data-container &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+       --link czerasz-database:db &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+       -p 80:80 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+       --name czerasz-site &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+       -d czerasz/wordpress-base &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+       /usr/local/bin/init.sh production&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;strong&gt;Tip&lt;/strong&gt;
@@ -974,10 +922,9 @@ drwx------ 8 www-data www-data 4096 Nov  2 01:25 2014
 
 &lt;p&gt;If you have a lot of environment varaiables which need to be passed to the container use the &lt;code&gt;--env-file&lt;/code&gt; option. It allows you to import variables from a file formated like this:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;primary=mongo_1532
-number_of_replicas=3
-...
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;primary&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;mongo_1532
+&lt;span class=&quot;nv&quot;&gt;number_of_replicas&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;3
+...&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;always-remove-temporary-containers&quot;&gt;Always Remove Temporary Containers&lt;/h2&gt;
 
@@ -987,10 +934,9 @@ number_of_replicas=3
 
 &lt;p&gt;A real world example (which was borrowed from &lt;a href=&quot;https://registry.hub.docker.com/_/mysql/&quot;&gt;here&lt;/a&gt;) is presented below:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;docker run -it \
-            --link some-mysql:mysql \
-            --rm mysql sh -c &#39;exec mysql -h&quot;$MYSQL_PORT_3306_TCP_ADDR&quot; -P&quot;$MYSQL_PORT_3306_TCP_PORT&quot; -uroot -p&quot;$MYSQL_ENV_MYSQL_ROOT_PASSWORD&quot;&#39;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;docker run -it &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            --link some-mysql:mysql &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+            --rm mysql sh -c &lt;span class=&quot;s1&quot;&gt;&amp;#39;exec mysql -h&amp;quot;$MYSQL_PORT_3306_TCP_ADDR&amp;quot; -P&amp;quot;$MYSQL_PORT_3306_TCP_PORT&amp;quot; -uroot -p&amp;quot;$MYSQL_ENV_MYSQL_ROOT_PASSWORD&amp;quot;&amp;#39;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;h2 id=&quot;simplify-communication-by-using-the-hostname&quot;&gt;Simplify Communication by Using the Hostname&lt;/h2&gt;
 
@@ -998,42 +944,40 @@ number_of_replicas=3
 
 &lt;p&gt;The example below shows a simple usecase. First we spin up a server container:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;docker run --hostname=&quot;web-server&quot; \
-           --rm \
-           --name host-communication-test-web-server \
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;docker run --hostname&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;web-server&amp;quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           --rm &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           --name host-communication-test-web-server &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
            -it ubuntu bash
 
-root@web-server:/# echo &quot;Response from: &quot;`hostname` &amp;gt; index.html &amp;amp;&amp;amp; python3 -m http.server 8000
-&lt;/code&gt;&lt;/pre&gt;
+root@web-server:/# &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;Response from: &amp;quot;&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;hostname&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &amp;gt; index.html &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; python3 -m http.server 8000&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Then we spin up a client server which requests the web server:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;docker run --hostname=&quot;web-client&quot; \
-           --rm \
-           --link host-communication-test-web-server:web-server \
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;docker run --hostname&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;web-client&amp;quot;&lt;/span&gt; &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           --rm &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           --link host-communication-test-web-server:web-server &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
            -it ubuntu bash 
 
-root@web-client:/# apt-get update &amp;amp;&amp;amp; apt-get install -y curl
+root@web-client:/# apt-get update &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; apt-get install -y curl
 root@web-client:/# curl -v web-server:8000/index.html
 * Hostname was NOT found in DNS cache
 *   Trying 172.17.1.57...
-* Connected to web-server (172.17.1.57) port 8000 (#0)
+* Connected to web-server &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;172.17.1.57&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; port &lt;span class=&quot;m&quot;&gt;8000&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;c&quot;&gt;#0)&lt;/span&gt;
 &amp;gt; GET /index.html HTTP/1.1
 &amp;gt; User-Agent: curl/7.35.0
 &amp;gt; Host: web-server:8000
 &amp;gt; Accept: */*
 &amp;gt; 
 * HTTP 1.0, assume close after body
-&amp;lt; HTTP/1.0 200 OK
+&amp;lt; HTTP/1.0 &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; OK
 &amp;lt; Server: SimpleHTTP/0.6 Python/3.4.0
-&amp;lt; Date: Tue, 25 Nov 2014 11:41:52 GMT
+&amp;lt; Date: Tue, &lt;span class=&quot;m&quot;&gt;25&lt;/span&gt; Nov &lt;span class=&quot;m&quot;&gt;2014&lt;/span&gt; 11:41:52 GMT
 &amp;lt; Content-type: text/html
 &amp;lt; Content-Length: 26
-&amp;lt; Last-Modified: Tue, 25 Nov 2014 11:40:14 GMT
+&amp;lt; Last-Modified: Tue, &lt;span class=&quot;m&quot;&gt;25&lt;/span&gt; Nov &lt;span class=&quot;m&quot;&gt;2014&lt;/span&gt; 11:40:14 GMT
 &amp;lt; 
 Response from: web-server
-* Closing connection 0
-&lt;/code&gt;&lt;/pre&gt;
+* Closing connection 0&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;As you can see we don’t have to use any environment variables (which we by the way don’t have if no port is exposed). We can just rely on the hostname.&lt;/p&gt;
 
@@ -1043,8 +987,7 @@ Response from: web-server
 
 &lt;p&gt;The script can be called manually while one runs a container:&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;docker run -it user_name/image_name /usr/lib/init-script-name.sh
-&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;docker run -it user_name/image_name /usr/lib/init-script-name.sh&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Or through one of the &lt;code&gt;Dockerfile&lt;/code&gt; directives:
 - &lt;a href=&quot;http://docs.docker.com/reference/builder/#entrypoint&quot;&gt;&lt;code&gt;ENTRYPOINT&lt;/code&gt;&lt;/a&gt;
