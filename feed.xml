@@ -1,0 +1,1142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Web IT Services</title>
+    <description>Solid knowledge about web and web-technologies. Focused on Back-End, Front-End and DevOps topics. Docker, Python, Nginx, Linux, IT-Architecture, Vagrant, Ansible, MongoDB and Elasticsearch.
+</description>
+    <link>http://staging.1bcb8bfcfd5e642fb66700117faa5786.czerasz.com/</link>
+    <atom:link href="http://staging.1bcb8bfcfd5e642fb66700117faa5786.czerasz.com/feed.xml" rel="self" type="application/rss+xml"/>
+    <pubDate>Mon, 29 Dec 2014 10:37:36 +0100</pubDate>
+    <lastBuildDate>Mon, 29 Dec 2014 10:37:36 +0100</lastBuildDate>
+    <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>Top Vagrant Plugins You Should Use</title>
+        <description>&lt;p class=&quot;post__tldr&quot;&gt;In this article I present the top Vagrant plugins which you should have. Those Vagrant plugins will make working with virtual machines much easier.&lt;/p&gt;
+
+&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://www.vagrantup.com/&quot; target=&quot;_blank&quot;&gt;Vagrant&lt;/a&gt; is a very useful tool which abstracts virtual machine providers. It has a lot of features and is open source. If you don’t know it yet, then go directly to the &lt;a href=&quot;https://docs.vagrantup.com/v2/getting-started/index.html&quot; target=&quot;_blank&quot;&gt;getting started section&lt;/a&gt; of the Vagrant project page.&lt;/p&gt;
+
+&lt;p&gt;Vagrant is popular but not everyone knows that it’s extensible. Yes, Vagrant can be tuned! And you do this with plugins. And some of them are really awesome!&lt;/p&gt;
+
+&lt;p&gt;Discover with me the magic of most wanted Vagrant plugins.&lt;/p&gt;
+
+&lt;h3 id=&quot;how-to-install-a-vagrant-plugin&quot;&gt;How To Install a Vagrant Plugin&lt;/h3&gt;
+
+&lt;p&gt;Vagrant plugins can be installed with this command:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;vagrant plugin install vagrant-example-plugin&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;If You want to read more about Vagrant plugins visit &lt;a href=&quot;https://docs.vagrantup.com/v2/plugins/usage.html&quot; target=&quot;_blank&quot;&gt;this documentation section&lt;/a&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;divider  divider--border&quot;&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;vagrant-cachier-plugin&quot;&gt;Vagrant Cachier Plugin&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;vagrant-cachier&lt;/code&gt; enables caching for different package managers on many Linux distributions. You will love this plugin if You play a lot with provisioning!&lt;/p&gt;
+
+&lt;p&gt;You can find the Vagrant cachier plugin &lt;strong&gt;project&lt;/strong&gt; on &lt;a href=&quot;https://github.com/fgrehm/vagrant-cachier&quot; target=&quot;_blank&quot;&gt;Github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;basic-understanding&quot;&gt;Basic Understanding&lt;/h3&gt;
+
+&lt;p&gt;When this plugin is enabled and I update one of my Ubuntu VM’s with &lt;code&gt;apt-get update&lt;/code&gt; or install any packages with &lt;code&gt;apt-get install [package]&lt;/code&gt;, any other VM which uses the same base box, will reuse the downloads. This leads to faster provisioning. And the reason for that is because the updates/packages are cached. This brings a little bit of &lt;a href=&quot;https://www.docker.com/&quot; target=&quot;_blank&quot;&gt;Docker&lt;/a&gt; goodnes into the world of Vagrant.&lt;/p&gt;
+
+&lt;p&gt;The diagram below helps you understand this simple but effective logic:&lt;/p&gt;
+
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1419845847752/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;requirements&quot;&gt;Requirements&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;NFS&lt;/li&gt;
+  &lt;li&gt;Vagrant 1.4+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;installation&quot;&gt;Installation&lt;/h3&gt;
+
+&lt;p&gt;Install the &lt;code&gt;vagrant-cachier&lt;/code&gt; plugin with the following command:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;vagrant plugin install vagrant-cachier&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;usage&quot;&gt;Usage&lt;/h3&gt;
+
+&lt;p&gt;Enable it by extending Your &lt;code&gt;Vagrantfile&lt;/code&gt; like in the example below:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# -*- mode: ruby -*-&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# vi: set ft=ruby :&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Vagrantfile API/syntax version. Don&amp;#39;t touch unless you know what you&amp;#39;re doing!&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;VAGRANTFILE_API_VERSION&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;2&amp;quot;&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Vagrant&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;VAGRANTFILE_API_VERSION&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;# Every Vagrant virtual environment requires a box to build off of.&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;box&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;ubuntu/trusty64&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;# Configure vagrant-cachier plugin&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Vagrant&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;has_plugin?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;vagrant-cachier&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt;     &lt;span class=&quot;c1&quot;&gt;# Configure cached packages to be shared between instances of the same base box.&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt;     &lt;span class=&quot;c1&quot;&gt;# More info on http://fgrehm.viewdocs.io/vagrant-cachier/usage&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cache&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scope&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:box&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt;     &lt;span class=&quot;c1&quot;&gt;# OPTIONAL: If you are using VirtualBox, you might want to use that to enable&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt;     &lt;span class=&quot;c1&quot;&gt;# NFS for shared folders. This is also very useful for vagrant-libvirt if you&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt;     &lt;span class=&quot;c1&quot;&gt;# want bi-directional sync&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cache&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;synced_folder_opts&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;21&lt;/span&gt;       &lt;span class=&quot;ss&quot;&gt;type&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;:nfs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;22&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;# The nolock option can be useful for an NFSv3 client that wants to avoid the&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;23&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;# NLM sideband protocol. Without this option, apt-get might hang if it tries&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;24&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;# to lock files needed for /var/cache/* operations. All of this can be avoided&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;25&lt;/span&gt;       &lt;span class=&quot;c1&quot;&gt;# by using NFSv4 everywhere. Please note that the tcp option is not the default.&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;26&lt;/span&gt;       &lt;span class=&quot;ss&quot;&gt;mount_options&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&amp;#39;rw&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;vers=3&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;tcp&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;nolock&amp;#39;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;27&lt;/span&gt;     &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;   
+&lt;span class=&quot;lineno&quot;&gt;28&lt;/span&gt;     &lt;span class=&quot;c1&quot;&gt;# For more information please check http://docs.vagrantup.com/v2/synced-folders/basic_usage.html&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;29&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;30&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;# @end: Configure vagrant-cachier plugin&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;31&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;32&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;provision&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;shell&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;inline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;apt-get update --fix-missing&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;33&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;provision&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;shell&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;inline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;apt-get install nginx -y&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;34&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;35&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;define&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;web1&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;primary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;web1_config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;36&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;web1_config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;network&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;private_network&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;ip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;192.168.90.11&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;37&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;38&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;39&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;define&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;web2&amp;quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;web2_config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;40&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;web2_config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;network&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;private_network&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;ip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;192.168.90.12&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;41&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;42&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
+&lt;br /&gt;Next steps will be based on the &lt;code&gt;Vagrantfile&lt;/code&gt; presented above.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Now spin up one of Your VM’s which does some provisioning:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;vagrant up web1&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Then check out the &lt;code&gt;~/.vagrant.d/cache&lt;/code&gt; host directory. You will find there cached downloads like in the example below:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;tree ~/.vagrant.d/cache
+└── ubuntu
+    └── trusty64
+        ├── apt
+        │   ├── fontconfig-config_2.11.0-0ubuntu4.1_all.deb
+        │   ├── ...
+        │   ├── nginx_1.4.6-1ubuntu3.1_all.deb
+        │   ├── nginx-common_1.4.6-1ubuntu3.1_all.deb
+        │   ├── nginx-core_1.4.6-1ubuntu3.1_amd64.deb
+        │   └── ...
+        ├── apt_lists
+        │   ├── archive.ubuntu.com_ubuntu_dists_trusty_main_binary-amd64_Packages
+        │   └── ...
+        └── ...&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now start the second machine. This one will reuse the cache:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;vagrant up web2&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;It should boot faster because it doesn’t need to download the updates and the &lt;code&gt;nginx&lt;/code&gt; package.&lt;/p&gt;
+
+&lt;p&gt;Isn’t it great?&lt;/p&gt;
+
+&lt;p&gt;But that’s not everything. The &lt;code&gt;vagrant-cachier&lt;/code&gt; plugin supports also other package managers:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;apt-cacher&lt;/li&gt;
+  &lt;li&gt;apt-lists&lt;/li&gt;
+  &lt;li&gt;apt&lt;/li&gt;
+  &lt;li&gt;chef&lt;/li&gt;
+  &lt;li&gt;composer&lt;/li&gt;
+  &lt;li&gt;generic&lt;/li&gt;
+  &lt;li&gt;npm&lt;/li&gt;
+  &lt;li&gt;pacman&lt;/li&gt;
+  &lt;li&gt;rubygems&lt;/li&gt;
+  &lt;li&gt;rvm&lt;/li&gt;
+  &lt;li&gt;yum&lt;/li&gt;
+  &lt;li&gt;zypper&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;If You are interested in deeper understanding how this plugin works visit &lt;a href=&quot;https://github.com/fgrehm/vagrant-cachier/blob/master/docs/how-does-it-work.md&quot; target=&quot;_blank&quot;&gt;this documentation page&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;is-it-really-faster&quot;&gt;Is it Really Faster?&lt;/h3&gt;
+
+&lt;p&gt;Yes it is. Here are some statistics:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;time &lt;/span&gt;vagrant up web1
+real    1m49.664s
+user    0m8.164s
+sys 0m4.679s
+
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;time &lt;/span&gt;vagrant up web2
+real    1m20.674s
+user    0m8.214s
+sys 0m4.949s&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;About &lt;code&gt;30&lt;/code&gt; seconds faster.&lt;/p&gt;
+
+&lt;p&gt;And we installed only one package. The cache has only &lt;code&gt;103 MB&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;du -sh ~/.vagrant.d/cache/ubuntu/trusty64/
+103M    /home/czerasz/.vagrant.d/cache/ubuntu/trusty64/&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Imagine how much time You can save when building more complex machines.&lt;/p&gt;
+
+&lt;p&gt;You can find more benchmarks &lt;a href=&quot;https://github.com/fgrehm/vagrant-cachier/blob/master/docs/benchmarks.md&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;div class=&quot;divider  divider--border&quot;&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;vagrant-host-manager-plugin&quot;&gt;Vagrant Host Manager Plugin&lt;/h2&gt;
+
+&lt;p&gt;&lt;code&gt;vagrant-hostmanager&lt;/code&gt; makes it possible to “talk” between VM’s by their host names.&lt;/p&gt;
+
+&lt;p&gt;You can find the Vagrant host manager plugin &lt;strong&gt;project&lt;/strong&gt; on &lt;a href=&quot;https://github.com/smdahlen/vagrant-hostmanager&quot; target=&quot;_blank&quot;&gt;Github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h3 id=&quot;basic-understanding-1&quot;&gt;Basic Understanding&lt;/h3&gt;
+
+&lt;p&gt;To make the network communication based on host names possible, the &lt;code&gt;vagrant-hostmanager&lt;/code&gt; plugin adjusts the &lt;code&gt;/etc/hosts&lt;/code&gt; file on the host and guest machines.&lt;/p&gt;
+
+&lt;h3 id=&quot;requirements-1&quot;&gt;Requirements&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Vagrant 1.1+&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h3 id=&quot;installation-1&quot;&gt;Installation&lt;/h3&gt;
+
+&lt;p&gt;Install the &lt;code&gt;vagrant-hostmanager&lt;/code&gt; plugin with the following command:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;vagrant plugin install vagrant-hostmanager&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;usage-1&quot;&gt;Usage&lt;/h3&gt;
+
+&lt;p&gt;Enable it by extending Your Vagrantfile like in the example below:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# -*- mode: ruby -*-&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# vi: set ft=ruby :&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# Vagrantfile API/syntax version. Don&amp;#39;t touch unless you know what you&amp;#39;re doing!&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;VAGRANTFILE_API_VERSION&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;2&amp;quot;&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Vagrant&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;configure&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;VAGRANTFILE_API_VERSION&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;# Every Vagrant virtual environment requires a box to build off of.&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;box&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;ubuntu/trusty64&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;# Configure vagrant-cachier plugin&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Vagrant&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;has_plugin?&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;vagrant-hostmanager&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hostmanager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;enabled&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hostmanager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;manage_host&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hostmanager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ignore_private_ip&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;false&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hostmanager&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;include_offline&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt;   &lt;span class=&quot;c1&quot;&gt;# @end: Configure vagrant-cachier plugin&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;define&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;web1&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;primary&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;web1_config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;21&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;web1_config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;network&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;private_network&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;ip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;192.168.90.11&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;22&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;web1_config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hostname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;web1&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;23&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;24&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;provision&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;shell&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;inline&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;echo &amp;#39;web1&amp;#39; &amp;gt; /home/vagrant/index.html; chown vagrant:vagrant /home/vagrant/index.html&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;25&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;26&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;27&lt;/span&gt;   &lt;span class=&quot;n&quot;&gt;config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;define&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;web2&amp;quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;web2_config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;|&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;28&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;web2_config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;network&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;private_network&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;ip&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;192.168.90.13&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;29&lt;/span&gt;     &lt;span class=&quot;n&quot;&gt;web2_config&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vm&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;hostname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;web2&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;30&lt;/span&gt;   &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;31&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
+&lt;br /&gt;Next steps will be based on the &lt;code&gt;Vagrantfile&lt;/code&gt; presented above.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Start the VM’s:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;vagrant up&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Let’s audit our &lt;code&gt;/etc/hosts&lt;/code&gt; files.&lt;/p&gt;
+
+&lt;p&gt;On the host we can see adjustments done by the &lt;code&gt;vagrant-hostmanager&lt;/code&gt; plugin:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;cat /etc/hosts
+...
+
+&lt;span class=&quot;c&quot;&gt;## vagrant-hostmanager-start id: dbf96559-0f67-4d15-92a5-c41f255cbfc8&lt;/span&gt;
+192.168.90.11   web1 
+192.168.90.12   web2 
+&lt;span class=&quot;c&quot;&gt;## vagrant-hostmanager-end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;On the guest as well:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;vagrant ssh web1 -c &lt;span class=&quot;s1&quot;&gt;&amp;#39;cat /etc/hosts&amp;#39;&lt;/span&gt;
+...
+
+&lt;span class=&quot;c&quot;&gt;## vagrant-hostmanager-start&lt;/span&gt;
+192.168.90.11   web1 
+192.168.90.12   web2 
+&lt;span class=&quot;c&quot;&gt;## vagrant-hostmanager-end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now, let’s run a simple static server with &lt;code&gt;python&lt;/code&gt; on &lt;code&gt;web1&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;vagrant ssh web1
+&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;python -c &lt;span class=&quot;s1&quot;&gt;&amp;#39;import BaseHTTPServer as bhs, SimpleHTTPServer as shs; bhs.HTTPServer((&amp;quot;0.0.0.0&amp;quot;, 8000), shs.SimpleHTTPRequestHandler).serve_forever()&amp;#39;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;It will serve the &lt;code&gt;/home/vagrant/index.html&lt;/code&gt; file which we created during the provisioning process.&lt;/p&gt;
+
+&lt;p&gt;Open a new terminal. Finally we can request the static server on &lt;code&gt;web1&lt;/code&gt; from &lt;code&gt;web2&lt;/code&gt; by it’s host name:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;vagrant ssh web2 -c &lt;span class=&quot;s1&quot;&gt;&amp;#39;curl web1:8000&amp;#39;&lt;/span&gt;
+  web1&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Cool stuff!&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Tip&lt;/strong&gt;
+&lt;br /&gt;If You change the private network ip of any box remember to execute &lt;code&gt;vagrant halt&lt;/code&gt; and &lt;code&gt;vagrant up&lt;/code&gt; afterwords. &lt;code&gt;vagrant reload&lt;/code&gt; won’t do it.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;section class=&quot;callout&quot;&gt;
+    &lt;h3&gt;Call To Action&lt;/h3&gt;
+
+    &lt;p style=&quot;margin-top: 0;&quot;&gt;Do You know any other amazing Vagrant plugins? Let me know and I will add them to this list.&lt;/p&gt;
+
+    &lt;div class=&quot;divider  clearfix&quot;&gt;&lt;/div&gt;
+
+    &lt;a class=&quot;btn  btn-lg  btn-success&quot; href=&quot;/contact&quot;&gt;Contact Me&lt;/a&gt;
+&lt;/section&gt;
+
+&lt;p&gt;&amp;lt;% comment %&amp;gt;
+## TODO&lt;/p&gt;
+
+&lt;p&gt;Describe the following plugins:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/fgrehm/vagrant-notify&quot;&gt;vagrant-notify&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/dotless-de/vagrant-vbguest&quot;&gt;vagrant-vbguest&lt;/a&gt;
+&amp;lt;% commentend %&amp;gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;resources&quot;&gt;Resources:&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.stepquick.net/blog/2014/09/08/use-gulp-notify-with-terminal-notifier/&quot;&gt;Using Gulp-Notify on Vagrant&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Wed, 10 Dec 2014 00:00:00 +0100</pubDate>
+        <link>http://staging.1bcb8bfcfd5e642fb66700117faa5786.czerasz.com/2014/12/10/top-vagrant-plugins/</link>
+        <guid isPermaLink="true">http://staging.1bcb8bfcfd5e642fb66700117faa5786.czerasz.com/2014/12/10/top-vagrant-plugins/</guid>
+        
+        
+      </item>
+    
+      <item>
+        <title>Monitoring Systems and Applications with Monit</title>
+        <description>&lt;p class=&quot;post__tldr&quot;&gt;In this article we will focus on &lt;a href=&quot;https://mmonit.com/monit/&quot; target=&quot;_blank&quot;&gt;Monit&lt;/a&gt; which is a system monitoring and error recovery tool. We will also cover the topic of deploying Monit&#39;s configuration files with Ansible.&lt;/p&gt;
+
+&lt;p&gt;Let’s start with a simple question:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;What is actually worth to be monitored?&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Luckily the answer is also simple:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Everything what is critical to our business.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;At application, service level it could be:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;process existence&lt;/li&gt;
+  &lt;li&gt;is the process responding on a given port&lt;/li&gt;
+  &lt;li&gt;resources consumption&lt;/li&gt;
+  &lt;li&gt;configuration file changes&lt;/li&gt;
+  &lt;li&gt;logfiles existence&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;At system level one should consider the following:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;filesystem checks&lt;/li&gt;
+  &lt;li&gt;network monitoring&lt;/li&gt;
+  &lt;li&gt;CPU monitoring&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;All those tasks can be accomplished with Monit, because it’s able to monitor:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Files and Directories&lt;/li&gt;
+  &lt;li&gt;Disks&lt;/li&gt;
+  &lt;li&gt;Processes&lt;/li&gt;
+  &lt;li&gt;System&lt;/li&gt;
+  &lt;li&gt;Hosts&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;installation&quot;&gt;Installation&lt;/h2&gt;
+
+&lt;h3 id=&quot;monit-installation-on-gentoo&quot;&gt;Monit Installation on Gentoo&lt;/h3&gt;
+
+&lt;p&gt;Install Monit on Gentoo with the following command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;emerge monit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;On Gentoo You can always do a installation dry-run:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;emerge --pretend monit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
+&lt;br /&gt;This basically says what would happen if You would install the given package&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;installation-from-source&quot;&gt;Installation From Source&lt;/h3&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
+&lt;br /&gt;Most packages (like the one on Ubuntu - contains Monit 5.6) are out of date. That’s why it’s recommended to install Monit from source.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Analyse &lt;a href=&quot;https://registry.hub.docker.com/u/czerasz/monit-base/&quot;&gt;this&lt;/a&gt; Docker image to learn how to install Monit on Ubuntu from source.&lt;/p&gt;
+
+&lt;p&gt;If you don’t want to visit that link, here is a short version:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;apt-get install -y libssl-dev
+cd /tmp/
+curl &#39;https://mmonit.com/monit/dist/monit-5.10.tar.gz&#39; -O
+tar -xzvf monit-5.10.tar.gz
+rm monit-5.10.tar.gz
+cd monit-5.10/
+./configure --bindir=/usr/bin/
+make &amp;amp;&amp;amp; make install
+# Create required files
+mkdir -p /var/lib/monit
+# Make the init file executable
+chmod 755 /etc/init.d/monit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;file-structure&quot;&gt;File Structure&lt;/h2&gt;
+
+&lt;p&gt;All Monit configuration files are kept inside of the &lt;code&gt;/etc/monit&lt;/code&gt; directory.&lt;/p&gt;
+
+&lt;p&gt;A standard file structure, to which I got used to looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/etc/monit
+├── conf.d       - Monit configuration files
+│   ├── apps     - in-house applications
+│   ├── services - services like nginx, elasticsearch
+│   ├── sys      - system related
+│   └── disabled - all disabled
+├── bin          - start/stop scripts
+│   └── services - services like nginx, elasticsearch
+├── monitrc      - main configuration file
+├── monitrc.d    - directory with examples
+└── templates
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
+&lt;br /&gt;I assume that the application start/stop scripts are deployed together with the application codebase. 
+&lt;br /&gt;This way if developers change somethig in the application, Monit scripts don’t need to be adjusted (convention over configuration).
+&lt;br /&gt;&lt;br /&gt;&lt;strong&gt;Just remember to force this standard.&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;application-monitoring-script-template&quot;&gt;Application Monitoring Script Template&lt;/h2&gt;
+
+&lt;p&gt;A typical Monit scripts consists of the following parts:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;binaries monitoring&lt;/li&gt;
+  &lt;li&gt;configuration files monitoring&lt;/li&gt;
+  &lt;li&gt;log files monitoring&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;An example is presented below:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Monit &amp;lt;application name&amp;gt; configuration
+
+check &amp;lt;application name&amp;gt; matching &quot;&amp;lt;phrase which should exits in the ps output&amp;gt;&quot;
+    start program = &quot;/bin/su &amp;lt;user&amp;gt; -c &#39;/usr/lib/&amp;lt;application name&amp;gt;/current/bin/start.sh&#39;&quot;
+    stop program  = &quot;/bin/su &amp;lt;user&amp;gt; -c &#39;/usr/lib/&amp;lt;application name&amp;gt;/current/bin/stop.sh&#39;&quot;
+    # CPU
+    if cpu &amp;gt; 5% for 2 cycles then alert
+    # RAM
+    if mem &amp;gt; 80 MB for 5 cycles then alert
+
+# Check if the application directory exists
+check directory &amp;lt;application name&amp;gt;-dir path /usr/lib/&amp;lt;application name&amp;gt;/current/
+    if failed uid &amp;lt;user&amp;gt; then alert
+    if failed gid &amp;lt;user&amp;gt; then alert
+    if failed permission 0755 then alert
+    if does not exist then alert
+
+# --- --- --- --- --- --- --- --- --- --- --- --- 
+# Configuration
+# Check if the configuration directory is present
+check &amp;lt;application name&amp;gt;-conf-dir path /usr/lib/&amp;lt;application name&amp;gt;/current/config/
+    if failed uid &amp;lt;user&amp;gt; then alert
+    if failed gid &amp;lt;user&amp;gt; then alert
+    if failed permission 0775 then alert
+    if does not exist then alert
+
+# Check if the unicorn configuration file is present
+check &amp;lt;application name&amp;gt;-conf-file-unicorn with path /usr/lib/&amp;lt;application name&amp;gt;/current/config/unicorn.rb
+    if failed uid &amp;lt;user&amp;gt; then alert
+    if failed gid &amp;lt;user&amp;gt; then alert
+    if failed permission 0775 then alert
+    if does not exist then alert
+    if changed checksum then alert
+
+# --- --- --- --- --- --- --- --- --- --- --- --- 
+# Logs
+# Check if the log file is present
+check file &amp;lt;application name&amp;gt;-log-file path /var/log/&amp;lt;application name&amp;gt;/access.log
+    if failed uid &amp;lt;user&amp;gt; then alert
+    if failed gid &amp;lt;user&amp;gt; then alert
+    if failed permission 0644 then alert
+    if does not exist then alert
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I would recommend to spend some time with Monit’s &lt;a href=&quot;http://mmonit.com/monit/documentation/monit.html&quot;&gt;documentation&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;startstop-scripts&quot;&gt;Start/Stop Scripts&lt;/h2&gt;
+
+&lt;p&gt;We all know that each application need an start script. The reason for that is the situation when the server get’s rebooted. The application should be able to come up automatically.&lt;/p&gt;
+
+&lt;p&gt;A good practice is to put the start/stop scripts to the same directory where the application is deployed.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
+&lt;br /&gt;The deployment should be adjusted so that it don’t interfere with Monit&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;start-scripts-for-ruby-applications&quot;&gt;Start Scripts for Ruby Applications&lt;/h3&gt;
+
+&lt;p&gt;A sample Ruby start script template which uses &lt;a href=&quot;http://rvm.io/&quot;&gt;RVM&lt;/a&gt; is presented below:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/bin/bash
+
+# &amp;lt;application name&amp;gt; Start Script
+# This script is executed by the &quot;&amp;lt;user&amp;gt;&quot; user
+
+# Define the project directory
+project_directory=&#39;/home/&amp;lt;user&amp;gt;/&amp;lt;application name&amp;gt;&#39;
+
+# Define ruby related details
+ruby_version=&#39;ruby-2.0.0-p195&#39;
+ruby_gemset=&#39;&amp;lt;gemset name&amp;gt;&#39;
+
+
+# Start the application server
+env LANG=&#39;en_US.UTF-8&#39; \
+rvm_path=$HOME/.rvm/ \
+$HOME/.rvm/bin/rvm-shell \
+&quot;$ruby_version@$ruby_gemset&quot; \
+-c &quot;cd $project_directory/current; RAILS_ENV=production $project_directory/current/bin/unicorn -c $project_directory/current/config/unicorn.rb -E production -D&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And just the relevant part for a &lt;a href=&quot;http://www.sinatrarb.com/&quot;&gt;Sinatra&lt;/a&gt; application:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Start the application server
+env LANG=&#39;en_US.UTF-8&#39; \
+rvm_path=$HOME/.rvm/ \
+$HOME/.rvm/bin/rvm-shell \
+&quot;$ruby_version@$ruby_gemset&quot; \
+-c &quot;cd $project_directory/current; bundle exec rackup $project_directory/current/config.ru --env staging --pid $project_directory/current/tmp/pids/sinatra.pid --port 8080  &amp;gt;&amp;gt; /var/log/&amp;lt;application name&amp;gt;/out.log 2&amp;gt;&amp;gt; /var/log/&amp;lt;application name&amp;gt;/error.log &amp;amp;&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The most important part here is the usage of &lt;code&gt;rvm-shell&lt;/code&gt; which syntax looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;rvm-shell &quot;&amp;lt;ruby version&amp;gt;@&amp;lt;ruby gemset&amp;gt;&quot; -c &quot;&amp;lt;command which starts the ruby process&amp;gt;&quot;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;debugging-monit-configurations&quot;&gt;Debugging Monit Configurations&lt;/h2&gt;
+
+&lt;p&gt;Now that we know where to put our configuration files let’s see how we can debug/test them.&lt;/p&gt;
+
+&lt;p&gt;The first thing we need to do is adjust Monit’s poll cycle length in the &lt;code&gt;/etc/monit/monitrc&lt;/code&gt; file: &lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;set daemon 10 # Number in seconds
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This value represents the time which Monit sleeps after each check. We need to keep it low for debugging purposes.&lt;/p&gt;
+
+&lt;p&gt;Then add a configuration file &lt;code&gt;/etc/monit/conf.d/apps/monit-test-app.conf&lt;/code&gt; with the following content:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;check process monit-test-app with pidfile &quot;/usr/lib/monit-test-app/pids/process.pid&quot;
+  start = &quot;/usr/lib/monit-test-app/bin/start.sh&quot;
+  if does not exist then start
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Enable it by adding the following line to &lt;code&gt;/etc/monit/monitrc&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;include /etc/monit/conf.d/apps/*.conf
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Our application start script is located under &lt;code&gt;/usr/lib/monit-test-app/bin/start.sh&lt;/code&gt; and looks like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/bin/bash
+
+application_name=&#39;monit-test-app&#39;
+script_dirirectory=&quot;$( cd &quot;$( dirname &quot;$0&quot; )&quot; &amp;amp;&amp;amp; pwd )&quot;
+application_dirirectory=$script_dirirectory/..
+
+log_file=&quot;/var/log/$application_name/stdout.log&quot;
+pid_file=&quot;/var/run/$application_name.pid&quot;
+ 
+echo -e &quot;\n`date +&quot;%y%m%d %H:%M:%S&quot;` - start script&quot; &amp;gt;&amp;gt; $log_file
+ 
+echo $BASHPID &amp;gt;&amp;gt; $pid_file
+ 
+echo &quot;`date +&quot;%y%m%d %H:%M:%S&quot;` - sleep 5s&quot; &amp;gt;&amp;gt; $log_file
+sleep 5
+ 
+echo &quot;`date +&quot;%y%m%d %H:%M:%S&quot;` - remove pid file&quot; &amp;gt;&amp;gt; $log_file
+rm $pid_file
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
+&lt;br /&gt;Remember to make the script executable &lt;code&gt;chmod u+x /usr/lib/monit-test-app/bin/start.sh&lt;/code&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Finally start Monit with (if not already started):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;service monit start # or: /etc/init.d/monit start
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And reload Monit’s configuration:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;monit reload
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Monit should start the &lt;code&gt;start.sh&lt;/code&gt; over and over again.&lt;/p&gt;
+
+&lt;p&gt;Check if Monit does it’s job by checking the logs:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ tail -f /var/log/monit.log /var/log/monit-test-app/*
+==&amp;gt; /var/log/monit.log &amp;lt;==
+[UTC Nov 27 08:07:57] error    : &#39;monit-test-app&#39; process is not running
+[UTC Nov 27 08:07:57] info     : &#39;monit-test-app&#39; start: /usr/lib/monit-test-app/bin/start.sh
+
+==&amp;gt; /var/log/monit-test-app/stdout.log &amp;lt;==
+
+141127 08:07:57 - start script
+141127 08:07:57 - sleep 5s
+141127 08:08:02 - remove pid file
+
+==&amp;gt; /var/log/monit.log &amp;lt;==
+[UTC Nov 27 08:08:27] error    : &#39;monit-test-app&#39; failed to start (exit status 0) -- no output
+[UTC Nov 27 08:08:37] error    : &#39;monit-test-app&#39; process is not running
+[UTC Nov 27 08:08:37] info     : &#39;monit-test-app&#39; start: /usr/lib/monit-test-app/bin/start.sh
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;I also like to keep an eye on Monit’s summary in a separate terminal:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ watch -n1 &#39;monit summary&#39;
+Every 1.0s: monit summary                                                                                                                                                            Thu Nov 27 00:47:43 2014
+
+The Monit daemon 5.10 uptime: 26m
+
+Process &#39;monit-test-app&#39;            Execution failed
+System &#39;6934259efb99&#39;               Running
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Sometimes it’s helpful to run Monit in a verbose mode. Simply change the init file with this command:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;sed -i &#39;s/^MONIT_OPTS=$/MONIT_OPTS=&quot;-v&quot;/&#39; /etc/init.d/monit
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And restart Monit so that the change can take place:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;service monit restart
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;useful-monit-commands&quot;&gt;Useful Monit Commands&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;
+    &lt;p&gt;List all commands&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code&gt;  monit -h
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Get Monit summary&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code&gt;  monit summary
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;Disable/unmonitor a service&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code&gt;  monit unmonitor &amp;lt;service name&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;
+
+    &lt;p&gt;If You want to disable the service permanently You can move the appropriate file to the &lt;code&gt;/etc/monit/conf.d/disabled&lt;/code&gt; directory and then reload Monit with&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code&gt;  monit reload
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+  &lt;li&gt;
+    &lt;p&gt;View Monit logs&lt;/p&gt;
+
+    &lt;pre&gt;&lt;code&gt;  tail -f /var/log/monit.log
+&lt;/code&gt;&lt;/pre&gt;
+  &lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;deploying-monit-configuration-with-ansible&quot;&gt;Deploying Monit Configuration with Ansible&lt;/h2&gt;
+
+&lt;p&gt;Why Ansible?&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;because of it’s easy yaml configuration&lt;/li&gt;
+  &lt;li&gt;because it comes with a good predefined server structure&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
+&lt;br /&gt;Note Monit has to be configured through the root user. Use &lt;code&gt;sudo su -&lt;/code&gt; to login as root user.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Resources:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/edx/configuration/wiki/Ansible-variable-conventions-and-overriding-defaults&quot;&gt;Ansible Variables&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.tecmint.com/how-to-install-and-setup-monit-linux-process-and-services-monitoring-program/&quot;&gt;How to Install and Setup Monit&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://stackoverflow.com/questions/3356476/debugging-monit&quot;&gt;Debugging monit&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Thu, 13 Nov 2014 08:00:00 +0100</pubDate>
+        <link>http://staging.1bcb8bfcfd5e642fb66700117faa5786.czerasz.com/2014/11/13/monitoring-systems-and-applications-with-monit/</link>
+        <guid isPermaLink="true">http://staging.1bcb8bfcfd5e642fb66700117faa5786.czerasz.com/2014/11/13/monitoring-systems-and-applications-with-monit/</guid>
+        
+        <category>monit</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Docker Tips &amp; Tricks</title>
+        <description>&lt;p class=&quot;post__tldr&quot;&gt;This article will cover some really cool techniques and useful tricks which I learned during developing &lt;a href=&quot;https://www.docker.com/&quot; target=&quot;_blank&quot;&gt;Docker&lt;/a&gt; containers.&lt;/p&gt;
+
+&lt;h2 id=&quot;make-use-of-dockers-cache&quot;&gt;Make Use of Docker’s Cache&lt;/h2&gt;
+
+&lt;p&gt;Docker saves each commit (each &lt;code&gt;RUN&lt;/code&gt;) in a separate layer. Make use of this caching mechanism while planning your application containers.&lt;/p&gt;
+
+&lt;p&gt;Let’s consider an PHP application example. The libraries for this application are installed through the &lt;a href=&quot;https://getcomposer.org/&quot;&gt;Composer&lt;/a&gt; package manager. To make use of the cache we will add the following to our &lt;code&gt;Dockerfile&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Install libraries through composer&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Until the composer.json&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; ADD ./app/composer.json /usr/lib/composer/composer.json
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;5&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Install all Wordpress dependencies&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;6&lt;/span&gt; ENV COMPOSER_HOME &lt;span class=&quot;s1&quot;&gt;&amp;#39;/usr/lib/composer&amp;#39;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;7&lt;/span&gt; RUN &lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /usr/lib/composer &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; composer install&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Later in our &lt;a href=&quot;#what-is-a-docker-startinit-script&quot;&gt;Docker start/init script&lt;/a&gt; (which is used while running the container) we symlink those files/libraries where they are supposed to be:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Create symlinks to libraries downloaded through composer
+ln -s /usr/lib/composer/vendor /var/www/vendor
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;This allows us to spin up containers really fast!&lt;/p&gt;
+
+&lt;p&gt;If we would run &lt;code&gt;composer install&lt;/code&gt; for the first time in our &lt;a href=&quot;#what-is-a-docker-startinit-script&quot;&gt;start/init script&lt;/a&gt; the run process would take at least as long as the &lt;code&gt;composer install&lt;/code&gt;, which usually takes a lot of time.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
+&lt;br /&gt;This scenario implies that a container is build for a specific application.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Read more about this technique &lt;a href=&quot;http://bitjudo.com/blog/2014/03/13/building-efficient-dockerfiles-node-dot-js/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;minimize-commitlayer-number-wisely&quot;&gt;Minimize Commit/Layer Number… Wisely&lt;/h2&gt;
+
+&lt;p&gt;Remember that each commit represents a separate file system layer and that the number of commits is limited.&lt;/p&gt;
+
+&lt;p&gt;You can check the maximum limit of commits with the following script:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# Remove the commit if it exists
+docker rmi czerasz/aufs-layers-test
+
+# Create a base container
+docker run --name=&quot;aufs-layers-test-container&quot; \
+           ubuntu /bin/mkdir /data
+
+# Commit the changes to a new image
+docker commit --message=&#39;First commit&#39; &#39;aufs-layers-test-container&#39; czerasz/aufs-layers-test
+
+# Remove the container
+docker rm &#39;aufs-layers-test-container&#39;
+
+for i in {1..1000}
+do
+
+echo -e &quot;\n$i build\n&quot;
+
+# Add another commit
+cat &amp;lt;&amp;lt;-EOF |
+FROM czerasz/aufs-layers-test
+
+RUN /bin/echo -e &quot;test\n&quot; &amp;gt;&amp;gt; /data/test
+EOF
+docker build -t czerasz/aufs-layers-test -
+
+done
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;On my machine it returned:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Cannot create container with more than 127 parents
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Which means that there are only &lt;code&gt;127&lt;/code&gt; commits possible.&lt;/p&gt;
+
+&lt;p&gt;This is the reason why one should combine the &lt;code&gt;RUN&lt;/code&gt; commands in the &lt;code&gt;Dockerfile&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;A real word example (which I use in &lt;a href=&quot;https://registry.hub.docker.com/u/czerasz/base/&quot;&gt;my base image&lt;/a&gt;) is presented below:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;RUN apt-get install -y build-essential &amp;amp;&amp;amp; \
+    apt-get install -y software-properties-common &amp;amp;&amp;amp; \
+    apt-get install -y pwgen \
+                       python-software-properties \
+                       vim \
+                       curl \
+                       wget \
+                       git \
+                       unzip \
+                       tree
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The downside of this construction is that whenever I need to remove/add a package, Docker is not able to use it’s cache feature and all packages need to be installed from the scratch. And this takes time.&lt;/p&gt;
+
+&lt;h2 id=&quot;separate-installation-and-configuration&quot;&gt;Separate Installation and Configuration&lt;/h2&gt;
+
+&lt;p&gt;Add configuration files in the &lt;code&gt;Dockerfile&lt;/code&gt; as late as possible. The configuration is something which changes quite often and it would revalidate the cache with each change.&lt;/p&gt;
+
+&lt;p&gt;Analyze this Wordpress &lt;code&gt;Dockerfile&lt;/code&gt; as an example:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# --- PHP ---
+
+# Install PHP
+RUN apt-get install -y php5-fpm \
+                       php5-mysql \
+                       php-apc
+
+# Wordpress Requirements
+RUN apt-get install -y php5-curl \
+                       php5-gd \
+                       php5-intl \
+                       php-pear \
+                       php5-imagick \
+                       php5-imap \
+                       php5-mcrypt \
+                       php5-memcache \
+                       php5-ming \
+                       php5-ps \
+                       php5-pspell \
+                       php5-recode \
+                       php5-sqlite \
+                       php5-tidy \
+                       php5-xmlrpc \
+                       php5-xsl
+
+# --- NGINX ---
+
+....
+
+# ------ PHP-FPM CONFIGURATION ------
+RUN mkdir -p /var/log/php5-fpm/
+# Configure the php5-fpm  process and the default pool
+ADD ./config/php-fpm/php-fpm.conf /etc/php5/fpm/php-fpm.conf
+ADD ./config/php-fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.conf
+ADD ./config/php-fpm/php.ini /etc/php5/fpm/php.ini
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;When we change the PHP configuration the build process will still work really fast, because the most time consuming part, the package installation is cached.&lt;/p&gt;
+
+&lt;p&gt;I even tend to split the installation and configuration between separate &lt;code&gt;Dockerfiles&lt;/code&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;always-name-containers&quot;&gt;Always Name Containers&lt;/h2&gt;
+
+&lt;p&gt;While running a new containers rigorously use the &lt;code&gt;--name=&lt;/code&gt; option. This way you will always know what this container was ment for.&lt;/p&gt;
+
+&lt;p&gt;Some real world examples are presented below:
+- &lt;code&gt;czerasz-web&lt;/code&gt;
+- &lt;code&gt;czerasz-database&lt;/code&gt;
+- &lt;code&gt;czerasz-data-container&lt;/code&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
+&lt;br /&gt;A human readable name is very useful while linking containers and while working with data containers.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h2 id=&quot;use-refreshedat-variable-for-better-cache-control&quot;&gt;Use &lt;code&gt;REFRESHED_AT&lt;/code&gt; Variable for Better Cache Control&lt;/h2&gt;
+
+&lt;p&gt;Consider the following &lt;code&gt;Dockerfile&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;FROM ubuntu
+
+# Set the reset cache variable
+ENV REFRESHED_AT 2014-11-01
+
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;By changing the value of the &lt;code&gt;REFRESHED_AT&lt;/code&gt; variable you are able to flush the whole cache.&lt;/p&gt;
+
+&lt;h2 id=&quot;use-a-supervisor-for-multiple-proccesses&quot;&gt;Use a Supervisor for Multiple Proccesses&lt;/h2&gt;
+
+&lt;p&gt;If Your container wraps multiple applications/processes use a process control system tool like &lt;a href=&quot;http://supervisord.org/&quot;&gt;&lt;code&gt;supervisord&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;A sample &lt;code&gt;/etc/supervisor/conf.d/supervisord.conf&lt;/code&gt; which manages Serf, PHP-FPM, Nginx is presented below:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[supervisord]
+pidfile=/tmp/supervisord.pid ; (supervisord pidfile;default supervisord.pid)
+nodaemon=true                ; (start in foreground if true;default false)
+
+
+[program:php5-fpm]
+command=/usr/sbin/php5-fpm -c /etc/php5/fpm
+autorestart=true
+
+[program:nginx]
+command=nginx
+autostart=true
+autorestart=true
+
+[program:serf]
+command=/etc/serf/serf-start.sh
+numprocs=1
+autostart=true
+autorestart=true
+
+[program:serf-join]
+command=/etc/serf/serf-join.sh
+autorestart=true
+exitcodes=0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;use-image-inheritance&quot;&gt;Use Image Inheritance&lt;/h2&gt;
+
+&lt;p&gt;Don’t be afraid of creating Docker images. Separate your logic into different images which inherit from each other.&lt;/p&gt;
+
+&lt;p&gt;An example is presented below:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;ubuntu:latest&lt;/code&gt; → &lt;code&gt;czerasz/base&lt;/code&gt; → &lt;code&gt;czerasz/wordpress-base&lt;/code&gt; → &lt;code&gt;czerasz/czerasz-wordpress-blog&lt;/code&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;use-data-containers&quot;&gt;Use Data Containers&lt;/h2&gt;
+
+&lt;p&gt;A data container is a concept which is based on a simple idea to keep the data in a special container.&lt;/p&gt;
+
+&lt;p&gt;Then by using the option &lt;code&gt;--volumes-from&lt;/code&gt; we attach the files from the data container to our application/database container.&lt;/p&gt;
+
+&lt;p&gt;The data container’s status will be &lt;code&gt;Exited&lt;/code&gt; but don’t fear that someone will delete it by accident. Until it’s used by another container the command &lt;code&gt;docker rm data-container&lt;/code&gt; will not work.&lt;/p&gt;
+
+&lt;p&gt;A real word example is a Wordpress Docker setup in which the uploads are kept in a separate data container. Let’s see how it works!&lt;/p&gt;
+
+&lt;p&gt;Create data container:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker run -v /data/uploads \
+           --name czerasz-data-container \
+           -d debian chown -R www-data:www-data /data/uploads
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Create a Wordpress container and attach to it the &lt;code&gt;/data/uploads&lt;/code&gt; directory from the data container:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker run \
+       -v `pwd`/app:/var/www \
+       --volumes-from czerasz-data-container \
+       --link czerasz-database:db \
+       -p 80:80 \
+       --name czerasz-site \
+       -d czerasz/wordpress-base \
+       /usr/local/bin/init.sh production
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Tip&lt;/strong&gt;
+&lt;br /&gt;Access data container files like this: &lt;/p&gt;
+
+  &lt;pre&gt;&lt;code&gt;$ ls -al `docker inspect -f &#39;&#39; czerasz-data-container`
+drwx------ 4 www-data www-data 4096 Nov  1 22:04 .
+drwx------ 3 root     root     4096 Nov  1 20:14 ..
+drwx------ 8 www-data www-data 4096 Nov  2 01:25 2014
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Read more about data containers &lt;a href=&quot;https://docs.docker.com/userguide/dockervolumes/&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;h2 id=&quot;use-files-for-environment-variables&quot;&gt;Use Files for Environment Variables&lt;/h2&gt;
+
+&lt;p&gt;If you have a lot of environment varaiables which need to be passed to the container use the &lt;code&gt;--env-file&lt;/code&gt; option. It allows you to import variables from a file formated like this:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;primary=mongo_1532
+number_of_replicas=3
+...
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;always-remove-temporary-containers&quot;&gt;Always Remove Temporary Containers&lt;/h2&gt;
+
+&lt;p&gt;There is always a situation when you need a container just for a small tasks. It could be checking a specific command, exporting files from a data container or creating a database dump.&lt;/p&gt;
+
+&lt;p&gt;Remember to use the &lt;code&gt;--rm&lt;/code&gt; option. It will remove the container after it’s job is done and you will never have to deal with a container necropolis after calling &lt;code&gt;docker ps -a&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;A real world example (which was borrowed from &lt;a href=&quot;https://registry.hub.docker.com/_/mysql/&quot;&gt;here&lt;/a&gt;) is presented below:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker run -it \
+            --link some-mysql:mysql \
+            --rm mysql sh -c &#39;exec mysql -h&quot;$MYSQL_PORT_3306_TCP_ADDR&quot; -P&quot;$MYSQL_PORT_3306_TCP_PORT&quot; -uroot -p&quot;$MYSQL_ENV_MYSQL_ROOT_PASSWORD&quot;&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&quot;simplify-communication-by-using-the-hostname&quot;&gt;Simplify Communication by Using the Hostname&lt;/h2&gt;
+
+&lt;p&gt;Whenever you can, use the &lt;code&gt;-h, --hostname=&quot;&quot;&lt;/code&gt; option to give your container a logical hostname. This will make networking tasks much easier.&lt;/p&gt;
+
+&lt;p&gt;The example below shows a simple usecase. First we spin up a server container:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker run --hostname=&quot;web-server&quot; \
+           --rm \
+           --name host-communication-test-web-server \
+           -it ubuntu bash
+
+root@web-server:/# echo &quot;Response from: &quot;`hostname` &amp;gt; index.html &amp;amp;&amp;amp; python3 -m http.server 8000
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Then we spin up a client server which requests the web server:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker run --hostname=&quot;web-client&quot; \
+           --rm \
+           --link host-communication-test-web-server:web-server \
+           -it ubuntu bash 
+
+root@web-client:/# apt-get update &amp;amp;&amp;amp; apt-get install -y curl
+root@web-client:/# curl -v web-server:8000/index.html
+* Hostname was NOT found in DNS cache
+*   Trying 172.17.1.57...
+* Connected to web-server (172.17.1.57) port 8000 (#0)
+&amp;gt; GET /index.html HTTP/1.1
+&amp;gt; User-Agent: curl/7.35.0
+&amp;gt; Host: web-server:8000
+&amp;gt; Accept: */*
+&amp;gt; 
+* HTTP 1.0, assume close after body
+&amp;lt; HTTP/1.0 200 OK
+&amp;lt; Server: SimpleHTTP/0.6 Python/3.4.0
+&amp;lt; Date: Tue, 25 Nov 2014 11:41:52 GMT
+&amp;lt; Content-type: text/html
+&amp;lt; Content-Length: 26
+&amp;lt; Last-Modified: Tue, 25 Nov 2014 11:40:14 GMT
+&amp;lt; 
+Response from: web-server
+* Closing connection 0
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;As you can see we don’t have to use any environment variables (which we by the way don’t have if no port is exposed). We can just rely on the hostname.&lt;/p&gt;
+
+&lt;h2 id=&quot;what-is-a-docker-startinit-script&quot;&gt;What is a Docker Start/Init Script?&lt;/h2&gt;
+
+&lt;p&gt;A Docker start/init script is simply a script which is executed when the container starts.&lt;/p&gt;
+
+&lt;p&gt;The script can be called manually while one runs a container:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;docker run -it user_name/image_name /usr/lib/init-script-name.sh
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Or through one of the &lt;code&gt;Dockerfile&lt;/code&gt; directives:
+- &lt;a href=&quot;http://docs.docker.com/reference/builder/#entrypoint&quot;&gt;&lt;code&gt;ENTRYPOINT&lt;/code&gt;&lt;/a&gt;
+- &lt;a href=&quot;http://docs.docker.com/reference/builder/#cmd&quot;&gt;&lt;code&gt;CMD&lt;/code&gt;&lt;/a&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;resources&quot;&gt;Resources:&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://developerblog.redhat.com/2014/09/30/overview-storage-scalability-docker/&quot;&gt;Comprehensive Overview of Storage Scalability in Docker&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://registry.hub.docker.com/_/mysql/&quot;&gt;MySQL Docker image &lt;code&gt;README.md&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://bitjudo.com/blog/2014/03/13/building-efficient-dockerfiles-node-dot-js/&quot;&gt;Building Efficient Dockerfiles for Node.js Applications&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.docker.com/userguide/dockervolumes/&quot;&gt;Managing Data in Containers&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.docker.com/articles/networking/#container-networking&quot;&gt;Docker Networking&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Thu, 13 Nov 2014 08:00:00 +0100</pubDate>
+        <link>http://staging.1bcb8bfcfd5e642fb66700117faa5786.czerasz.com/2014/11/13/docker-tip-and-tricks/</link>
+        <guid isPermaLink="true">http://staging.1bcb8bfcfd5e642fb66700117faa5786.czerasz.com/2014/11/13/docker-tip-and-tricks/</guid>
+        
+        <category>docker</category>
+        
+        
+      </item>
+    
+      <item>
+        <title>Bash Script Template</title>
+        <description>&lt;p class=&quot;post__tldr&quot;&gt;If you like &lt;a href=&quot;http://en.wikipedia.org/wiki/KISS_principle&quot; target=&quot;_blank&quot;&gt;KISS&lt;/a&gt;, there is a good chance you will enjoy this short article. I will show you how to structure projects wich use bash scripts.&lt;/p&gt;
+
+&lt;p&gt;Almost in any project there is the need to use &lt;strong&gt;bash scripts&lt;/strong&gt; to automate work.&lt;/p&gt;
+
+&lt;p&gt;I convert any multi-line command or multi-argument command into a script.
+&lt;br /&gt;It’s easier to type &lt;code&gt;./bin/run-docker.sh&lt;/code&gt; than to type/paste the full command, like this one, into the terminal:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;docker run --name haproxy-routing &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           -p 80:80 &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           -v /home/user/config:/data/haproxy/config &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           --link site-container:site &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           --link blog-container:blog &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           -d czerasz/haproxy-routing&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The convention I use, is to put all bash scripts into a &lt;code&gt;bin&lt;/code&gt; directory inside of the project:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;.
+├── app.py
+├── bin
+│   └── ...
+├── config
+│   └── environment.yml
+└──...&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;It’s very common that I reference to files from the project level. And it’s so common, that I always start my bash scripts with the following template:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt;  
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;script_dirirectory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;$( cd &amp;quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt; dirname &lt;span class=&quot;s2&quot;&gt;&amp;quot;$0&amp;quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot; &amp;amp;&amp;amp; pwd )&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;project_dirirectory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$script_dirirectory&lt;/span&gt;/..&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Thanks to a cool &lt;a href=&quot;http://www.sublimetext.com/3&quot;&gt;Sublime&lt;/a&gt; package called &lt;a href=&quot;https://github.com/weslly/Nettuts-Fetch&quot;&gt;Fetch&lt;/a&gt; I can reuse this template by taking just two steps.
+You can reuse my &lt;a href=&quot;https://github.com/weslly/Nettuts-Fetch&quot;&gt;Fetch&lt;/a&gt; config which looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;files&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;nt&quot;&gt;&amp;quot;bash_script_template&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;https://gist.githubusercontent.com/czerasz/3046161/raw/3c2300338917de19045b5b9a500fa25cacb41297/start-script-helper.sh&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+        &lt;span class=&quot;err&quot;&gt;...&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;br /&gt;&lt;br /&gt;
+There are projects mostly ruby based, where the &lt;code&gt;bin&lt;/code&gt; directory is occupied by gems installed with the &lt;a href=&quot;http://bundler.io/man/bundle-exec.1.html#BUNDLE-INSTALL-BINSTUBS&quot;&gt;bundle binstrubs command&lt;/a&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;bundle install --binstubs&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;In such cases I update my &lt;code&gt;.gitignore&lt;/code&gt; with the following:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# Ignore all gems and track only wanted scripts&lt;/span&gt;
+bin/*
+!bin/build-docker.sh&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+</description>
+        <pubDate>Thu, 13 Nov 2014 08:00:00 +0100</pubDate>
+        <link>http://staging.1bcb8bfcfd5e642fb66700117faa5786.czerasz.com/2014/11/13/bash-script-template/</link>
+        <guid isPermaLink="true">http://staging.1bcb8bfcfd5e642fb66700117faa5786.czerasz.com/2014/11/13/bash-script-template/</guid>
+        
+        <category>bash</category>
+        
+        <category>template</category>
+        
+        <category>tip</category>
+        
+        
+      </item>
+    
+  </channel>
+</rss>

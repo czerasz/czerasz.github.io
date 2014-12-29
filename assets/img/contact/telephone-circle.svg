@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg4185"
+   height="30"
+   width="30"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="telephone-circle.svg">
+  <metadata
+     id="metadata3053">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs3051" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1855"
+     inkscape:window-height="1056"
+     id="namedview3049"
+     showgrid="false"
+     inkscape:zoom="30.331169"
+     inkscape:cx="9.1314494"
+     inkscape:cy="15"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer2" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Layer">
+    <path
+       sodipodi:type="arc"
+       style="color:#000000;fill:#1a4657;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="path3090"
+       sodipodi:cx="14.110897"
+       sodipodi:cy="9.6908588"
+       sodipodi:rx="11.671163"
+       sodipodi:ry="9.0995502"
+       d="m 25.78206,9.6908588 a 11.671163,9.0995502 0 1 1 -23.3423255,0 11.671163,9.0995502 0 1 1 23.3423255,0 z"
+       transform="matrix(1.285219,0,0,1.6484331,-3.135593,-0.97473248)" />
+    <path
+       style="fill:#ffffff"
+       inkscape:connector-curvature="0"
+       id="svg_1"
+       d="m 18.591317,6.7909246 -7.182634,0 c -0.84654,0 -1.5391948,0.692655 -1.5391948,1.5391944 v 13.339762 c 0,0.84654 0.6926548,1.539194 1.5391948,1.539194 h 7.182634 c 0.84654,0 1.539195,-0.692654 1.539195,-1.539194 V 8.330119 c 0,-0.8465394 -0.692655,-1.5391944 -1.539195,-1.5391944 z M 14.999942,22.182868 c -0.566701,0 -1.026091,-0.459419 -1.026091,-1.026091 0,-0.5667 0.459413,-1.02609 1.026091,-1.02609 0.5667,0 1.02609,0.459413 1.02609,1.02609 0,0.566701 -0.459407,1.026091 -1.02609,1.026091 z m 4.104479,-3.07833 -8.208725,0 V 8.843631 h 8.208725 z" />
+  </g>
+</svg>

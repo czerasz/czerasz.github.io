@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="30" width="30" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/">
+ <g transform="translate(0,-1022.3622)">
+  <path d="m33.117,15.803a15.476,15.476,0,1,1,-30.952,0,15.476,15.476,0,1,1,30.952,0z" transform="matrix(0.96924683,0,0,-0.96924683,-2.0985691,1052.6797)" fill="#000"/>
+  <path fill="#FFF" d="m7.7482,1032.5,15.504,0,0.000417,10.302-15.504,0z"/>
+  <path stroke-linejoin="miter" d="m7.2055,1032.3,8.2945,6.1108,8.2945-6.1108" stroke="#000" stroke-linecap="butt" stroke-width="1.09986257999999992px" fill="none"/>
+ </g>
+</svg>
