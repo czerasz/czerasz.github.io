@@ -6,8 +6,8 @@
 </description>
     <link>http://www.czerasz.com/</link>
     <atom:link href="http://www.czerasz.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 29 Dec 2014 18:49:42 +0100</pubDate>
-    <lastBuildDate>Mon, 29 Dec 2014 18:49:42 +0100</lastBuildDate>
+    <pubDate>Mon, 29 Dec 2014 20:03:42 +0100</pubDate>
+    <lastBuildDate>Mon, 29 Dec 2014 20:03:42 +0100</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -44,7 +44,7 @@
 
 &lt;p&gt;The diagram below helps you understand this simple but effective logic:&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1419875379985/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1419879819705/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;requirements&quot;&gt;Requirements&lt;/h3&gt;
 
