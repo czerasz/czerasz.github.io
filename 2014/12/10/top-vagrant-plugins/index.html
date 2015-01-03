@@ -11,18 +11,104 @@
   <meta name="description" content="In this article I present the top Vagrant plugins which you should have. Those Vagrant plugins will make working with virtual machines much easier.">
 
   
-  <link href="/assets/1419962564909/css/bootstrap.min.css" rel="stylesheet">
+  <meta content="Michal Czeraszkiewicz" name="author">
+  <link href="https://plus.google.com/u/0/117800598211330706058" rel="author"/>
+  
+
+  <meta content="Distributed Web Architecture, Scalable Application Development, Consulting, Trainings by czerasz.com" property="og:site_name">
+
+
+<meta content="Top Vagrant Plugins You Should Use" property="og:title">
+
+
+<meta content="article" property="og:type">
+
+
+<meta content="Solid knowledge about web and web-technologies. Focused on Back-End, Front-End and DevOps topics. Docker, Python, Nginx, Linux, IT-Architecture, Vagrant, Ansible, MongoDB and Elasticsearch.
+" property="og:description">
+
+
+
+<meta content="http://czerasz.com/2014/12/10/top-vagrant-plugins/" property="og:url">
+
+
+
+<meta content="/img/logo-high-resolution.png" property="og:image">
+
+
+
+<meta content="2014-12-10T00:00:00+01:00" property="article:published_time">
+<meta content="http://czerasz.com/about/" property="article:author">
+
+
+
+
+
+
+
+<meta content="vagrant" property="article:tag">
+
+<meta content="plugins" property="article:tag">
+
+<meta content="vagrant-cachier" property="article:tag">
+
+<meta content="vagrant-hostmanager" property="article:tag">
+
+
+  <meta name="twitter:card" content="summary">
+<meta name="twitter:site" content="@czerasz">
+<meta name="twitter:creator" content="@czerasz">
+
+  <meta name="twitter:title" content="Top Vagrant Plugins You Should Use">
+
+
+  <meta name="twitter:url" content="http://czerasz.com/2014/12/10/top-vagrant-plugins/">
+
+
+  <meta name="twitter:description" content="Solid knowledge about web and web-technologies. Focused on Back-End, Front-End and DevOps topics. Docker, Python, Nginx, Linux, IT-Architecture, Vagrant, Ansible, MongoDB and Elasticsearch.
+">
+
+
+
+
+  <link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml">
+
+  
+  <link href="/assets/1420313915969/css/bootstrap.min.css" rel="stylesheet">
   
 
   
 
    
-  <link rel="stylesheet" href="/assets/1419962564909/css/main.css">
+  <link rel="stylesheet" href="/assets/1420313915969/css/main.css">
   
-  <link rel="canonical" href="http://www.czerasz.com/2014/12/10/top-vagrant-plugins/">
-  <link rel="alternate" type="application/atom+xml" title="Web IT Services" href="http://www.czerasz.com/feed.xml" />
+  <link rel="canonical" href="http://czerasz.com/2014/12/10/top-vagrant-plugins/">
+  <link rel="alternate" type="application/atom+xml" title="Web IT Services" href="http://czerasz.com/feed.xml" />
 
   <link href='http://fonts.googleapis.com/css?family=Raleway|Merriweather' rel='stylesheet' type='text/css'>
+
+  
+<link rel="shortcut icon" href="/assets/1420313915969/img/favicons/favicon.ico">
+<link rel="apple-touch-icon" sizes="57x57" href="/assets/1420313915969/img/favicons/apple-touch-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/assets/1420313915969/img/favicons/apple-touch-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/assets/1420313915969/img/favicons/apple-touch-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/assets/1420313915969/img/favicons/apple-touch-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/assets/1420313915969/img/favicons/apple-touch-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/assets/1420313915969/img/favicons/apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/assets/1420313915969/img/favicons/apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/assets/1420313915969/img/favicons/apple-touch-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/1420313915969/img/favicons/apple-touch-icon-180x180.png">
+<link rel="icon" type="image/png" href="/assets/1420313915969/img/favicons/favicon-192x192.png" sizes="192x192">
+<link rel="icon" type="image/png" href="/assets/1420313915969/img/favicons/favicon-160x160.png" sizes="160x160">
+<link rel="icon" type="image/png" href="/assets/1420313915969/img/favicons/favicon-96x96.png" sizes="96x96">
+<link rel="icon" type="image/png" href="/assets/1420313915969/img/favicons/favicon-16x16.png" sizes="16x16">
+<link rel="icon" type="image/png" href="/assets/1420313915969/img/favicons/favicon-32x32.png" sizes="32x32">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/assets/1420313915969/img/favicons/mstile-144x144.png">
+<meta name="msapplication-square70x70logo" content="/assets/1420313915969/img/favicons/mstile-70x70.png"/>
+<meta name="msapplication-square150x150logo" content="/assets/1420313915969/img/favicons/mstile-150x150.png"/>
+<meta name="msapplication-square310x310logo" content="/assets/1420313915969/img/favicons/mstile-310x310.png"/>
+<meta name="msapplication-wide310x150logo" content="/assets/1420313915969/img/favicons/mstile-310x150.png"/>
 </head>
 
   <body>
@@ -120,7 +206,7 @@
 
 <p>The diagram below helps you understand this simple but effective logic:</p>
 
-<p><img width="100%" src="/assets/1419962564909/img/posts/vagrant-cachier-plugin-deb-packages-overview.png" alt="Vagrant Cachier Plugin - deb packages overview" title="Vagrant Cachier Plugin - deb packages overview" /></p>
+<p><img width="100%" src="/assets/1420313915969/img/posts/vagrant-cachier-plugin-deb-packages-overview.png" alt="Vagrant Cachier Plugin - deb packages overview" title="Vagrant Cachier Plugin - deb packages overview" /></p>
 
 <h3 id="requirements">Requirements</h3>
 
@@ -439,32 +525,32 @@ sys 0m4.949s</code></pre></div>
           <div class="footer__social-icons">
             <a href="https://twitter.com/czerasz">
               <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's twitter page">
-                <use xlink:href="/assets/1419962564909/img/svg/social.svg#icon-twitter"></use>
+                <use xlink:href="/assets/1420313915969/img/svg/social.svg#icon-twitter"></use>
               </svg>
             </a>
             <a href="https://github.com/czerasz">
               <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's github profile page">
-                <use xlink:href="/assets/1419962564909/img/svg/social.svg#icon-github"></use>
+                <use xlink:href="/assets/1420313915969/img/svg/social.svg#icon-github"></use>
               </svg>
             </a>
             <a href="http://stackoverflow.com/users/325852/czerasz">
               <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's stackoverflow profile page">
-                <use xlink:href="/assets/1419962564909/img/svg/social.svg#icon-stackoverflow"></use>
+                <use xlink:href="/assets/1420313915969/img/svg/social.svg#icon-stackoverflow"></use>
               </svg>
             </a>
             <a href="https://www.linkedin.com/in/czerasz">
               <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's linkedin profile page">
-                <use xlink:href="/assets/1419962564909/img/svg/social.svg#icon-linkedin"></use>
+                <use xlink:href="/assets/1420313915969/img/svg/social.svg#icon-linkedin"></use>
               </svg>
             </a>
             <a href="https://delicious.com/czerasz">
               <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's delicious profile page">
-                <use xlink:href="/assets/1419962564909/img/svg/social.svg#icon-delicious"></use>
+                <use xlink:href="/assets/1420313915969/img/svg/social.svg#icon-delicious"></use>
               </svg>
             </a>
-            <a href="#">
+            <a href="https://plus.google.com/u/0/117800598211330706058?rel=author">
               <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's google plus profile page">
-                <use xlink:href="/assets/1419962564909/img/svg/social.svg#icon-google-plus"></use>
+                <use xlink:href="/assets/1420313915969/img/svg/social.svg#icon-google-plus"></use>
               </svg>
             </a>
           </div>
@@ -497,7 +583,7 @@ sys 0m4.949s</code></pre></div>
 
     
     <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="/assets/1419962564909/js/bootstrap.min.js"></script>
+    <script src="/assets/1420313915969/js/bootstrap.min.js"></script>
     
 
 

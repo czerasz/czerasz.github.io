@@ -3,7 +3,7 @@
   
     
     <url>
-      <loc>http://www.czerasz.com/2014/12/10/top-vagrant-plugins/</loc>
+      <loc>http://czerasz.com/2014/12/10/top-vagrant-plugins/</loc>
       
         <lastmod>2014-12-10T00:00:00+01:00</lastmod>
       
@@ -18,7 +18,7 @@
   
     
     <url>
-      <loc>http://www.czerasz.com/2014/11/13/monitoring-systems-and-applications-with-monit/</loc>
+      <loc>http://czerasz.com/2014/11/13/monitoring-systems-and-applications-with-monit/</loc>
       
         <lastmod>2014-11-13T08:00:00+01:00</lastmod>
       
@@ -33,7 +33,7 @@
   
     
     <url>
-      <loc>http://www.czerasz.com/2014/11/13/docker-tip-and-tricks/</loc>
+      <loc>http://czerasz.com/2014/11/13/docker-tip-and-tricks/</loc>
       
         <lastmod>2014-11-13T08:00:00+01:00</lastmod>
       
@@ -48,7 +48,7 @@
   
     
     <url>
-      <loc>http://www.czerasz.com/2014/11/13/bash-script-template/</loc>
+      <loc>http://czerasz.com/2014/11/13/bash-script-template/</loc>
       
         <lastmod>2014-11-13T08:00:00+01:00</lastmod>
       
@@ -64,9 +64,9 @@
   
     
     <url>
-      <loc>http://www.czerasz.com/feed.xml</loc>
+      <loc>http://czerasz.com/feed.xml</loc>
       
-        <lastmod>2014-12-30T19:02:47+01:00</lastmod>
+        <lastmod>2015-01-03T20:38:37+01:00</lastmod>
       
       
         <changefreq>weekly</changefreq>
@@ -79,39 +79,9 @@
   
     
     <url>
-      <loc>http://www.czerasz.com/contact/</loc>
+      <loc>http://czerasz.com/</loc>
       
-        <lastmod>2014-12-30T19:02:47+01:00</lastmod>
-      
-      
-        <changefreq>weekly</changefreq>
-      
-      
-        <priority>0.8</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>http://www.czerasz.com/about/</loc>
-      
-        <lastmod>2014-12-30T19:02:47+01:00</lastmod>
-      
-      
-        <changefreq>weekly</changefreq>
-      
-      
-        <priority>0.8</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>http://www.czerasz.com/</loc>
-      
-        <lastmod>2014-12-30T19:02:47+01:00</lastmod>
+        <lastmod>2015-01-03T20:38:37+01:00</lastmod>
       
       
         <changefreq>daily</changefreq>
@@ -124,9 +94,39 @@
   
     
     <url>
-      <loc>http://www.czerasz.com/blog/</loc>
+      <loc>http://czerasz.com/about/</loc>
       
-        <lastmod>2014-12-30T19:02:47+01:00</lastmod>
+        <lastmod>2015-01-03T20:38:37+01:00</lastmod>
+      
+      
+        <changefreq>weekly</changefreq>
+      
+      
+        <priority>0.8</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>http://czerasz.com/contact/</loc>
+      
+        <lastmod>2015-01-03T20:38:37+01:00</lastmod>
+      
+      
+        <changefreq>weekly</changefreq>
+      
+      
+        <priority>0.8</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>http://czerasz.com/blog/</loc>
+      
+        <lastmod>2015-01-03T20:38:37+01:00</lastmod>
       
       
         <changefreq>daily</changefreq>
