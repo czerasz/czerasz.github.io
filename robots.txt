@@ -1,0 +1,7 @@
+# robots.txt for http://czerasz.com
+
+User-Agent: *
+Disallow:
+
+Allow: /
+Sitemap: http://czerasz.com/sitemap.xml

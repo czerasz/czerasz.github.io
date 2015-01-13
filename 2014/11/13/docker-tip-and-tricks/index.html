@@ -1,212 +1,13 @@
-<!DOCTYPE html>
-<html>
-
-
-  <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width initial-scale=1">
-
-  <title>Docker Tips & Tricks</title>
-  <meta name="description" content="This article will cover some really cool techniques and useful tricks which I learned during developing Docker containers.">
-
-  
-  <meta content="Michal Czeraszkiewicz" name="author">
-  <link href="https://plus.google.com/u/0/117800598211330706058" rel="author"/>
-  
-
-  <meta content="Distributed Web Architecture, Scalable Application Development, Consulting, Trainings by czerasz.com" property="og:site_name">
-
-
-<meta content="Docker Tips & Tricks" property="og:title">
-
-
-<meta content="article" property="og:type">
-
-
-<meta content="Solid knowledge about web and web-technologies. Focused on Back-End, Front-End and DevOps topics. Docker, Python, Nginx, Linux, IT-Architecture, Vagrant, Ansible, MongoDB and Elasticsearch.
-" property="og:description">
-
-
-
-<meta content="http://czerasz.com/2014/11/13/docker-tip-and-tricks/" property="og:url">
-
-
-
-<meta content="/img/logo-high-resolution.png" property="og:image">
-
-
-
-<meta content="2014-11-13T08:00:00+01:00" property="article:published_time">
-<meta content="http://czerasz.com/about/" property="article:author">
-
-
-
-
-
-
-
-<meta content="docker" property="article:tag">
-
-
-  <meta name="twitter:card" content="summary">
-<meta name="twitter:site" content="@czerasz">
-<meta name="twitter:creator" content="@czerasz">
-
-  <meta name="twitter:title" content="Docker Tips & Tricks">
-
-
-  <meta name="twitter:url" content="http://czerasz.com/2014/11/13/docker-tip-and-tricks/">
-
-
-  <meta name="twitter:description" content="Solid knowledge about web and web-technologies. Focused on Back-End, Front-End and DevOps topics. Docker, Python, Nginx, Linux, IT-Architecture, Vagrant, Ansible, MongoDB and Elasticsearch.
-">
-
-
-
-
-  <link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml">
-
-  
-  <link href="/assets/1420313915969/css/bootstrap.min.css" rel="stylesheet">
-  
-
-  
-
-   
-  <link rel="stylesheet" href="/assets/1420313915969/css/main.css">
-  
-  <link rel="canonical" href="http://czerasz.com/2014/11/13/docker-tip-and-tricks/">
-  <link rel="alternate" type="application/atom+xml" title="Web IT Services" href="http://czerasz.com/feed.xml" />
-
-  <link href='http://fonts.googleapis.com/css?family=Raleway|Merriweather' rel='stylesheet' type='text/css'>
-
-  
-<link rel="shortcut icon" href="/assets/1420313915969/img/favicons/favicon.ico">
-<link rel="apple-touch-icon" sizes="57x57" href="/assets/1420313915969/img/favicons/apple-touch-icon-57x57.png">
-<link rel="apple-touch-icon" sizes="114x114" href="/assets/1420313915969/img/favicons/apple-touch-icon-114x114.png">
-<link rel="apple-touch-icon" sizes="72x72" href="/assets/1420313915969/img/favicons/apple-touch-icon-72x72.png">
-<link rel="apple-touch-icon" sizes="144x144" href="/assets/1420313915969/img/favicons/apple-touch-icon-144x144.png">
-<link rel="apple-touch-icon" sizes="60x60" href="/assets/1420313915969/img/favicons/apple-touch-icon-60x60.png">
-<link rel="apple-touch-icon" sizes="120x120" href="/assets/1420313915969/img/favicons/apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" sizes="76x76" href="/assets/1420313915969/img/favicons/apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" sizes="152x152" href="/assets/1420313915969/img/favicons/apple-touch-icon-152x152.png">
-<link rel="apple-touch-icon" sizes="180x180" href="/assets/1420313915969/img/favicons/apple-touch-icon-180x180.png">
-<link rel="icon" type="image/png" href="/assets/1420313915969/img/favicons/favicon-192x192.png" sizes="192x192">
-<link rel="icon" type="image/png" href="/assets/1420313915969/img/favicons/favicon-160x160.png" sizes="160x160">
-<link rel="icon" type="image/png" href="/assets/1420313915969/img/favicons/favicon-96x96.png" sizes="96x96">
-<link rel="icon" type="image/png" href="/assets/1420313915969/img/favicons/favicon-16x16.png" sizes="16x16">
-<link rel="icon" type="image/png" href="/assets/1420313915969/img/favicons/favicon-32x32.png" sizes="32x32">
-<meta name="msapplication-TileColor" content="#ffffff">
-<meta name="msapplication-TileImage" content="/assets/1420313915969/img/favicons/mstile-144x144.png">
-<meta name="msapplication-square70x70logo" content="/assets/1420313915969/img/favicons/mstile-70x70.png"/>
-<meta name="msapplication-square150x150logo" content="/assets/1420313915969/img/favicons/mstile-150x150.png"/>
-<meta name="msapplication-square310x310logo" content="/assets/1420313915969/img/favicons/mstile-310x310.png"/>
-<meta name="msapplication-wide310x150logo" content="/assets/1420313915969/img/favicons/mstile-310x150.png"/>
-</head>
-
-  <body>
-    
-
-
-<div id="home"></div>
-
-<header>
-
-<nav class="navbar navbar-fixed-top" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-
-      <a class="navbar-brand" href="/">
-        www.czerasz.com
-      </a>
-      <!-- <a class="navbar-brand" href="/">Web IT Services</a> -->
-    </div>
-    <div id="navbar" class="navbar-collapse collapse">
-      <ul class="nav navbar-nav navbar-right">
-        
-          <li class="">
-            <a class="page-link" href="/">Home</a>
-          </li>
-        
-          <li class="">
-            <a class="page-link" href="/about/">About</a>
-          </li>
-        
-          <li class="">
-            <a class="page-link" href="/blog/">Blog</a>
-          </li>
-        
-          <li class="">
-            <a class="page-link" href="/contact/">Contact</a>
-          </li>
-        
-      </ul>
-      
-
-
-    </div><!-- /.nav-collapse -->
-  </div><!-- /.container -->
-</nav>
-
-</header>
-
-    <div class="container  post" style="padding-top: 130px">
-    <div class="row">
-        <div class="col-md-9">
-
-              <header class="post-header">
-                <h1 class="post-title">Docker Tips & Tricks</h1>
-                <p class="article__date"><i class="glyphicon  glyphicon-calendar"></i> Nov 13, 2014</p>
-                
-              </header>
-
-              <article class="post-content">
-                <p class="post__tldr">This article will cover some really cool techniques and useful tricks which I learned during developing <a href="https://www.docker.com/" target="_blank">Docker</a> containers.</p>
-
-<h2 id="make-use-of-dockers-cache">Make Use of Docker’s Cache</h2>
-
-<p>Docker saves each commit (each <code>RUN</code>) in a separate layer. Make use of this caching mechanism while planning your application containers.</p>
-
-<p>Let’s consider an PHP application example. The libraries for this application are installed through the <a href="https://getcomposer.org/">Composer</a> package manager. To make use of the cache we will add the following to our <code>Dockerfile</code>:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="lineno">1</span> <span class="c"># Install libraries through composer</span>
+<!DOCTYPE html> <html> <head> <meta charset="utf-8"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <meta name="viewport" content="width=device-width initial-scale=1"> <title>Docker Tips & Tricks</title> <meta name="description" content="This article will cover some really cool techniques and useful tricks which I learned during developing Docker containers."> <meta content="Michal Czeraszkiewicz" name="author"> <meta content="Distributed Web Architecture, Scalable Application Development, Consulting, Trainings by czerasz.com" property="og:site_name"> <meta content="Docker Tips & Tricks" property="og:title"> <meta content="article" property="og:type"> <meta content="In this article I will cover really cool techniques and useful tricks related to Docker." property="og:description"> <meta content="http://czerasz.com/2014/11/13/docker-tip-and-tricks/" property="og:url"> <meta content="/img/logo-high-resolution.png" property="og:image"> <meta content="2014-11-13T08:00:00+01:00" property="article:published_time"> <meta content="http://czerasz.com/about/" property="article:author"> <meta content="docker" property="article:tag"> <meta name="twitter:card" content="summary"> <meta name="twitter:site" content="@czerasz"> <meta name="twitter:creator" content="@czerasz"> <meta name="twitter:title" content="Docker Tips & Tricks"> <meta name="twitter:url" content="http://czerasz.com/2014/11/13/docker-tip-and-tricks/"> <meta name="twitter:description" content="In this article I will cover really cool techniques and useful tricks related to Docker."> <link href="/sitemap.xml" rel="sitemap" title="Sitemap" type="application/xml"> <link href="/assets/1421159146643/css/bootstrap.min.css" rel="stylesheet"> <link rel="stylesheet" href="/assets/1421159146643/css/main.css"> <link rel="canonical" href="http://czerasz.com/2014/11/13/docker-tip-and-tricks/"> <link rel="alternate" type="application/atom+xml" title="Web IT Services" href="http://czerasz.com/feed.xml" /> <link href='http://fonts.googleapis.com/css?family=Raleway%7CMerriweather' rel='stylesheet' type='text/css'> <link rel="shortcut icon" href="/assets/1421159146643/img/favicons/favicon.ico"> <link rel="apple-touch-icon" sizes="57x57" href="/assets/1421159146643/img/favicons/apple-touch-icon-57x57.png"> <link rel="apple-touch-icon" sizes="114x114" href="/assets/1421159146643/img/favicons/apple-touch-icon-114x114.png"> <link rel="apple-touch-icon" sizes="72x72" href="/assets/1421159146643/img/favicons/apple-touch-icon-72x72.png"> <link rel="apple-touch-icon" sizes="144x144" href="/assets/1421159146643/img/favicons/apple-touch-icon-144x144.png"> <link rel="apple-touch-icon" sizes="60x60" href="/assets/1421159146643/img/favicons/apple-touch-icon-60x60.png"> <link rel="apple-touch-icon" sizes="120x120" href="/assets/1421159146643/img/favicons/apple-touch-icon-120x120.png"> <link rel="apple-touch-icon" sizes="76x76" href="/assets/1421159146643/img/favicons/apple-touch-icon-76x76.png"> <link rel="apple-touch-icon" sizes="152x152" href="/assets/1421159146643/img/favicons/apple-touch-icon-152x152.png"> <link rel="apple-touch-icon" sizes="180x180" href="/assets/1421159146643/img/favicons/apple-touch-icon-180x180.png"> <link rel="icon" type="image/png" href="/assets/1421159146643/img/favicons/favicon-192x192.png" sizes="192x192"> <link rel="icon" type="image/png" href="/assets/1421159146643/img/favicons/favicon-160x160.png" sizes="160x160"> <link rel="icon" type="image/png" href="/assets/1421159146643/img/favicons/favicon-96x96.png" sizes="96x96"> <link rel="icon" type="image/png" href="/assets/1421159146643/img/favicons/favicon-16x16.png" sizes="16x16"> <link rel="icon" type="image/png" href="/assets/1421159146643/img/favicons/favicon-32x32.png" sizes="32x32"> <meta name="msapplication-TileColor" content="#ffffff"> <meta name="msapplication-TileImage" content="/assets/1421159146643/img/favicons/mstile-144x144.png"> <meta name="msapplication-square70x70logo" content="/assets/1421159146643/img/favicons/mstile-70x70.png"/> <meta name="msapplication-square150x150logo" content="/assets/1421159146643/img/favicons/mstile-150x150.png"/> <meta name="msapplication-square310x310logo" content="/assets/1421159146643/img/favicons/mstile-310x310.png"/> <meta name="msapplication-wide310x150logo" content="/assets/1421159146643/img/favicons/mstile-310x150.png"/> </head> <body> <div id="home"></div> <header itemscope itemtype="http://schema.org/LocalBusiness"> <nav class="navbar navbar-fixed-top" role="navigation"> <div class="container"> <div class="navbar-header"> <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button> <a itemprop="url" class="navbar-brand" href="http://czerasz.com/"> www.czerasz.com </a> <!-- <a class="navbar-brand" href="http://czerasz.com/">Web IT Services</a> --> </div> <div id="navbar" class="navbar-collapse collapse"> <ul class="nav navbar-nav navbar-right"> <li class=""> <a class="page-link" href="http://czerasz.com/">Home</a> </li> <li class=""> <a class="page-link" href="http://czerasz.com/about/">About</a> </li> <li class=""> <a class="page-link" href="http://czerasz.com/blog/">Blog</a> </li> <li class=""> <a class="page-link" href="http://czerasz.com/contact/">Contact</a> </li> </ul> </div><!-- /.nav-collapse --> </div><!-- /.container --> </nav> <meta itemprop="name" content="http://czerasz.com"> <meta itemprop="telephone" content="+4917667527905"> <span itemprop="address" itemscope itemtype="http://schema.org/PostalAddress"> <meta itemprop="addressLocality" content="Berlin"> <meta itemprop="addressCountry" content="Germany"></span> <meta itemprop="email" content="czerasz.job@gmail.com"> </header> <div class="container post" style="padding-top: 130px"> <div class="row"> <div class="col-md-9" itemscope itemtype="http://schema.org/Article" > <header class="post-header"> <h1 itemprop="name" class="post-title">Docker Tips & Tricks</h1> <p itemprop="dateCreated" content="2014-11-13" class="article__date"><i class="glyphicon glyphicon-time"></i> Nov 13, 2014</p> <meta itemprop="datePublished" content="2014-11-13"> </header> <article itemprop="articleBody" class="post-content"> <p class="post__tldr" itemprop="description">This article will cover some really cool techniques and useful tricks which I learned during developing <a href="https://www.docker.com/" target="_blank">Docker</a> containers.</p> <h2 id="make-use-of-dockers-cache">Make Use of Docker’s Cache</h2> <p>Docker saves each commit (each <code>RUN</code>) in a separate layer. Make use of this caching mechanism while planning your application containers.</p> <p>Let’s consider an PHP application example. The libraries for this application are installed through the <a href="https://getcomposer.org/">Composer</a> package manager. To make use of the cache we will add the following to our <code>Dockerfile</code>:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="lineno">1</span> <span class="c"># Install libraries through composer</span>
 <span class="lineno">2</span> <span class="c"># Until the composer.json</span>
 <span class="lineno">3</span> ADD ./app/composer.json /usr/lib/composer/composer.json
 <span class="lineno">4</span> 
 <span class="lineno">5</span> <span class="c"># Install all Wordpress dependencies</span>
 <span class="lineno">6</span> ENV COMPOSER_HOME <span class="s1">&#39;/usr/lib/composer&#39;</span>
-<span class="lineno">7</span> RUN <span class="nb">cd</span> /usr/lib/composer <span class="o">&amp;&amp;</span> composer install</code></pre></div>
+<span class="lineno">7</span> RUN <span class="nb">cd</span> /usr/lib/composer <span class="o">&amp;&amp;</span> composer install</code></pre></div> <p>Later in our <a href="#what-is-a-docker-startinit-script">Docker start/init script</a> (which is used while running the container) we symlink those files/libraries where they are supposed to be:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># Create symlinks to libraries downloaded through composer</span>
+ln -s /usr/lib/composer/vendor /var/www/vendor</code></pre></div> <p>This allows us to spin up containers really fast!</p> <p>If we would run <code>composer install</code> for the first time in our <a href="#what-is-a-docker-startinit-script">start/init script</a> the run process would take at least as long as the <code>composer install</code>, which usually takes a lot of time.</p> <blockquote> <p><strong>Note</strong> <br />This scenario implies that a container is build for a specific application.</p> </blockquote> <p>Read more about this technique <a href="http://bitjudo.com/blog/2014/03/13/building-efficient-dockerfiles-node-dot-js/">here</a>.</p> <h2 id="minimize-commitlayer-number-wisely">Minimize Commit/Layer Number… Wisely</h2> <p>Remember that each commit represents a separate file system layer and that the number of commits is limited.</p> <p>You can check the maximum limit of commits with the following script:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c">#!/bin/bash</span>
 
-<p>Later in our <a href="#what-is-a-docker-startinit-script">Docker start/init script</a> (which is used while running the container) we symlink those files/libraries where they are supposed to be:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># Create symlinks to libraries downloaded through composer</span>
-ln -s /usr/lib/composer/vendor /var/www/vendor</code></pre></div>
-
-<p>This allows us to spin up containers really fast!</p>
-
-<p>If we would run <code>composer install</code> for the first time in our <a href="#what-is-a-docker-startinit-script">start/init script</a> the run process would take at least as long as the <code>composer install</code>, which usually takes a lot of time.</p>
-
-<blockquote>
-  <p><strong>Note</strong>
-<br />This scenario implies that a container is build for a specific application.</p>
-</blockquote>
-
-<p>Read more about this technique <a href="http://bitjudo.com/blog/2014/03/13/building-efficient-dockerfiles-node-dot-js/">here</a>.</p>
-
-<h2 id="minimize-commitlayer-number-wisely">Minimize Commit/Layer Number… Wisely</h2>
-
-<p>Remember that each commit represents a separate file system layer and that the number of commits is limited.</p>
-
-<p>You can check the maximum limit of commits with the following script:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># Remove the commit if it exists</span>
+<span class="c"># Remove the commit if it exists</span>
 docker rmi czerasz/aufs-layers-test
 
 <span class="c"># Create a base container</span>
@@ -232,19 +33,7 @@ cat <span class="s">&lt;&lt;-EOF |</span>
 <span class="s">EOF</span>
 docker build -t czerasz/aufs-layers-test -
 
-<span class="k">done</span></code></pre></div>
-
-<p>On my machine it returned:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">Cannot create container with more than <span class="m">127</span> parents</code></pre></div>
-
-<p>Which means that there are only <code>127</code> commits possible.</p>
-
-<p>This is the reason why one should combine the <code>RUN</code> commands in the <code>Dockerfile</code>.</p>
-
-<p>A real word example (which I use in <a href="https://registry.hub.docker.com/u/czerasz/base/">my base image</a>) is presented below:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">RUN apt-get install -y build-essential <span class="o">&amp;&amp;</span> <span class="se">\</span>
+<span class="k">done</span></code></pre></div> <p>On my machine it returned:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash">Cannot create container with more than <span class="m">127</span> parents</code></pre></div> <p>Which means that there are only <code>127</code> commits possible.</p> <p>This is the reason why one should combine the <code>RUN</code> commands in the <code>Dockerfile</code>.</p> <p>A real word example (which I use in <a href="https://registry.hub.docker.com/u/czerasz/base/">my base image</a>) is presented below:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash">RUN apt-get install -y build-essential <span class="o">&amp;&amp;</span> <span class="se">\</span>
     apt-get install -y software-properties-common <span class="o">&amp;&amp;</span> <span class="se">\</span>
     apt-get install -y pwgen <span class="se">\</span>
                        python-software-properties <span class="se">\</span>
@@ -253,17 +42,7 @@ docker build -t czerasz/aufs-layers-test -
                        wget <span class="se">\</span>
                        git <span class="se">\</span>
                        unzip <span class="se">\</span>
-                       tree</code></pre></div>
-
-<p>The downside of this construction is that whenever I need to remove/add a package, Docker is not able to use it’s cache feature and all packages need to be installed from the scratch. And this takes time.</p>
-
-<h2 id="separate-installation-and-configuration">Separate Installation and Configuration</h2>
-
-<p>Add configuration files in the <code>Dockerfile</code> as late as possible. The configuration is something which changes quite often and it would revalidate the cache with each change.</p>
-
-<p>Analyze this Wordpress <code>Dockerfile</code> as an example:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># --- PHP ---</span>
+                       tree</code></pre></div> <p>The downside of this construction is that whenever I need to remove/add a package, Docker is not able to use it’s cache feature and all packages need to be installed from the scratch. And this takes time.</p> <h2 id="separate-installation-and-configuration">Separate Installation and Configuration</h2> <p>Add configuration files in the <code>Dockerfile</code> as late as possible. The configuration is something which changes quite often and it would revalidate the cache with each change.</p> <p>Analyze this Wordpress <code>Dockerfile</code> as an example:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="c"># --- PHP ---</span>
 
 <span class="c"># Install PHP</span>
 RUN apt-get install -y php5-fpm <span class="se">\</span>
@@ -297,46 +76,12 @@ RUN mkdir -p /var/log/php5-fpm/
 <span class="c"># Configure the php5-fpm  process and the default pool</span>
 ADD ./config/php-fpm/php-fpm.conf /etc/php5/fpm/php-fpm.conf
 ADD ./config/php-fpm/pool.d/www.conf /etc/php5/fpm/pool.d/www.conf
-ADD ./config/php-fpm/php.ini /etc/php5/fpm/php.ini</code></pre></div>
-
-<p>When we change the PHP configuration the build process will still work really fast, because the most time consuming part, the package installation is cached.</p>
-
-<p>I even tend to split the installation and configuration between separate <code>Dockerfiles</code>.</p>
-
-<h2 id="always-name-containers">Always Name Containers</h2>
-
-<p>While running a new containers rigorously use the <code>--name=</code> option. This way you will always know what this container was ment for.</p>
-
-<p>Some real world examples are presented below:
-- <code>czerasz-web</code>
-- <code>czerasz-database</code>
-- <code>czerasz-data-container</code></p>
-
-<blockquote>
-  <p><strong>Note</strong>
-<br />A human readable name is very useful while linking containers and while working with data containers.</p>
-</blockquote>
-
-<h2 id="use-refreshedat-variable-for-better-cache-control">Use <code>REFRESHED_AT</code> Variable for Better Cache Control</h2>
-
-<p>Consider the following <code>Dockerfile</code>:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">FROM ubuntu
+ADD ./config/php-fpm/php.ini /etc/php5/fpm/php.ini</code></pre></div> <p>When we change the PHP configuration the build process will still work really fast, because the most time consuming part, the package installation is cached.</p> <p>I even tend to split the installation and configuration between separate <code>Dockerfiles</code>.</p> <h2 id="always-name-containers">Always Name Containers</h2> <p>While running a new containers rigorously use the <code>--name=</code> option. This way you will always know what this container was ment for.</p> <p>Some real world examples are presented below: - <code>czerasz-web</code> - <code>czerasz-database</code> - <code>czerasz-data-container</code></p> <blockquote> <p><strong>Note</strong> <br />A human readable name is very useful while linking containers and while working with data containers.</p> </blockquote> <h2 id="use-refreshedat-variable-for-better-cache-control">Use <code>REFRESHED_AT</code> Variable for Better Cache Control</h2> <p>Consider the following <code>Dockerfile</code>:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash">FROM ubuntu
 
 <span class="c"># Set the reset cache variable</span>
 ENV REFRESHED_AT 2014-11-01
 
-...</code></pre></div>
-
-<p>By changing the value of the <code>REFRESHED_AT</code> variable you are able to flush the whole cache.</p>
-
-<h2 id="use-a-supervisor-for-multiple-proccesses">Use a Supervisor for Multiple Proccesses</h2>
-
-<p>If Your container wraps multiple applications/processes use a process control system tool like <a href="http://supervisord.org/"><code>supervisord</code></a>.</p>
-
-<p>A sample <code>/etc/supervisor/conf.d/supervisord.conf</code> which manages Serf, PHP-FPM, Nginx is presented below:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>supervisord<span class="o">]</span>
+...</code></pre></div> <p>By changing the value of the <code>REFRESHED_AT</code> variable you are able to flush the whole cache.</p> <h2 id="use-a-supervisor-for-multiple-proccesses">Use a Supervisor for Multiple Proccesses</h2> <p>If Your container wraps multiple applications/processes use a process control system tool like <a href="http://supervisord.org/"><code>supervisord</code></a>.</p> <p>A sample <code>/etc/supervisor/conf.d/supervisord.conf</code> which manages Serf, PHP-FPM, Nginx is presented below:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="o">[</span>supervisord<span class="o">]</span>
 <span class="nv">pidfile</span><span class="o">=</span>/tmp/supervisord.pid <span class="p">;</span> <span class="o">(</span>supervisord pidfile<span class="p">;</span>default supervisord.pid<span class="o">)</span>
 <span class="nv">nodaemon</span><span class="o">=</span><span class="nb">true</span>                <span class="p">;</span> <span class="o">(</span>start in foreground <span class="k">if</span> <span class="nb">true</span><span class="p">;</span>default <span class="nb">false</span><span class="o">)</span>
 
@@ -359,95 +104,32 @@ ENV REFRESHED_AT 2014-11-01
 <span class="o">[</span>program:serf-join<span class="o">]</span>
 <span class="nb">command</span><span class="o">=</span>/etc/serf/serf-join.sh
 <span class="nv">autorestart</span><span class="o">=</span><span class="nb">true</span>
-<span class="nv">exitcodes</span><span class="o">=</span>0</code></pre></div>
-
-<h2 id="use-image-inheritance">Use Image Inheritance</h2>
-
-<p>Don’t be afraid of creating Docker images. Separate your logic into different images which inherit from each other.</p>
-
-<p>An example is presented below:</p>
-
-<p><code>ubuntu:latest</code> → <code>czerasz/base</code> → <code>czerasz/wordpress-base</code> → <code>czerasz/czerasz-wordpress-blog</code></p>
-
-<h2 id="use-data-containers">Use Data Containers</h2>
-
-<p>A data container is a concept which is based on a simple idea to keep the data in a special container.</p>
-
-<p>Then by using the option <code>--volumes-from</code> we attach the files from the data container to our application/database container.</p>
-
-<p>The data container’s status will be <code>Exited</code> but don’t fear that someone will delete it by accident. Until it’s used by another container the command <code>docker rm data-container</code> will not work.</p>
-
-<p>A real word example is a Wordpress Docker setup in which the uploads are kept in a separate data container. Let’s see how it works!</p>
-
-<p>Create data container:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run -v /data/uploads <span class="se">\</span>
+<span class="nv">exitcodes</span><span class="o">=</span>0</code></pre></div> <h2 id="use-image-inheritance">Use Image Inheritance</h2> <p>Don’t be afraid of creating Docker images. Separate your logic into different images which inherit from each other.</p> <p>An example is presented below:</p> <p><code>ubuntu:latest</code> → <code>czerasz/base</code> → <code>czerasz/wordpress-base</code> → <code>czerasz/czerasz-wordpress-blog</code></p> <h2 id="use-data-containers">Use Data Containers</h2> <p>A data container is a concept which is based on a simple idea to keep the data in a special container.</p> <p>Then by using the option <code>--volumes-from</code> we attach the files from the data container to our application/database container.</p> <p>The data container’s status will be <code>Exited</code> but don’t fear that someone will delete it by accident. Until it’s used by another container the command <code>docker rm data-container</code> will not work.</p> <p>A real word example is a Wordpress Docker setup in which the uploads are kept in a separate data container. Let’s see how it works!</p> <p>Create data container:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run -v /data/uploads <span class="se">\</span>
            --name czerasz-data-container <span class="se">\</span>
-           -d debian chown -R www-data:www-data /data/uploads</code></pre></div>
-
-<p>Create a Wordpress container and attach to it the <code>/data/uploads</code> directory from the data container:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run <span class="se">\</span>
+           -d debian chown -R www-data:www-data /data/uploads</code></pre></div> <p>Create a Wordpress container and attach to it the <code>/data/uploads</code> directory from the data container:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run <span class="se">\</span>
        -v <span class="sb">`</span><span class="nb">pwd</span><span class="sb">`</span>/app:/var/www <span class="se">\</span>
        --volumes-from czerasz-data-container <span class="se">\</span>
        --link czerasz-database:db <span class="se">\</span>
        -p 80:80 <span class="se">\</span>
        --name czerasz-site <span class="se">\</span>
        -d czerasz/wordpress-base <span class="se">\</span>
-       /usr/local/bin/init.sh production</code></pre></div>
-
-<blockquote>
-  <p><strong>Tip</strong>
-<br />Access data container files like this: </p>
-
-  <pre><code>$ ls -al `docker inspect -f '' czerasz-data-container`
+       /usr/local/bin/init.sh production</code></pre></div> <blockquote> <p><strong>Tip</strong> <br />Access data container files like this:</p><pre><code>$ ls -al `docker inspect -f '' czerasz-data-container`
 drwx------ 4 www-data www-data 4096 Nov  1 22:04 .
 drwx------ 3 root     root     4096 Nov  1 20:14 ..
 drwx------ 8 www-data www-data 4096 Nov  2 01:25 2014
-</code></pre>
-</blockquote>
-
-<p>Read more about data containers <a href="https://docs.docker.com/userguide/dockervolumes/">here</a>.</p>
-
-<h2 id="use-files-for-environment-variables">Use Files for Environment Variables</h2>
-
-<p>If you have a lot of environment varaiables which need to be passed to the container use the <code>--env-file</code> option. It allows you to import variables from a file formated like this:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">primary</span><span class="o">=</span>mongo_1532
+</code></pre></blockquote> <p>Read more about data containers <a href="https://docs.docker.com/userguide/dockervolumes/">here</a>.</p> <h2 id="use-files-for-environment-variables">Use Files for Environment Variables</h2> <p>If you have a lot of environment varaiables which need to be passed to the container use the <code>--env-file</code> option. It allows you to import variables from a file formated like this:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">primary</span><span class="o">=</span>mongo_1532
 <span class="nv">number_of_replicas</span><span class="o">=</span>3
-...</code></pre></div>
-
-<h2 id="always-remove-temporary-containers">Always Remove Temporary Containers</h2>
-
-<p>There is always a situation when you need a container just for a small tasks. It could be checking a specific command, exporting files from a data container or creating a database dump.</p>
-
-<p>Remember to use the <code>--rm</code> option. It will remove the container after it’s job is done and you will never have to deal with a container necropolis after calling <code>docker ps -a</code>.</p>
-
-<p>A real world example (which was borrowed from <a href="https://registry.hub.docker.com/_/mysql/">here</a>) is presented below:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run -it <span class="se">\</span>
+...</code></pre></div> <h2 id="always-remove-temporary-containers">Always Remove Temporary Containers</h2> <p>There is always a situation when you need a container just for a small tasks. It could be checking a specific command, exporting files from a data container or creating a database dump.</p> <p>Remember to use the <code>--rm</code> option. It will remove the container after it’s job is done and you will never have to deal with a container necropolis after calling <code>docker ps -a</code>.</p> <p>A real world example (which was borrowed from <a href="https://registry.hub.docker.com/_/mysql/">here</a>) is presented below:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run -it <span class="se">\</span>
             --link some-mysql:mysql <span class="se">\</span>
-            --rm mysql sh -c <span class="s1">&#39;exec mysql -h&quot;$MYSQL_PORT_3306_TCP_ADDR&quot; -P&quot;$MYSQL_PORT_3306_TCP_PORT&quot; -uroot -p&quot;$MYSQL_ENV_MYSQL_ROOT_PASSWORD&quot;&#39;</span></code></pre></div>
-
-<h2 id="simplify-communication-by-using-the-hostname">Simplify Communication by Using the Hostname</h2>
-
-<p>Whenever you can, use the <code>-h, --hostname=""</code> option to give your container a logical hostname. This will make networking tasks much easier.</p>
-
-<p>The example below shows a simple usecase. First we spin up a server container:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run --hostname<span class="o">=</span><span class="s2">&quot;web-server&quot;</span> <span class="se">\</span>
+            --rm mysql sh -c <span class="s1">&#39;exec mysql -h&quot;$MYSQL_PORT_3306_TCP_ADDR&quot; -P&quot;$MYSQL_PORT_3306_TCP_PORT&quot; -uroot -p&quot;$MYSQL_ENV_MYSQL_ROOT_PASSWORD&quot;&#39;</span></code></pre></div> <h2 id="simplify-communication-by-using-the-hostname">Simplify Communication by Using the Hostname</h2> <p>Whenever you can, use the <code>-h, --hostname=""</code> option to give your container a logical hostname. This will make networking tasks much easier.</p> <p>The example below shows a simple usecase. First we spin up a server container:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run --hostname<span class="o">=</span><span class="s2">&quot;web-server&quot;</span> <span class="se">\</span>
            --rm <span class="se">\</span>
            --name host-communication-test-web-server <span class="se">\</span>
            -it ubuntu bash
 
-root@web-server:/# <span class="nb">echo</span> <span class="s2">&quot;Response from: &quot;</span><span class="sb">`</span>hostname<span class="sb">`</span> &gt; index.html <span class="o">&amp;&amp;</span> python3 -m http.server 8000</code></pre></div>
-
-<p>Then we spin up a client server which requests the web server:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run --hostname<span class="o">=</span><span class="s2">&quot;web-client&quot;</span> <span class="se">\</span>
+root@web-server:/# <span class="nb">echo</span> <span class="s2">&quot;Response from: &quot;</span><span class="sb">`</span>hostname<span class="sb">`</span> &gt; index.html <span class="o">&amp;&amp;</span> python3 -m http.server 8000</code></pre></div> <p>Then we spin up a client server which requests the web server:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run --hostname<span class="o">=</span><span class="s2">&quot;web-client&quot;</span> <span class="se">\</span>
            --rm <span class="se">\</span>
            --link host-communication-test-web-server:web-server <span class="se">\</span>
-           -it ubuntu bash 
+           -it ubuntu bash
 
 root@web-client:/# apt-get update <span class="o">&amp;&amp;</span> apt-get install -y curl
 root@web-client:/# curl -v web-server:8000/index.html
@@ -458,7 +140,7 @@ root@web-client:/# curl -v web-server:8000/index.html
 &gt; User-Agent: curl/7.35.0
 &gt; Host: web-server:8000
 &gt; Accept: */*
-&gt; 
+&gt;
 * HTTP 1.0, assume close after body
 &lt; HTTP/1.0 <span class="m">200</span> OK
 &lt; Server: SimpleHTTP/0.6 Python/3.4.0
@@ -466,161 +148,6 @@ root@web-client:/# curl -v web-server:8000/index.html
 &lt; Content-type: text/html
 &lt; Content-Length: 26
 &lt; Last-Modified: Tue, <span class="m">25</span> Nov <span class="m">2014</span> 11:40:14 GMT
-&lt; 
+&lt;
 Response from: web-server
-* Closing connection 0</code></pre></div>
-
-<p>As you can see we don’t have to use any environment variables (which we by the way don’t have if no port is exposed). We can just rely on the hostname.</p>
-
-<h2 id="what-is-a-docker-startinit-script">What is a Docker Start/Init Script?</h2>
-
-<p>A Docker start/init script is simply a script which is executed when the container starts.</p>
-
-<p>The script can be called manually while one runs a container:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run -it user_name/image_name /usr/lib/init-script-name.sh</code></pre></div>
-
-<p>Or through one of the <code>Dockerfile</code> directives:
-- <a href="http://docs.docker.com/reference/builder/#entrypoint"><code>ENTRYPOINT</code></a>
-- <a href="http://docs.docker.com/reference/builder/#cmd"><code>CMD</code></a></p>
-
-<h2 id="resources">Resources:</h2>
-
-<ul>
-  <li><a href="http://developerblog.redhat.com/2014/09/30/overview-storage-scalability-docker/">Comprehensive Overview of Storage Scalability in Docker</a></li>
-  <li><a href="https://registry.hub.docker.com/_/mysql/">MySQL Docker image <code>README.md</code></a></li>
-  <li><a href="http://bitjudo.com/blog/2014/03/13/building-efficient-dockerfiles-node-dot-js/">Building Efficient Dockerfiles for Node.js Applications</a></li>
-  <li><a href="https://docs.docker.com/userguide/dockervolumes/">Managing Data in Containers</a></li>
-  <li><a href="https://docs.docker.com/articles/networking/#container-networking">Docker Networking</a></li>
-</ul>
-
-              </article>
-
-              <div class="article__author-container">
-    <div class="divider  divider--text">
-        <p class="typography-small">Author</p>
-    </div>
-
-    <img class="article__avatar" src="http://www.gravatar.com/avatar/88954c51cd72a270af461de17fa2e150.png" alt="czerasz avatar" height="80" width="80">
-
-    <div class="article__author-info">
-        <h4>Michał Czeraszkiewicz</h4>
-        <p>Full Stack Developer, Consultant. Web technology enthusiast with pashion for web architecture. You can follow him on <a href="https://twitter.com/czerasz" target="_blank">Twitter</a>  or <a href="" target="_blank">Google+</a>.</p>
-    </div> <!-- gem-author-info --> 
-</div>
-
-              <div class="divider  clearfix"></div>
-
-              <div class="post__navigation-bottom">
-                <a class="btn  btn-default" href="/blog">
-                  <span class="glyphicon glyphicon-chevron-left"></span>
-                  back
-                </a>
-                <a class="btn  btn-primary" href="#home">
-                  <span class="glyphicon glyphicon-chevron-up"></span>
-                  go up
-                </a>
-              </div>
-
-              <div class="divider  clearfix"></div>              
-
-              <section class="callout  callout--center">
-    <h3>Like what You see?</h3>
-
-    <a class="btn  btn-lg  btn-primary" href="/contact">Then let us work together!</a>
-
-    <p>We provide high quality web IT services. From solid front-end architecture, through scalable back-end applications, up to distrubuted data stores. Every piece of your infrastructure is build with passion.</p>
-</section>
-        </div>
-    </div>
-</div>
-
-    <footer class="site-footer">
-  <div class="site-footer__footer-above">
-    <div class="container">
-      <div class="row">
-      
-
-        <div class="col-md-4  col-md-offset-4">
-          <h3>Social</h3>
-
-          <div class="footer__social-icons">
-            <a href="https://twitter.com/czerasz">
-              <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's twitter page">
-                <use xlink:href="/assets/1420313915969/img/svg/social.svg#icon-twitter"></use>
-              </svg>
-            </a>
-            <a href="https://github.com/czerasz">
-              <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's github profile page">
-                <use xlink:href="/assets/1420313915969/img/svg/social.svg#icon-github"></use>
-              </svg>
-            </a>
-            <a href="http://stackoverflow.com/users/325852/czerasz">
-              <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's stackoverflow profile page">
-                <use xlink:href="/assets/1420313915969/img/svg/social.svg#icon-stackoverflow"></use>
-              </svg>
-            </a>
-            <a href="https://www.linkedin.com/in/czerasz">
-              <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's linkedin profile page">
-                <use xlink:href="/assets/1420313915969/img/svg/social.svg#icon-linkedin"></use>
-              </svg>
-            </a>
-            <a href="https://delicious.com/czerasz">
-              <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's delicious profile page">
-                <use xlink:href="/assets/1420313915969/img/svg/social.svg#icon-delicious"></use>
-              </svg>
-            </a>
-            <a href="https://plus.google.com/u/0/117800598211330706058?rel=author">
-              <svg viewBox="0 0 30 30" class="svg-icon" alt="czerasz's google plus profile page">
-                <use xlink:href="/assets/1420313915969/img/svg/social.svg#icon-google-plus"></use>
-              </svg>
-            </a>
-          </div>
-
-          <div class="divider  divider--border  visible-xs-block  visible-sm-block"></div>
-        </div>
-        <div class="col-md-4">
-          <h3>About</h3>
-          <p>Solid knowledge about web and web-technologies. Focused on Back-End, Front-End and DevOps topics. Docker, Python, Nginx, Linux, IT-Architecture, Vagrant, Ansible, MongoDB and Elasticsearch.
-</p>
-          <a class="btn  btn-default  pull-right" style="margin-top: 20px" href="/about/">read more</a>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="site-footer__footer-below">
-    <div class="container">
-      <div class="row">
-        <div class="col-md-12">
-          <p class="text-center">© 2015 &middot; czerasz &middot; All Rights Reserved
-          
-          |
-          Made with &hearts; in Berlin</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
-
-    
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="/assets/1420313915969/js/bootstrap.min.js"></script>
-    
-
-
-    
-
-
-    <script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-18008380-5', 'auto');
-  ga('send', 'pageview');
-</script>
-  </body>
-
-</html>
+* Closing connection 0</code></pre></div> <p>As you can see we don’t have to use any environment variables (which we by the way don’t have if no port is exposed). We can just rely on the hostname.</p> <h2 id="what-is-a-docker-startinit-script">What is a Docker Start/Init Script?</h2> <p>A Docker start/init script is simply a script which is executed when the container starts.</p> <p>The script can be called manually while one runs a container:</p> <div class="highlight"><pre><code class="language-bash" data-lang="bash">docker run -it user_name/image_name /usr/lib/init-script-name.sh</code></pre></div> <p>Or through one of the <code>Dockerfile</code> directives: - <a href="http://docs.docker.com/reference/builder/#entrypoint"><code>ENTRYPOINT</code></a> - <a href="http://docs.docker.com/reference/builder/#cmd"><code>CMD</code></a></p> <h2 id="resources">Resources:</h2> <ul> <li><a href="http://developerblog.redhat.com/2014/09/30/overview-storage-scalability-docker/">Comprehensive Overview of Storage Scalability in Docker</a></li> <li><a href="https://registry.hub.docker.com/_/mysql/">MySQL Docker image <code>README.md</code></a></li> <li><a href="http://bitjudo.com/blog/2014/03/13/building-efficient-dockerfiles-node-dot-js/">Building Efficient Dockerfiles for Node.js Applications</a></li> <li><a href="https://docs.docker.com/userguide/dockervolumes/">Managing Data in Containers</a></li> <li><a href="https://docs.docker.com/articles/networking/#container-networking">Docker Networking</a></li> </ul> </article> <div class="divider divider--text"> <p class="typography-small">Share</p> </div> <div class="post__social-section clearfix"> <!-- Buttons start here. --> <ul class="rrssb-buttons"> <li class="rrssb-twitter"> <a href="http://twitter.com/share?url=http%3A%2F%2Fczerasz.com%2F2014%2F11%2F13%2Fdocker-tip-and-tricks%2F&amp;via=czerasz&amp;text=Docker+Tips+%26+Tricks&amp;lang=en&amp;count=none&amp;counturl=http%3A%2F%2Fczerasz.com%2F2014%2F11%2F13%2Fdocker-tip-and-tricks%2F&amp;hashtags=docker%2C" target="_blank" class="popup"> <span class="rrssb-icon"> <svg viewBox="0 0 28 28" class="svg-icon" role="img" aria-label="share via twitter" style='fill: #fff;'> <use xlink:href="/assets/1421159146643/img/svg/social-section.svg#icon-twitter"></use> </svg> </span> <span class="rrssb-text">twitter</span> </a> </li> <li class="rrssb-googleplus"> <a href="https://plus.google.com/share?url=http%3A%2F%2Fczerasz.com%2F2014%2F11%2F13%2Fdocker-tip-and-tricks%2F&amp;hl=en-US" target="_blank" class="popup"> <span class="rrssb-icon"> <svg viewBox="0 0 28 28" class="svg-icon" role="img" aria-label="share via google plus" style='fill: #fff;'> <use xlink:href="/assets/1421159146643/img/svg/social-section.svg#icon-google-plus"></use> </svg> </span> <span class="rrssb-text">google+</span> </a> </li> <li class="rrssb-linkedin"> <a href="http://www.linkedin.com/shareArticle?mini=true&amp;url=http%3A%2F%2Fczerasz.com%2F2014%2F11%2F13%2Fdocker-tip-and-tricks%2F&amp;title=Docker+Tips+%26+Tricks&amp;source=czerasz.com+%7C+Web+IT+Services &amp;summary=In+this+article+I+will+cover+really+cool+techniques+and+useful+tricks+related+to+Docker." target="_blank" class="popup"> <span class="rrssb-icon"> <svg viewBox="0 0 28 28" class="svg-icon" role="img" aria-label="share via linkedin" style='fill: #fff;'> <use xlink:href="/assets/1421159146643/img/svg/social-section.svg#icon-linkedin"></use> </svg> </span> <span class="rrssb-text">linkedin</span> </a> </li> <li class="rrssb-facebook"> <a href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2Fczerasz.com%2F2014%2F11%2F13%2Fdocker-tip-and-tricks%2F" target="_blank" class="popup"> <span class="rrssb-icon"> <svg viewBox="0 0 28 28" class="svg-icon" role="img" aria-label="share via facebook" style='fill: #fff;'> <use xlink:href="/assets/1421159146643/img/svg/social-section.svg#icon-facebook"></use> </svg> </span> <span class="rrssb-text">facebook</span> </a> </li> <li class="rrssb-delicious"> <a href="https://delicious.com/save?v=5&amp;provider=czerasz.com&amp;noui&amp;jump=close&amp;url=http%3A%2F%2Fczerasz.com%2F2014%2F11%2F13%2Fdocker-tip-and-tricks%2F&amp;title=Docker+Tips+%26+Tricks" target="_blank" class="popup"> <span class="rrssb-icon"> <svg viewBox="0 0 28 28" class="svg-icon" role="img" aria-label="save to delicious" style='fill: #fff;'> <use xlink:href="/assets/1421159146643/img/svg/social-section.svg#icon-delicious"></use> </svg> </span> <span class="rrssb-text">Delicious</span> </a> </li> <li class="rrssb-email"> <a href="mailto:?subject=Epic+article+about%3A+Docker+Tips+%26+Tricks&amp;body=Check+out+this+link%3A+http%3A%2F%2Fczerasz.com%2F2014%2F11%2F13%2Fdocker-tip-and-tricks%2F+published+by+Micha%C5%82+Czeraszkiewicz" target="_blank"> <span class="rrssb-icon"> <svg viewBox="0 0 28 28" class="svg-icon" role="img" aria-label="share via email" style='fill: #fff;'> <use xlink:href="/assets/1421159146643/img/svg/social-section.svg#icon-email"></use> </svg> </span> <span class="rrssb-text">email</span> </a> </li> <li class="rrssb-pocket"> <a href="https://getpocket.com/save?url=http%3A%2F%2Fczerasz.com%2F2014%2F11%2F13%2Fdocker-tip-and-tricks%2F" target="_blank"> <span class="rrssb-icon"> <svg viewBox="0 0 32 28" class="svg-icon" role="img" aria-label="save to pocket" style='fill: #fff;'> <use xlink:href="/assets/1421159146643/img/svg/social-section.svg#icon-pocket"></use> </svg> </span> <span class="rrssb-text">pocket</span> </a> </li> <li class="rrssb-reddit"> <a href="http://www.reddit.com/submit?url=http%3A%2F%2Fczerasz.com%2F2014%2F11%2F13%2Fdocker-tip-and-tricks%2F" target="_blank"> <span class="rrssb-icon"> <svg viewBox="0 0 28 28" class="svg-icon" role="img" aria-label="share via reddit" style='fill: #fff;'> <use xlink:href="/assets/1421159146643/img/svg/social-section.svg#icon-reddit"></use> </svg> </span> <span class="rrssb-text">reddit</span> </a> </li> </ul> <!-- Buttons end here --> </div> <div class="article__author-container" itemprop="author"> <div class="divider divider--text"> <p class="typography-small">Author</p> </div> <img class="article__avatar" src="http://www.gravatar.com/avatar/88954c51cd72a270af461de17fa2e150.png" alt="czerasz avatar" height="80" width="80"> <div class="article__author-info" itemscope itemtype="http://schema.org/Person"> <h4 itemprop="name">Michał Czeraszkiewicz</h4> <p><span itemprop="jobTitle">Full Stack Developer, Consultant</span>. Web technology enthusiast with pashion for web architecture. You can follow him on <a href="https://twitter.com/czerasz" target="_blank">Twitter</a> or <a href="https://plus.google.com/u/0/117800598211330706058?rel=author" target="_blank">Google+</a>.</p> </div> <!-- gem-author-info --> </div> <div class="divider clearfix"></div> <div class="post__navigation-bottom"> <a class="btn btn-default" href="/blog"> <span class="glyphicon glyphicon-chevron-left"></span> back </a> <a class="btn btn-primary" href="#home"> <span class="glyphicon glyphicon-chevron-up"></span> go up </a> </div> <div class="divider clearfix"></div> <section class="callout callout--center"> <h3>Like what You see?</h3> <a class="btn btn-lg btn-primary" href="/contact">Then let us work together!</a> <p>We provide high quality web IT services. From solid front-end architecture, through scalable back-end applications, up to distrubuted data stores. Every piece of your infrastructure is build with passion.</p> </section> </div> </div> </div> <footer class="site-footer"> <div class="site-footer__footer-above"> <div class="container"> <div class="row"> <div class="col-md-4 col-md-offset-4"> <h3>Social</h3> <div class="footer__social-icons"> <a href="https://twitter.com/czerasz"> <svg viewBox="0 0 30 30" class="svg-icon" role="img" aria-label="czerasz's twitter page"> <use xlink:href="/assets/1421159146643/img/svg/social.svg#icon-twitter"></use> </svg> </a> <a href="https://github.com/czerasz"> <svg viewBox="0 0 30 30" class="svg-icon" role="img" aria-label="czerasz's github profile page"> <use xlink:href="/assets/1421159146643/img/svg/social.svg#icon-github"></use> </svg> </a> <a href="http://stackoverflow.com/users/325852/czerasz"> <svg viewBox="0 0 30 30" class="svg-icon" role="img" aria-label="czerasz's stackoverflow profile page"> <use xlink:href="/assets/1421159146643/img/svg/social.svg#icon-stackoverflow"></use> </svg> </a> <a href="https://www.linkedin.com/in/czerasz"> <svg viewBox="0 0 30 30" class="svg-icon" role="img" aria-label="czerasz's linkedin profile page"> <use xlink:href="/assets/1421159146643/img/svg/social.svg#icon-linkedin"></use> </svg> </a> <a href="https://delicious.com/czerasz"> <svg viewBox="0 0 30 30" class="svg-icon" role="img" aria-label="czerasz's delicious profile page"> <use xlink:href="/assets/1421159146643/img/svg/social.svg#icon-delicious"></use> </svg> </a> <a href="https://plus.google.com/u/0/117800598211330706058?rel=author"> <svg viewBox="0 0 30 30" class="svg-icon" role="img" aria-label="czerasz's google plus profile page"> <use xlink:href="/assets/1421159146643/img/svg/social.svg#icon-google-plus"></use> </svg> </a> </div> <div class="divider divider--border visible-xs-block visible-sm-block"></div> </div> <div class="col-md-4"> <h3>About</h3> <p>Solid knowledge about web and web-technologies. Focused on Back-End, Front-End and DevOps topics. Docker, Python, Nginx, Linux, IT-Architecture, Vagrant, Ansible, MongoDB and Elasticsearch. </p> <a class="btn btn-default pull-right" style="margin-top: 20px" href="/about/">read more</a> </div> </div> </div> </div> <div class="site-footer__footer-below"> <div class="container"> <div class="row"> <div class="col-md-12"> <p class="text-center">© 2015 &middot; czerasz &middot; All Rights Reserved | Made with &hearts; in Berlin</p> </div> </div> </div> </div> </footer> <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script> <script src="/assets/1421159146643/js/bootstrap.min.js"></script> <script src="/assets/1421159146643/vendor/RRSSB/js/rrssb.min.js"></script> <script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','//www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-18008380-5', 'auto'); ga('send', 'pageview'); </script> </body> </html>

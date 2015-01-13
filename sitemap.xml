@@ -3,6 +3,21 @@
   
     
     <url>
+      <loc>http://czerasz.com/2015/01/06/vagrant-workflows/</loc>
+      
+        <lastmod>2015-01-06T00:00:00+01:00</lastmod>
+      
+      
+        <changefreq>weekly</changefreq>
+      
+      
+        <priority>0.6</priority>
+      
+    </url>
+    
+  
+    
+    <url>
       <loc>http://czerasz.com/2014/12/10/top-vagrant-plugins/</loc>
       
         <lastmod>2014-12-10T00:00:00+01:00</lastmod>
@@ -66,7 +81,7 @@
     <url>
       <loc>http://czerasz.com/feed.xml</loc>
       
-        <lastmod>2015-01-03T20:38:37+01:00</lastmod>
+        <lastmod>2015-01-13T15:25:50+01:00</lastmod>
       
       
         <changefreq>weekly</changefreq>
@@ -79,24 +94,9 @@
   
     
     <url>
-      <loc>http://czerasz.com/</loc>
-      
-        <lastmod>2015-01-03T20:38:37+01:00</lastmod>
-      
-      
-        <changefreq>daily</changefreq>
-      
-      
-        <priority>1</priority>
-      
-    </url>
-    
-  
-    
-    <url>
       <loc>http://czerasz.com/about/</loc>
       
-        <lastmod>2015-01-03T20:38:37+01:00</lastmod>
+        <lastmod>2015-01-13T15:25:50+01:00</lastmod>
       
       
         <changefreq>weekly</changefreq>
@@ -109,9 +109,24 @@
   
     
     <url>
+      <loc>http://czerasz.com/</loc>
+      
+        <lastmod>2015-01-13T15:25:50+01:00</lastmod>
+      
+      
+        <changefreq>daily</changefreq>
+      
+      
+        <priority>1</priority>
+      
+    </url>
+    
+  
+    
+    <url>
       <loc>http://czerasz.com/contact/</loc>
       
-        <lastmod>2015-01-03T20:38:37+01:00</lastmod>
+        <lastmod>2015-01-13T15:25:50+01:00</lastmod>
       
       
         <changefreq>weekly</changefreq>
@@ -126,13 +141,28 @@
     <url>
       <loc>http://czerasz.com/blog/</loc>
       
-        <lastmod>2015-01-03T20:38:37+01:00</lastmod>
+        <lastmod>2015-01-13T15:25:50+01:00</lastmod>
       
       
         <changefreq>daily</changefreq>
       
       
         <priority>0.8</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>http://czerasz.com/robots.txt</loc>
+      
+        <lastmod>2015-01-13T15:25:50+01:00</lastmod>
+      
+      
+        <changefreq>weekly</changefreq>
+      
+      
+        <priority>0.6</priority>
       
     </url>
     
