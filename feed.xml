@@ -6,8 +6,8 @@
 </description>
     <link>http://czerasz.com/</link>
     <atom:link href="http://czerasz.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 13 Jan 2015 15:25:50 +0100</pubDate>
-    <lastBuildDate>Tue, 13 Jan 2015 15:25:50 +0100</lastBuildDate>
+    <pubDate>Tue, 13 Jan 2015 15:57:54 +0100</pubDate>
+    <lastBuildDate>Tue, 13 Jan 2015 15:57:54 +0100</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -16,12 +16,12 @@
 
 &lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
 
-&lt;p&gt;As descibed in the &lt;a href=&quot;#&quot;&gt;Introduction Article&lt;/a&gt; Vagrant is a helpful wrapper arround different VM providers. Vagrant is a very powerful tool and it is driven by simple workflows. And exactly those workflows are described in this article.&lt;/p&gt;
+&lt;p&gt;Vagrant is a helpful wrapper arround different VM providers. Vagrant is a very powerful tool and it is driven by simple workflows. And exactly those workflows are described in this article.&lt;/p&gt;
 
 &lt;p&gt;We will discuss five stages/phases which represent a typical Vagrant workflow/lifecycle.
 &lt;br /&gt;They are presented on the diagram below.&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;image-vagrant-workflows-phases&quot; width=&quot;100%&quot; src=&quot;/assets/1421159146643/img/posts/vagrant-workflows-phases.png&quot; alt=&quot;five main phases in the vagrant workflow&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;image-vagrant-workflows-phases&quot; width=&quot;100%&quot; src=&quot;/assets/1421161072254/img/posts/vagrant-workflows-phases.png&quot; alt=&quot;five main phases in the vagrant workflow&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;
@@ -218,7 +218,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;We can summarize this chapter with this diagram:&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1421159146643/img/posts/vagrant-workflows-1st-run.png&quot; alt=&quot;Vagrant workflows 1st run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1421161072254/img/posts/vagrant-workflows-1st-run.png&quot; alt=&quot;Vagrant workflows 1st run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Please note the shaded element on the right side of the diagram above. By executing &lt;code&gt;vagrant up&lt;/code&gt; for the first time, vagrant will also trigger the provisioning process. But because we didn’t configure it yet it will not run - that’s why it’s makred it as disabled.&lt;/p&gt;
 
@@ -236,7 +236,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;In this chapter we want to achieve the &lt;strong&gt;Configured VM&lt;/strong&gt; state presented on the diagram below - we want to install/update software on our previously created virtual machine.&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1421159146643/img/posts/vagrant-workflows-full-run.png&quot; alt=&quot;Vagrant workflows full run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1421161072254/img/posts/vagrant-workflows-full-run.png&quot; alt=&quot;Vagrant workflows full run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As an example we will add a simple shell script which updates Ubuntu on every start (or provisioning) but just once a month.&lt;/p&gt;
 
@@ -330,7 +330,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;For those of you who are tough enough and reached the end of this article I prepared a bonus in form of a Vagrant lifecycle diagram. It represents which command can be used during each phase of the Vagrant lifecycle. Enjoy!&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1421159146643/img/posts/vagrant-main-workflow.png&quot; alt=&quot;&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1421161072254/img/posts/vagrant-main-workflow.png&quot; alt=&quot;&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 </description>
         <pubDate>Tue, 06 Jan 2015 00:00:00 +0100</pubDate>
         <link>http://czerasz.com/2015/01/06/vagrant-workflows/</link>
@@ -373,7 +373,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;The diagram below helps you understand this simple but effective logic:&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1421159146643/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1421161072254/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;requirements&quot;&gt;Requirements&lt;/h3&gt;
 
