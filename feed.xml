@@ -6,9 +6,492 @@
 </description>
     <link>http://czerasz.com/</link>
     <atom:link href="http://czerasz.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Tue, 24 Feb 2015 16:19:23 +0100</pubDate>
-    <lastBuildDate>Tue, 24 Feb 2015 16:19:23 +0100</lastBuildDate>
+    <pubDate>Mon, 30 Mar 2015 12:24:36 +0200</pubDate>
+    <lastBuildDate>Mon, 30 Mar 2015 12:24:36 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>Nginx Caching Tutorial - You Can Run Faster</title>
+        <description>&lt;p class=&quot;post__tldr&quot; itemprop=&quot;description&quot;&gt;Let&#39;s dive together into the world of web content caching with Nginx. Starting with basics we will quickly move to more advanced topics and see some real world examples. If you can make it to the end of this blog post... You will bear the title of a &quot;Caching King&quot;.&lt;/p&gt;
+
+&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
+
+&lt;p&gt;Let me start with an inspiring story.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;A friend of mine took a contract for creating a simple web application. This app was used during a crowdfunding event, to visualize live statistics about the raised money for a children hospital. People donated money and the total amount with other details were displayed on a big screen. Additionally this service was available online. The application was very simple and the server strong. Luckily the generosity and love were much bigger. The server started to slow down. My friend got in panic but he found a clever and easy solution - he used Nginx’s caching capabilities.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Today I will show you how to make the internet faster and more stable. How you can easily adapt Nginx’s caching, to boost your applications.&lt;/p&gt;
+
+&lt;p&gt;We will start with caching concepts and then jump into available Nginx caching configuration - directives. I will explain why they are useful and how you can profit from them. Armored with the right knowledge we will fight our way through a real world example.&lt;/p&gt;
+
+&lt;h2 id=&quot;the-caching-concept&quot;&gt;The Caching Concept&lt;/h2&gt;
+
+&lt;p&gt;Before we start I need to make an a priori assumption. Namely that the content is quasi real time. This means that our data or if you wish our HTTP responses, do not change so often. Please note that the phrase &quot;not so often&quot; is not a strict definition. It can be 1 second, 1 hour, 1 week etc.&lt;/p&gt;
+
+&lt;p&gt;Ok, having this in mind let’s start with our initial situation, with no caching involved, which looks like this. &lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;301&quot; height=&quot;60&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/initial-situation-request.png&quot; alt=&quot;Nginx Caching: initial situation application request&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The user does a request to the application and gets a response back.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;301&quot; height=&quot;60&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/initial-situation-response.png&quot; alt=&quot;Nginx Caching: initial situation application response&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Adding caching to this scenario is a simple way to improve performance, capacity and availability.
+It works by saving responses from servers or applications to local storage or memory.&lt;/p&gt;
+
+&lt;p&gt;Let’s consider this simple situation. The client does a request to the application like in the previous example but this time he goes through the cache.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;466&quot; height=&quot;60&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/caching-intro-first-request.png&quot; alt=&quot;Nginx Caching: caching intro first request&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The application responses and the cache forwards this response to the client but it also saves it locally.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;466&quot; height=&quot;200&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/caching-intro-first-response.png&quot; alt=&quot;Nginx Caching: caching intro first response&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Next time the user does the same request the cache checks if it already has this information.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;466&quot; height=&quot;200&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/caching-intro-second-request.png&quot; alt=&quot;Nginx Caching: caching intro second request&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;And if that’s the case, it responds immediately to the user, by serving this cached content.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;466&quot; height=&quot;200&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/caching-intro-second-response.png&quot; alt=&quot;Nginx Caching: caching intro second response&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Please note that the second request doesn’t involve the application at all.&lt;/p&gt;
+
+&lt;p&gt;Caching adds complexity to the system but it comes with great &lt;strong&gt;benefits&lt;/strong&gt;:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;strong&gt;it improves site performance&lt;/strong&gt; - requests doesn’t have to go through the whole rendering process&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;it increases capacity&lt;/strong&gt; - by reducing load on origin servers&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;it also gives greater availability&lt;/strong&gt; - by serving stale content when the origin server is down&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Before we start with Nginx, I want to mention that there are also alternatives for caching content. &lt;a href=&quot;http://www.squid-cache.org/&quot; target=&quot;_blank&quot;&gt;Squid Cache&lt;/a&gt; and &lt;a href=&quot;https://www.varnish-cache.org/&quot; target=&quot;_blank&quot;&gt;Varnish Cache&lt;/a&gt; are my favourite examples. The standard use case which I saw during my career looks like this:&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;631&quot; height=&quot;192&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/caching-alternatives-varnish-locally.png&quot; alt=&quot;Nginx Caching: caching alternatives varnish locally&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You simply put the cache in front of the HTTP server. Either on the application server or on a specially dedicated machine:&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;631&quot; height=&quot;168&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/caching-alternatives-varnish-load-balancer.png&quot; alt=&quot;Nginx Caching: caching alternatives varnish load balancer&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;This obviously adds even more complexity to the system, but it might be a better fit to your case. Read, compare features and decide.&lt;/p&gt;
+
+&lt;p&gt;In this post we will focus our attention only on Nginx.&lt;/p&gt;
+
+&lt;h2 id=&quot;caching-with-nginx&quot;&gt;Caching with Nginx&lt;/h2&gt;
+
+&lt;p&gt;Nginx is a HTTP server and it’s brilliant for serving static files and proxying requests.
+Because of its asynchronous nature it stands out with a light-weight resource utilization.&lt;/p&gt;
+
+&lt;p&gt;When it comes to caching, Nginx has integrations for:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;HTTP servers&lt;/li&gt;
+  &lt;li&gt;FastCGI&lt;/li&gt;
+  &lt;li&gt;uwsgi&lt;/li&gt;
+  &lt;li&gt;SCGI&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Now that we know how caching works and what Nginx is. Let’s look at Nginx’s implementation of caching.&lt;/p&gt;
+
+&lt;p&gt;An example should make it clear. First the client does a request.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;493&quot; height=&quot;382&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-1.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;A sample HTTP request is presented on the diagram below:&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;373&quot; height=&quot;202&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/request.png&quot; alt=&quot;Nginx Caching: HTTP request visual example&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Based on some details from it Nginx generates a hash key.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;493&quot; height=&quot;382&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-2.png&quot; alt=&quot;Nginx Caching: how the cache key is created&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now Nginx checks if this hash key already exists in memory. If not, the request goes to the application.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;493&quot; height=&quot;382&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-3.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The application answers and its response is saved to the file system.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;493&quot; height=&quot;382&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-4.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Additionally the hash key, generated earlier, is saved into memory. To make it easier to understand I visualise the hash key value together with the location of the saved file. But remember that Nginx stores in memory only the hash key.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;493&quot; height=&quot;382&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-5.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Finally the user gets the response back.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;493&quot; height=&quot;382&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-6.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;When our client requests the same url a second time, Nginx again generates the hash key and checks if it exists in the memory. This time it’s there, so Nginx serves the cached file from the file system which is associated with the hash key.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;493&quot; height=&quot;382&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-7.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Please note that the second request doesn’t involve the application at all.&lt;/p&gt;
+
+&lt;p&gt;For the second request clients don’t wait for the application to first fetch data from the database and then render the page. Instead Nginx serves a static file with a cached version of the response.&lt;/p&gt;
+
+&lt;p&gt;Additionally those files are most probably cached in memory. This time not by Nginx (although it gives the OS some hints) but by the operating system. It’s a Linux’s attribute to use the resources as efficient as possible. This makes reading files from the file system extremely fast.&lt;/p&gt;
+
+&lt;h3 id=&quot;configuration---available-directives&quot;&gt;Configuration - Available Directives&lt;/h3&gt;
+
+&lt;p&gt;Now that we know the technical background, of how Nginx’s cache works, let’s see how we can configure it.&lt;/p&gt;
+
+&lt;p&gt;First on the &lt;code&gt;http&lt;/code&gt; level we define where the data should be stored. We specify the path on the file system and the memory zone and their size. The &lt;strong&gt;memory zone&lt;/strong&gt; stores &lt;strong&gt;only meta&lt;/strong&gt; information on cached items - hash keys.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
+&lt;br /&gt; Each item takes about &lt;code&gt;0.125 kB&lt;/code&gt; of memory so we can store a lot of them. In &lt;code&gt;1MB&lt;/code&gt; for example Nginx can store about &lt;code&gt;8000&lt;/code&gt; cache keys.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;basics&quot;&gt;Basics&lt;/h3&gt;
+
+&lt;p&gt;The basic cache definition looks like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_path /data/nginx/cache &lt;span class=&quot;nv&quot;&gt;keys_zone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;zone_name_one:10m&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;To enable it we just use the &lt;code&gt;proxy_cache&lt;/code&gt; directive.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache zone_name_one&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This video will show you the basics of Nginx caching.&lt;/p&gt;
+
+&lt;iframe width=&quot;853&quot; height=&quot;480&quot; src=&quot;https://www.youtube.com/embed/I07MEdsSMOs?rel=0&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+
+&lt;p&gt;The Github project mentioned in the video can be found &lt;a href=&quot;https://github.com/czerasz/nginx-caching-example&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;It’s also possible to limit the size of the file system used to store cached content, simply by adding the &lt;code&gt;max_size&lt;/code&gt; parameter.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_path /data/nginx/cache &lt;span class=&quot;nv&quot;&gt;keys_zone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;one:10m &lt;span class=&quot;code-highlight-red&quot;&gt;max_size=200m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Then we have also the option to say when files should be removed (from the cache regardless of their freshness) when they are not used for a specific amount of time.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_path /data/nginx/cache &lt;span class=&quot;nv&quot;&gt;keys_zone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;one:10m &lt;span class=&quot;code-highlight-red&quot;&gt;inactive=60m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And there is also a nice little parameter which let’s us define the hierarchy levels of a cache.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_path /data/nginx/cache &lt;span class=&quot;code-highlight-red&quot;&gt;levels=1:2&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keys_zone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;one:10m&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The image below illustrates the hierarchy levels configuration:&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;427&quot; height=&quot;102&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/levels-example-1.png&quot; alt=&quot;Nginx Caching: proxy_cache_path levels example&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Now let’s see if you understand it correctly. Ready for a quiz? Based on the illustration below, what should the levels parameter be?&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;427&quot; height=&quot;102&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/levels-example-2.png&quot; alt=&quot;Nginx Caching: proxy_cache_path levels example&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The answer is &lt;code&gt;2:4&lt;/code&gt;, which is more clear if we look at the following image:&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;427&quot; height=&quot;102&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/levels-example-3.png&quot; alt=&quot;Nginx Caching: proxy_cache_path levels example&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;whatwhen-to-cache&quot;&gt;What/When to cache?&lt;/h3&gt;
+
+&lt;p&gt;By default Nginx caches only GET and HEAD requests. You can change this with the &lt;code&gt;proxy_cache_methods&lt;/code&gt; directive:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_methods GET HEAD POST&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You can also instruct Nginx to cache the response only after it was requested at least 5 times. &lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_min_uses 5&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This would be useful in a situation where you have a lot of content, but you would only like to cache only those requests which are really popular.&lt;/p&gt;
+
+&lt;p&gt;Nginx can save us upstream bandwidth and disk writes as well. By respecting cache headers and &lt;code&gt;304, not modified&lt;/code&gt; responses Nginx will not download the content again if the following directive is turned on:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_revalidate on&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;how-to-cache&quot;&gt;How to cache?&lt;/h3&gt;
+
+&lt;p&gt;With Nginx we are not limited to cache everything by the same rule. Instead we can tell Nginx which information should be used to generate the hash key. And we can do it on the &lt;code&gt;http&lt;/code&gt;, &lt;code&gt;server&lt;/code&gt; or &lt;code&gt;location&lt;/code&gt; level. Here are two examples:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_key &lt;span class=&quot;s2&quot;&gt;&amp;quot;$host$request_uri$cookie_user&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_key &lt;span class=&quot;s2&quot;&gt;&amp;quot;$scheme$proxy_host$uri$is_args$args&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Tip&lt;/strong&gt;
+&lt;br /&gt;How to generate a Nginx cache hash key? Use this command:&lt;/p&gt;
+
+  &lt;pre&gt;&lt;code&gt;echo -n ‘httpczerasz.com/time.php’ | md5sum
+&lt;/code&gt;&lt;/pre&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;We can also tell Nginx, under which conditions the request shouldn’t be stored in the cache.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_no_cache &lt;span class=&quot;nv&quot;&gt;$http_pragma&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$http_authorization&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$cookie_nocache&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$arg_nocache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h3 id=&quot;how-long-to-cache&quot;&gt;How long to cache?&lt;/h3&gt;
+
+&lt;p&gt;There is a simple directive which tells Nginx how long to cache the responses of a certain type:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_valid any      1m&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+proxy_cache_valid &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;302&lt;/span&gt; 10m&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;But mainly the headers of the origin server define the cacheability of the content:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Expires&lt;/li&gt;
+  &lt;li&gt;Cache-Control&lt;/li&gt;
+  &lt;li&gt;X-Accel-Expires - Nginx special header.
+&lt;br /&gt;&lt;strong&gt;Overrides other headers&lt;/strong&gt;. Used when you need to serve different headers to the client.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;The priority of the mentioned options are presented on the chart below, with the strongest priority on top:&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;440&quot; height=&quot;600&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-priority.png&quot; alt=&quot;Nginx Caching: caching headers priority&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;other&quot;&gt;Other&lt;/h3&gt;
+
+&lt;p&gt;The following option adds a lot to the availability factor. It allows Nginx to serve stale (old, expired) content when the application response timed out or returned a &lt;code&gt;50x&lt;/code&gt; status code:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_use_stale error timeout&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Yet another cool feature is the ability to let only the first request through to the application. This can be enabled with:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_lock on&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You already know, that the returned content by the origin is streamed to disk. By default to a location defined in the &lt;code&gt;proxy_cache_path&lt;/code&gt; directive. You could also store those files in a temporary directory before they are moved to the cache path. If you need this behaviour use this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_temp_path /tmp/custom_cache/&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This directive works good with multiple caches. But remember that it will be always less efficient than if the temp path is the same as the cache path&lt;/p&gt;
+
+&lt;h2 id=&quot;debugging-nginx39s-cache&quot;&gt;Debugging Nginx&#39;s Cache&lt;/h2&gt;
+
+&lt;p&gt;I believe that debugging any software the right way is even more important than actually knowing the software itself. A good debugging process guarantees a better understanding and most important, solving challenges really fast.&lt;/p&gt;
+
+&lt;p&gt;In this chapter I will show you few tricks to easily debug Nginx’s caching wold.&lt;/p&gt;
+
+&lt;p&gt;The first trick is about bypassing the cache.&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_bypass &lt;span class=&quot;nv&quot;&gt;$arg_nocache&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$cookie_nocache&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$arg_comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The directive above allows you to specify when to omit the cache. This means that each request with a &lt;code&gt;nocache=true&lt;/code&gt; query parameter goes to the origin. It might even be that Nginx will cache the result as well.&lt;/p&gt;
+
+&lt;p&gt;Another trick is adding a header with cache status information. You can do it simply by adding a header:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;add_header X-Cache-Status &lt;span class=&quot;nv&quot;&gt;$upstream_cache_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Or in a more sophisticated way presented below, which allows only local requests to view the header:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;map &lt;span class=&quot;nv&quot;&gt;$remote_addr&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$cache_status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    127.0.0.1 &lt;span class=&quot;nv&quot;&gt;$upstream_cache_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    default &lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+...
+add_header X-Cache-Status &lt;span class=&quot;nv&quot;&gt;$cache_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;By debugging the &lt;code&gt;X-Cache-Status&lt;/code&gt; header you will appreciate the following table:&lt;/p&gt;
+
+&lt;table class=&quot;table  table-striped&quot;&gt;
+    &lt;tbody&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;strong&gt;MISS&lt;/strong&gt;&lt;/td&gt;
+            &lt;td&gt;Object was not found in the cache. Response was served from the origin. Response may have been saved to cache.&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;strong&gt;BYPASS&lt;/strong&gt;&lt;/td&gt;
+            &lt;td&gt;Got response from upstream. Response may have been saved to cache.&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;strong&gt;EXPIRED&lt;/strong&gt;&lt;/td&gt;
+            &lt;td&gt;Cached object has expired. Response was served from the upstream.&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;strong&gt;STALE&lt;/strong&gt;&lt;/td&gt;
+            &lt;td&gt;Object served from cache because of issues with origin server response&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;strong&gt;UPDATING&lt;/strong&gt;&lt;/td&gt;
+            &lt;td&gt;Serve stale content from cache because &lt;code&gt;proxy_cache_lock&lt;/code&gt; has timed out and &lt;code&gt;proxy_use_stale&lt;/code&gt; takes controll&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;strong&gt;REVALIDATED&lt;/strong&gt;&lt;/td&gt;
+            &lt;td&gt;&lt;code&gt;proxy_cache_revalidate&lt;/code&gt; verified that the current cached content was still valid&lt;/td&gt;
+        &lt;/tr&gt;
+        &lt;tr&gt;
+            &lt;td&gt;&lt;strong&gt;HIT&lt;/strong&gt;&lt;/td&gt;
+            &lt;td&gt;The object was found in the cache and it is served from there&lt;/td&gt;
+        &lt;/tr&gt;
+    &lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;In the following two chapters we will learn which processes are involved in the maintenance of cached files. This chapters are really short and right after we will jump into cool examples. So stay with me!&lt;/p&gt;
+
+&lt;h2 id=&quot;cache-loader&quot;&gt;Cache Loader&lt;/h2&gt;
+
+&lt;p&gt;The Nginx cache loader is a process responsible for loading cache from disk.&lt;/p&gt;
+
+&lt;p&gt;It is run only once (on startup) and loads the metadata into the memory zone. It runs in iterations until all keys are loaded.&lt;/p&gt;
+
+&lt;p&gt;We can tune it’s behaviour (to utilize CPU the right way) with the following options:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;loader_threshold&lt;/code&gt; - how long is one iteration time&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;loader_files&lt;/code&gt; - don’t load more items than&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;loader_sleeps&lt;/code&gt; - pause time between iterations&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;An example is presented below:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_path /data/nginx/cache &lt;span class=&quot;nv&quot;&gt;keys_zone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;one:10m &lt;span class=&quot;code-highlight-red&quot;&gt;[loader_files=number] [loader_sleep=time] [loader_threshold=time]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The comic below shows that the cache loader is used only on startup and that it works in iterations defined by the described parameters.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;839&quot; height=&quot;261&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-loader.png&quot; alt=&quot;Nginx Caching: how does the nginx cache loader works?&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;cache-manager&quot;&gt;Cache Manager&lt;/h2&gt;
+
+&lt;p&gt;The Nginx cache manager is a process which purges the cache over time.&lt;/p&gt;
+
+&lt;p&gt;It periodically checks file storage and removes least recently used data if the file size exceeds &lt;code&gt;max_size&lt;/code&gt;. It also removes files which were not used independently of the cache settings.&lt;/p&gt;
+
+&lt;p&gt;Watch the comic below which illustrates cache manager duties.&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;839&quot; height=&quot;261&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-manager.png&quot; alt=&quot;Nginx Caching: how does the nginx cache manager works?&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;examples&quot;&gt;Examples&lt;/h2&gt;
+
+&lt;p&gt;In this chapter I will present two real world examples. &lt;/p&gt;
+
+&lt;p&gt;The first one is based on what we have learned so far. We will see how to purge content which was previously cached. &lt;/p&gt;
+
+&lt;p&gt;The second example is a little bit more advanced. I shows how to build a small CDN based on Nginx.&lt;/p&gt;
+
+&lt;h3 id=&quot;how-to-create-a-small-cdn-with-nginx&quot;&gt;How to create a small CDN with Nginx?&lt;/h3&gt;
+
+&lt;p&gt;This example describes how Nginx can help you create a simple, file based CDN with static content.&lt;/p&gt;
+
+&lt;p&gt;Let’s assume we have a distributed file system cluster. It can be based on &lt;a href=&quot;http://en.wikipedia.org/wiki/Network_File_System&quot; target=&quot;_blank&quot;&gt;NFS&lt;/a&gt; or &lt;a href=&quot;http://www.gluster.org/&quot; target=&quot;_blank&quot;&gt;GlusterFS&lt;/a&gt; or on anything you prefer. One thing those technologies have in common is that they are slow. Luckily Nginx together with the Slow FS module can overcome this weakness by caching files from a network file system on the local drive.&lt;/p&gt;
+
+&lt;p&gt;For this example I prepared a project on Github which you can find &lt;a href=&quot;https://github.com/czerasz/nginx-slowfs-example/&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;. An overview is presented on the diagram below:&lt;/p&gt;
+
+&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-slowfs.png&quot; alt=&quot;Nginx Caching: nginx slowfs overview&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;To get started simply clone the repository:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;git clone git@github.com:czerasz/nginx-slowfs-example.git&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Once you have it go to the project’s directory and start the Docker container with:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;docker-compose up&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This might take a while because a Nginx compilation process takes place inside the container. To be able to use the slowfs feature we need to compile Nginx together with the &lt;a href=&quot;http://labs.frickle.com/nginx_ngx_slowfs_cache/&quot; target=&quot;_blank&quot;&gt;Slow FS module&lt;/a&gt;. This is done in the &lt;code&gt;Dockerfile&lt;/code&gt;. If you are interested how this is done check it out &lt;a href=&quot;https://github.com/czerasz/nginx-slowfs-example/blob/master/Dockerfile&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Then request Nginx with &lt;code&gt;curl&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;curl -i &lt;span class=&quot;s1&quot;&gt;&amp;#39;localhost:8000/test-file.txt&amp;#39;&lt;/span&gt;
+HTTP/1.1 &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; OK
+Server: nginx/1.6.2
+Date: Mon, &lt;span class=&quot;m&quot;&gt;23&lt;/span&gt; Mar &lt;span class=&quot;m&quot;&gt;2015&lt;/span&gt; 13:35:07 GMT
+Content-Type: text/plain
+Content-Length: 4
+Last-Modified: Mon, &lt;span class=&quot;m&quot;&gt;23&lt;/span&gt; Mar &lt;span class=&quot;m&quot;&gt;2015&lt;/span&gt; 12:48:15 GMT
+Connection: keep-alive
+Accept-Ranges: bytes
+
+&lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;What you see is (the content of) the file stored in the &quot;mounted&quot; &lt;a href=&quot;https://github.com/czerasz/nginx-slowfs-example/tree/master/nfs-dummy&quot; target=&quot;_blank&quot;&gt;&lt;code&gt;nfs-dummy&lt;/code&gt; directory&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;If this directory would be a busy NFS mount and the number of requests would be high, then the responses would be really slow.&lt;/p&gt;
+
+&lt;p&gt;But in our example the files are cached locally. You can inspect the cache directory with the following command:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;nginxslowfs_nginx_1 tree -A /data/cache/
+/data/cache/
+└── 1
+    └── 27
+        └── 2bba799df783554d8402137ca199a271&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The Nginx configuration for our example is simple and consists of two parts. The cache definition:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# Configure slowfs module&lt;/span&gt;
+slowfs_cache_path  /data/cache &lt;span class=&quot;nv&quot;&gt;levels&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1:2 &lt;span class=&quot;nv&quot;&gt;keys_zone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;fastcache:10m&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+slowfs_temp_path   /data/temp &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; 2&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And the cache enabling section:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;location / &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    root                /data/nfs&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    slowfs_cache        fastcache&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    slowfs_cache_key    &lt;span class=&quot;nv&quot;&gt;$uri&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    slowfs_cache_valid  1d&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+
+    index  index.html index.htm&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;One nifty feature of the Slow FS module is &lt;strong&gt;cache purging&lt;/strong&gt;. It can be enabled with the following configuration block:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;location ~ /purge&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;/.*&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    allow               127.0.0.1&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    deny                all&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    slowfs_cache_purge  fastcache &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This allows purging for internal requests&lt;/p&gt;
+
+&lt;p&gt;Let’s test it with &lt;code&gt;curl&lt;/code&gt; from inside of the docker container:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;nginxslowfs_nginx_1 curl -i &lt;span class=&quot;s1&quot;&gt;&amp;#39;localhost:80/purge/test-file.txt&amp;#39;&lt;/span&gt; 
+HTTP/1.1 &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; OK
+Server: nginx/1.6.2
+Date: Tue, &lt;span class=&quot;m&quot;&gt;24&lt;/span&gt; Mar &lt;span class=&quot;m&quot;&gt;2015&lt;/span&gt; 13:04:25 GMT
+Content-Type: text/html
+Content-Length: 263
+Connection: keep-alive
+
+&amp;lt;html&amp;gt;
+&amp;lt;head&amp;gt;&amp;lt;title&amp;gt;Successful purge&amp;lt;/title&amp;gt;&amp;lt;/head&amp;gt;
+&amp;lt;body &lt;span class=&quot;nv&quot;&gt;bgcolor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;white&amp;quot;&lt;/span&gt;&amp;gt;
+&amp;lt;center&amp;gt;&amp;lt;h1&amp;gt;Successful purge&amp;lt;/h1&amp;gt;
+&amp;lt;br&amp;gt;Key : /test-file.txt
+&amp;lt;br&amp;gt;Path: /data/cache/1/27/2bba799df783554d8402137ca199a271
+&amp;lt;/center&amp;gt;
+&amp;lt;hr&amp;gt;&amp;lt;center&amp;gt;nginx/1.6.2&amp;lt;/center&amp;gt;
+&amp;lt;/body&amp;gt;
+&amp;lt;/html&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Nginx says that it was successful but you can always double-check with the following command:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;nginxslowfs_nginx_1 tree -A /data/cache/                        
+/data/cache/
+└── 1
+    └── 27&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;h2 id=&quot;bonus&quot;&gt;Bonus&lt;/h2&gt;
+
+&lt;p&gt;Now, because you came so far, I would like to honour your effort. I want to appoint you as the Cache King of Nginx’s land.&lt;/p&gt;
+
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/crown-foto-preview.jpg&quot; alt=&quot;Nginx Caching: paper crown photo&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Please wear &lt;a href=&quot;/assets/1427711074107/caching-king-paper-crown.pdf&quot; target=&quot;_blank&quot;&gt;this crone&lt;/a&gt; with pride and swear to use cache wisely and spread its power all over the world.&lt;/p&gt;
+
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/crown-preview.png&quot; alt=&quot;Nginx Caching: paper crown template&quot; /&gt;&lt;/p&gt;
+
+&lt;h2 id=&quot;resources&quot;&gt;Resources:&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://nginx.com/resources/admin-guide/caching/&quot;&gt;NGINX Content Caching&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://nginx.org/en/docs/http/ngx_http_proxy_module.html&quot;&gt;Nginx Caching Manual&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://kura.io/2010/02/14/more-nginx-proxy_cache-optimizations-and-nginx-load-balancing/&quot;&gt;More nginx proxy_cache optimizations and nginx load balancing&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.digitalocean.com/community/tutorials/understanding-nginx-http-proxying-load-balancing-buffering-and-caching&quot;&gt;Understanding Nginx HTTP Proxying, Load Balancing, Buffering, and Caching&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Mon, 30 Mar 2015 00:00:00 +0200</pubDate>
+        <link>http://czerasz.com/2015/03/30/nginx-caching-tutorial/</link>
+        <guid isPermaLink="true">http://czerasz.com/2015/03/30/nginx-caching-tutorial/</guid>
+        
+        <category>nginx</category>
+        
+        <category>caching</category>
+        
+        <category>performance</category>
+        
+        <category>web server</category>
+        
+        
+      </item>
     
       <item>
         <title>New Face for czerasz.com - Logotype Analysis</title>
@@ -16,7 +499,7 @@
 
 &lt;p&gt;Today I have an important announcement: the website czerasz.com got a fresh face. We created a new logotype which respresents the things we believe in. Ladies and gentlemen here is the brand new appearance of czerasz.com:&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;new-logotype&quot; width=&quot;400&quot; height=&quot;300&quot; src=&quot;/assets/1424791161569/img/posts/new-logotype.png&quot; alt=&quot;new czerasz.com logotype&quot; title=&quot;&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;new-logotype&quot; width=&quot;400&quot; height=&quot;300&quot; src=&quot;/assets/1427711074107/img/posts/new-logotype.png&quot; alt=&quot;new czerasz.com logotype&quot; title=&quot;&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We thought that some of you might be interested in the paths which we followed to reach this goal.&lt;/p&gt;
 
@@ -24,7 +507,7 @@
 
 &lt;p&gt;The mind map below visualises the path from brand attributes, various associations to finally achieve the logotype we love.&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;logotype-mind-map&quot; width=&quot;100%&quot; src=&quot;/assets/1424791161569/img/posts/brand-mind-map.png&quot; alt=&quot;czerasz.com logotype mind-map&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;logotype-mind-map&quot; width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/brand-mind-map.png&quot; alt=&quot;czerasz.com logotype mind-map&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;During this process we used the following keywords:&lt;/p&gt;
 
@@ -42,7 +525,7 @@
 
 &lt;p&gt;Building on those entities we were able to combine the shapes into one clear homogeneous logotype.&lt;/p&gt;
 
-&lt;p&gt;You can find the above diagram/mind map also as a PDF version &lt;a href=&quot;/assets/1424791161569/brand-mind-map.pdf&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;You can find the above diagram/mind map also as a PDF version &lt;a href=&quot;/assets/1427711074107/brand-mind-map.pdf&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;The whole process was more complex but we wanted to share at least a part of it with you. The one which we think is the most important.&lt;/p&gt;
 
@@ -71,7 +554,7 @@
 &lt;p&gt;We will discuss five stages/phases which represent a typical Vagrant workflow/life cycle.
 &lt;br /&gt;They are presented on the diagram below.&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;image-vagrant-workflows-phases&quot; width=&quot;100%&quot; src=&quot;/assets/1424791161569/img/posts/vagrant-workflows-phases.png&quot; alt=&quot;five main phases in the vagrant workflow&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;image-vagrant-workflows-phases&quot; width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/vagrant-workflows-phases.png&quot; alt=&quot;five main phases in the vagrant workflow&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;
@@ -268,7 +751,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;We can summarize this chapter with this diagram:&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1424791161569/img/posts/vagrant-workflows-1st-run.png&quot; alt=&quot;Vagrant workflows 1st run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/vagrant-workflows-1st-run.png&quot; alt=&quot;Vagrant workflows 1st run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Please note the shaded element on the right side of the diagram above. By executing &lt;code&gt;vagrant up&lt;/code&gt; for the first time, vagrant will also trigger the provisioning process. But because we didn’t configure it yet it will not run - that’s why it’s makred it as disabled.&lt;/p&gt;
 
@@ -286,7 +769,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;In this chapter we want to achieve the &lt;strong&gt;Configured VM&lt;/strong&gt; state presented on the diagram below - we want to install/update software on our previously created virtual machine.&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1424791161569/img/posts/vagrant-workflows-full-run.png&quot; alt=&quot;Vagrant workflows full run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/vagrant-workflows-full-run.png&quot; alt=&quot;Vagrant workflows full run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As an example we will add a simple shell script which updates Ubuntu on every start (or provisioning) but just once a month.&lt;/p&gt;
 
@@ -380,7 +863,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;For those of you who are tough enough and reached the end of this article I prepared a bonus in form of a Vagrant life cycle diagram. It represents which command can be used during each phase of the Vagrant life cycle. Enjoy!&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1424791161569/img/posts/vagrant-main-workflow.png&quot; alt=&quot;&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/vagrant-main-workflow.png&quot; alt=&quot;&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 </description>
         <pubDate>Tue, 06 Jan 2015 00:00:00 +0100</pubDate>
         <link>http://czerasz.com/2015/01/06/vagrant-workflows/</link>
@@ -423,7 +906,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;The diagram below helps you understand this simple but effective logic:&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1424791161569/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;requirements&quot;&gt;Requirements&lt;/h3&gt;
 
@@ -1439,8 +1922,8 @@ Response from: web-server
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
 &lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; 
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;script_dirirectory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;$( cd &amp;quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt; dirname &lt;span class=&quot;s2&quot;&gt;&amp;quot;$0&amp;quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot; &amp;amp;&amp;amp; pwd )&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;project_dirirectory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$script_dirirectory&lt;/span&gt;/..&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;script_directory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;$( cd &amp;quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt; dirname &lt;span class=&quot;s2&quot;&gt;&amp;quot;$0&amp;quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot; &amp;amp;&amp;amp; pwd )&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;project_directory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$script_directory&lt;/span&gt;/..&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Thanks to a cool &lt;a href=&quot;http://www.sublimetext.com/3&quot;&gt;Sublime&lt;/a&gt; package called &lt;a href=&quot;https://github.com/weslly/Nettuts-Fetch&quot;&gt;Fetch&lt;/a&gt; I can reuse this template by taking just two steps.
 You can reuse my &lt;a href=&quot;https://github.com/weslly/Nettuts-Fetch&quot;&gt;Fetch&lt;/a&gt; config which looks like this:&lt;/p&gt;
