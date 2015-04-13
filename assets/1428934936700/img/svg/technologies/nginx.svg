@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" height="80" width="162" version="1.1" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/">
+ <g transform="translate(0,-972.36218)">
+  <g transform="matrix(0.77309235,0,0,0.77309235,36.529532,1003.0141)">
+   <g display="none" transform="translate(-11.56225,-11.12422)">
+    <g stroke-linejoin="miter" stroke="#000" stroke-linecap="butt" stroke-width="1px" fill="none">
+     <path d="m3.7946,10.71,156.79,0"/>
+     <path d="m3.6553,35.734,156.79,0"/>
+     <path d="m-10.357,23.222,156.79,0"/>
+    </g>
+   </g>
+   <g transform="translate(-11.56225,-11.12422)">
+    <path id="path2996-4" stroke-linejoin="round" d="m14.048,32.728,0-19.065,19.062,19.065,0-19.065" stroke="#090" stroke-linecap="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="5" fill="none"/>
+    <path style="baseline-shift:baseline;block-progression:tb;color:#000000;direction:ltr;text-indent:0;text-align:start;enable-background:accumulate;text-transform:none;" d="M44.688,11.188,44,12.469,38.688,22.125,38,23.344,38.688,24.562,44,33.906l0.71875,1.2812h1.4688,10.875,1.5625l0.6875-1.4062,3.9688-8,1.7812-3.625h-4.0312l-10.158,0.032c-1.3208-0.01868-2.5356,1.1791-2.5356,2.5s1.2148,2.5187,2.5356,2.5l6.125-0.032-1.5,3.0312h-7.875l-3.9062-6.875,3.9375-7.125h8.3772l1.9531,4.0078h5.0312l-3.1719-7.6016-0.6875-1.4062h-1.5625-11.408z" fill="#090"/>
+    <path style="baseline-shift:baseline;block-progression:tb;color:#000000;direction:ltr;text-indent:0;text-align:start;enable-background:accumulate;text-transform:none;" d="m70.014,11.156c-1.309,0.01639-2.4851,1.2223-2.4688,2.5312v6.5145h5v-6.5145c0.01659-1.3298-1.2014-2.5478-2.5312-2.5312z" fill="#090"/>
+    <use xlink:href="#path2996-4" transform="matrix(-1,0,0,1,111.13905,0.04841623)" height="1052.3622" width="744.09448" y="0" x="0"/>
+    <g transform="translate(0.10586251,0.33010228)">
+     <path id="path2996-1-8" stroke-linejoin="round" d="m104.91,13.374,19.085,19.018" stroke="#090" stroke-linecap="round" stroke-miterlimit="4" stroke-dasharray="none" stroke-width="5" fill="none"/>
+     <use xlink:href="#path2996-1-8" transform="matrix(-1,0,0,1,228.92583,0)" height="1052.3622" width="744.09448" y="0" x="0"/>
+    </g>
+    <path style="baseline-shift:baseline;block-progression:tb;color:#000000;direction:ltr;text-indent:0;text-align:start;enable-background:accumulate;text-transform:none;" d="m70.014,35.204c-1.309-0.01639-2.4851-1.2223-2.4688-2.5312v-10.464h5v10.464c0.01659,1.3298-1.2014,2.5478-2.5312,2.5312z" fill="#090"/>
+   </g>
+  </g>
+ </g>
+</svg>

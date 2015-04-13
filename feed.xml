@@ -6,8 +6,8 @@
 </description>
     <link>http://czerasz.com/</link>
     <atom:link href="http://czerasz.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 30 Mar 2015 12:24:36 +0200</pubDate>
-    <lastBuildDate>Mon, 30 Mar 2015 12:24:36 +0200</lastBuildDate>
+    <pubDate>Mon, 13 Apr 2015 16:22:18 +0200</pubDate>
+    <lastBuildDate>Mon, 13 Apr 2015 16:22:18 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -32,30 +32,30 @@
 
 &lt;p&gt;Ok, having this in mind let’s start with our initial situation, with no caching involved, which looks like this. &lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;301&quot; height=&quot;60&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/initial-situation-request.png&quot; alt=&quot;Nginx Caching: initial situation application request&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/initial-situation-request.png&quot; alt=&quot;Nginx Caching: initial situation application request&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The user does a request to the application and gets a response back.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;301&quot; height=&quot;60&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/initial-situation-response.png&quot; alt=&quot;Nginx Caching: initial situation application response&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/initial-situation-response.png&quot; alt=&quot;Nginx Caching: initial situation application response&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Adding caching to this scenario is a simple way to improve performance, capacity and availability.
 It works by saving responses from servers or applications to local storage or memory.&lt;/p&gt;
 
 &lt;p&gt;Let’s consider this simple situation. The client does a request to the application like in the previous example but this time he goes through the cache.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;466&quot; height=&quot;60&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/caching-intro-first-request.png&quot; alt=&quot;Nginx Caching: caching intro first request&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/caching-intro-first-request.png&quot; alt=&quot;Nginx Caching: caching intro first request&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The application responses and the cache forwards this response to the client but it also saves it locally.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;466&quot; height=&quot;200&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/caching-intro-first-response.png&quot; alt=&quot;Nginx Caching: caching intro first response&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/caching-intro-first-response.png&quot; alt=&quot;Nginx Caching: caching intro first response&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Next time the user does the same request the cache checks if it already has this information.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;466&quot; height=&quot;200&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/caching-intro-second-request.png&quot; alt=&quot;Nginx Caching: caching intro second request&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/caching-intro-second-request.png&quot; alt=&quot;Nginx Caching: caching intro second request&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;And if that’s the case, it responds immediately to the user, by serving this cached content.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;466&quot; height=&quot;200&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/caching-intro-second-response.png&quot; alt=&quot;Nginx Caching: caching intro second response&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/caching-intro-second-response.png&quot; alt=&quot;Nginx Caching: caching intro second response&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Please note that the second request doesn’t involve the application at all.&lt;/p&gt;
 
@@ -69,11 +69,11 @@ It works by saving responses from servers or applications to local storage or me
 
 &lt;p&gt;Before we start with Nginx, I want to mention that there are also alternatives for caching content. &lt;a href=&quot;http://www.squid-cache.org/&quot; target=&quot;_blank&quot;&gt;Squid Cache&lt;/a&gt; and &lt;a href=&quot;https://www.varnish-cache.org/&quot; target=&quot;_blank&quot;&gt;Varnish Cache&lt;/a&gt; are my favourite examples. The standard use case which I saw during my career looks like this:&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;631&quot; height=&quot;192&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/caching-alternatives-varnish-locally.png&quot; alt=&quot;Nginx Caching: caching alternatives varnish locally&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/caching-alternatives-varnish-locally.png&quot; alt=&quot;Nginx Caching: caching alternatives varnish locally&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;You simply put the cache in front of the HTTP server. Either on the application server or on a specially dedicated machine:&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;631&quot; height=&quot;168&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/caching-alternatives-varnish-load-balancer.png&quot; alt=&quot;Nginx Caching: caching alternatives varnish load balancer&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/caching-alternatives-varnish-load-balancer.png&quot; alt=&quot;Nginx Caching: caching alternatives varnish load balancer&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;This obviously adds even more complexity to the system, but it might be a better fit to your case. Read, compare features and decide.&lt;/p&gt;
 
@@ -97,35 +97,35 @@ Because of its asynchronous nature it stands out with a light-weight resource ut
 
 &lt;p&gt;An example should make it clear. First the client does a request.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;493&quot; height=&quot;382&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-1.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-1.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;A sample HTTP request is presented on the diagram below:&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;373&quot; height=&quot;202&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/request.png&quot; alt=&quot;Nginx Caching: HTTP request visual example&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/request.png&quot; alt=&quot;Nginx Caching: HTTP request visual example&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Based on some details from it Nginx generates a hash key.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;493&quot; height=&quot;382&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-2.png&quot; alt=&quot;Nginx Caching: how the cache key is created&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-2.png&quot; alt=&quot;Nginx Caching: how the cache key is created&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Now Nginx checks if this hash key already exists in memory. If not, the request goes to the application.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;493&quot; height=&quot;382&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-3.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-3.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The application answers and its response is saved to the file system.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;493&quot; height=&quot;382&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-4.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-4.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Additionally the hash key, generated earlier, is saved into memory. To make it easier to understand I visualise the hash key value together with the location of the saved file. But remember that Nginx stores in memory only the hash key.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;493&quot; height=&quot;382&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-5.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-5.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Finally the user gets the response back.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;493&quot; height=&quot;382&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-6.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; rc=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-6.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;When our client requests the same url a second time, Nginx again generates the hash key and checks if it exists in the memory. This time it’s there, so Nginx serves the cached file from the file system which is associated with the hash key.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;493&quot; height=&quot;382&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-7.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-7.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Please note that the second request doesn’t involve the application at all.&lt;/p&gt;
 
@@ -156,7 +156,9 @@ Because of its asynchronous nature it stands out with a light-weight resource ut
 
 &lt;p&gt;This video will show you the basics of Nginx caching.&lt;/p&gt;
 
-&lt;iframe width=&quot;853&quot; height=&quot;480&quot; src=&quot;https://www.youtube.com/embed/I07MEdsSMOs?rel=0&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+&lt;div class=&quot;embed-responsive embed-responsive-16by9&quot;&gt;
+    &lt;iframe class=&quot;embed-responsive-item&quot; src=&quot;https://www.youtube.com/embed/I07MEdsSMOs?rel=0&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
+&lt;/div&gt;
 
 &lt;p&gt;The Github project mentioned in the video can be found &lt;a href=&quot;https://github.com/czerasz/nginx-caching-example&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
@@ -174,15 +176,15 @@ Because of its asynchronous nature it stands out with a light-weight resource ut
 
 &lt;p&gt;The image below illustrates the hierarchy levels configuration:&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;427&quot; height=&quot;102&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/levels-example-1.png&quot; alt=&quot;Nginx Caching: proxy_cache_path levels example&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/levels-example-1.png&quot; alt=&quot;Nginx Caching: proxy_cache_path levels example&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Now let’s see if you understand it correctly. Ready for a quiz? Based on the illustration below, what should the levels parameter be?&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;427&quot; height=&quot;102&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/levels-example-2.png&quot; alt=&quot;Nginx Caching: proxy_cache_path levels example&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/levels-example-2.png&quot; alt=&quot;Nginx Caching: proxy_cache_path levels example&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;The answer is &lt;code&gt;2:4&lt;/code&gt;, which is more clear if we look at the following image:&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;427&quot; height=&quot;102&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/levels-example-3.png&quot; alt=&quot;Nginx Caching: proxy_cache_path levels example&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/levels-example-3.png&quot; alt=&quot;Nginx Caching: proxy_cache_path levels example&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;whatwhen-to-cache&quot;&gt;What/When to cache?&lt;/h3&gt;
 
@@ -238,7 +240,7 @@ proxy_cache_valid &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span clas
 
 &lt;p&gt;The priority of the mentioned options are presented on the chart below, with the strongest priority on top:&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;440&quot; height=&quot;600&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-cache-priority.png&quot; alt=&quot;Nginx Caching: caching headers priority&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-priority.png&quot; alt=&quot;Nginx Caching: caching headers priority&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;other&quot;&gt;Other&lt;/h3&gt;
 
@@ -338,7 +340,7 @@ add_header X-Cache-Status &lt;span class=&quot;nv&quot;&gt;$cache_status&lt;/spa
 
 &lt;p&gt;The comic below shows that the cache loader is used only on startup and that it works in iterations defined by the described parameters.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;839&quot; height=&quot;261&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-loader.png&quot; alt=&quot;Nginx Caching: how does the nginx cache loader works?&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-loader.png&quot; alt=&quot;Nginx Caching: how does the nginx cache loader works?&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;cache-manager&quot;&gt;Cache Manager&lt;/h2&gt;
 
@@ -348,7 +350,7 @@ add_header X-Cache-Status &lt;span class=&quot;nv&quot;&gt;$cache_status&lt;/spa
 
 &lt;p&gt;Watch the comic below which illustrates cache manager duties.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;839&quot; height=&quot;261&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-manager.png&quot; alt=&quot;Nginx Caching: how does the nginx cache manager works?&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-manager.png&quot; alt=&quot;Nginx Caching: how does the nginx cache manager works?&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;examples&quot;&gt;Examples&lt;/h2&gt;
 
@@ -366,7 +368,7 @@ add_header X-Cache-Status &lt;span class=&quot;nv&quot;&gt;$cache_status&lt;/spa
 
 &lt;p&gt;For this example I prepared a project on Github which you can find &lt;a href=&quot;https://github.com/czerasz/nginx-slowfs-example/&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;. An overview is presented on the diagram below:&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy&quot; itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/nginx-slowfs.png&quot; alt=&quot;Nginx Caching: nginx slowfs overview&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-slowfs.png&quot; alt=&quot;Nginx Caching: nginx slowfs overview&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;To get started simply clone the repository:&lt;/p&gt;
 
@@ -463,11 +465,11 @@ Connection: keep-alive
 
 &lt;p&gt;Now, because you came so far, I would like to honour your effort. I want to appoint you as the Cache King of Nginx’s land.&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/crown-foto-preview.jpg&quot; alt=&quot;Nginx Caching: paper crown photo&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/crown-foto-preview.jpg&quot; alt=&quot;Nginx Caching: paper crown photo&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Please wear &lt;a href=&quot;/assets/1427711074107/caching-king-paper-crown.pdf&quot; target=&quot;_blank&quot;&gt;this crone&lt;/a&gt; with pride and swear to use cache wisely and spread its power all over the world.&lt;/p&gt;
+&lt;p&gt;Please wear &lt;a href=&quot;/assets/1428934936700/caching-king-paper-crown.pdf&quot; target=&quot;_blank&quot;&gt;this crone&lt;/a&gt; with pride and swear to use cache wisely and spread its power all over the world.&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/nginx-caching/crown-preview.png&quot; alt=&quot;Nginx Caching: paper crown template&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/crown-preview.png&quot; alt=&quot;Nginx Caching: paper crown template&quot; /&gt;&lt;/p&gt;
 
 &lt;h2 id=&quot;resources&quot;&gt;Resources:&lt;/h2&gt;
 
@@ -499,7 +501,7 @@ Connection: keep-alive
 
 &lt;p&gt;Today I have an important announcement: the website czerasz.com got a fresh face. We created a new logotype which respresents the things we believe in. Ladies and gentlemen here is the brand new appearance of czerasz.com:&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;new-logotype&quot; width=&quot;400&quot; height=&quot;300&quot; src=&quot;/assets/1427711074107/img/posts/new-logotype.png&quot; alt=&quot;new czerasz.com logotype&quot; title=&quot;&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;new-logotype&quot; width=&quot;400&quot; height=&quot;300&quot; src=&quot;/assets/1428934936700/img/posts/new-logotype.png&quot; alt=&quot;new czerasz.com logotype&quot; title=&quot;&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;We thought that some of you might be interested in the paths which we followed to reach this goal.&lt;/p&gt;
 
@@ -507,7 +509,7 @@ Connection: keep-alive
 
 &lt;p&gt;The mind map below visualises the path from brand attributes, various associations to finally achieve the logotype we love.&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;logotype-mind-map&quot; width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/brand-mind-map.png&quot; alt=&quot;czerasz.com logotype mind-map&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;logotype-mind-map&quot; width=&quot;100%&quot; src=&quot;/assets/1428934936700/img/posts/brand-mind-map.png&quot; alt=&quot;czerasz.com logotype mind-map&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;During this process we used the following keywords:&lt;/p&gt;
 
@@ -525,7 +527,7 @@ Connection: keep-alive
 
 &lt;p&gt;Building on those entities we were able to combine the shapes into one clear homogeneous logotype.&lt;/p&gt;
 
-&lt;p&gt;You can find the above diagram/mind map also as a PDF version &lt;a href=&quot;/assets/1427711074107/brand-mind-map.pdf&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;You can find the above diagram/mind map also as a PDF version &lt;a href=&quot;/assets/1428934936700/brand-mind-map.pdf&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
 
 &lt;p&gt;The whole process was more complex but we wanted to share at least a part of it with you. The one which we think is the most important.&lt;/p&gt;
 
@@ -554,7 +556,7 @@ Connection: keep-alive
 &lt;p&gt;We will discuss five stages/phases which represent a typical Vagrant workflow/life cycle.
 &lt;br /&gt;They are presented on the diagram below.&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;image-vagrant-workflows-phases&quot; width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/vagrant-workflows-phases.png&quot; alt=&quot;five main phases in the vagrant workflow&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;image-vagrant-workflows-phases&quot; width=&quot;100%&quot; src=&quot;/assets/1428934936700/img/posts/vagrant-workflows-phases.png&quot; alt=&quot;five main phases in the vagrant workflow&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;
@@ -751,7 +753,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;We can summarize this chapter with this diagram:&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/vagrant-workflows-1st-run.png&quot; alt=&quot;Vagrant workflows 1st run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1428934936700/img/posts/vagrant-workflows-1st-run.png&quot; alt=&quot;Vagrant workflows 1st run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Please note the shaded element on the right side of the diagram above. By executing &lt;code&gt;vagrant up&lt;/code&gt; for the first time, vagrant will also trigger the provisioning process. But because we didn’t configure it yet it will not run - that’s why it’s makred it as disabled.&lt;/p&gt;
 
@@ -769,7 +771,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;In this chapter we want to achieve the &lt;strong&gt;Configured VM&lt;/strong&gt; state presented on the diagram below - we want to install/update software on our previously created virtual machine.&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/vagrant-workflows-full-run.png&quot; alt=&quot;Vagrant workflows full run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1428934936700/img/posts/vagrant-workflows-full-run.png&quot; alt=&quot;Vagrant workflows full run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As an example we will add a simple shell script which updates Ubuntu on every start (or provisioning) but just once a month.&lt;/p&gt;
 
@@ -863,7 +865,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;For those of you who are tough enough and reached the end of this article I prepared a bonus in form of a Vagrant life cycle diagram. It represents which command can be used during each phase of the Vagrant life cycle. Enjoy!&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/vagrant-main-workflow.png&quot; alt=&quot;&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1428934936700/img/posts/vagrant-main-workflow.png&quot; alt=&quot;&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 </description>
         <pubDate>Tue, 06 Jan 2015 00:00:00 +0100</pubDate>
         <link>http://czerasz.com/2015/01/06/vagrant-workflows/</link>
@@ -906,7 +908,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;The diagram below helps you understand this simple but effective logic:&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1427711074107/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1428934936700/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;requirements&quot;&gt;Requirements&lt;/h3&gt;
 
