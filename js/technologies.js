@@ -2,11 +2,16 @@ $(document).ready(function(){
   $('#technologies').slick({
       centerMode: true
     , centerPadding: 0
-    , slidesToShow: 3
 
+    , slidesToShow: 3
     , slidesToScroll: 1
+    // , infinite: true
+
     , autoplay: true
-    , autoplaySpeed: 4000 // 4s
+    , autoplaySpeed: 1000 // 1s
+    , fade: false
+
+    , arrows: false
 
     // TODO: add responsive
     // responsive: [

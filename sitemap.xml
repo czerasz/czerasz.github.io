@@ -3,24 +3,9 @@
   
     
     <url>
-      <loc>http://czerasz.com/2015/03/30/nginx-caching-tutorial/</loc>
+      <loc>http://czerasz.com/2015/04/21/nginx-maintenance-mode/</loc>
       
-        <lastmod>2015-03-30T00:00:00+02:00</lastmod>
-      
-      
-        <changefreq>weekly</changefreq>
-      
-      
-        <priority>0.6</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>http://czerasz.com/2015/02/12/new-czerasz-logotype/</loc>
-      
-        <lastmod>2015-02-12T00:00:00+01:00</lastmod>
+        <lastmod>2015-04-21T00:00:00+02:00</lastmod>
       
       
         <changefreq>weekly</changefreq>
@@ -109,9 +94,9 @@
   
     
     <url>
-      <loc>http://czerasz.com/favicon/browserconfig/</loc>
+      <loc>http://czerasz.com/feed.xml</loc>
       
-        <lastmod>2015-04-13T16:22:18+02:00</lastmod>
+        <lastmod>2015-06-12T14:48:06+02:00</lastmod>
       
       
         <changefreq>weekly</changefreq>
@@ -124,15 +109,30 @@
   
     
     <url>
-      <loc>http://czerasz.com/feed.xml</loc>
+      <loc>http://czerasz.com/contact/</loc>
       
-        <lastmod>2015-04-13T16:22:18+02:00</lastmod>
+        <lastmod>2015-06-12T14:48:06+02:00</lastmod>
       
       
         <changefreq>weekly</changefreq>
       
       
-        <priority>0.6</priority>
+        <priority>0.8</priority>
+      
+    </url>
+    
+  
+    
+    <url>
+      <loc>http://czerasz.com/about/</loc>
+      
+        <lastmod>2015-06-12T14:48:06+02:00</lastmod>
+      
+      
+        <changefreq>weekly</changefreq>
+      
+      
+        <priority>0.8</priority>
       
     </url>
     
@@ -141,7 +141,7 @@
     <url>
       <loc>http://czerasz.com/</loc>
       
-        <lastmod>2015-04-13T16:22:18+02:00</lastmod>
+        <lastmod>2015-06-12T14:48:06+02:00</lastmod>
       
       
         <changefreq>daily</changefreq>
@@ -154,39 +154,9 @@
   
     
     <url>
-      <loc>http://czerasz.com/about/</loc>
-      
-        <lastmod>2015-04-13T16:22:18+02:00</lastmod>
-      
-      
-        <changefreq>weekly</changefreq>
-      
-      
-        <priority>0.8</priority>
-      
-    </url>
-    
-  
-    
-    <url>
-      <loc>http://czerasz.com/contact/</loc>
-      
-        <lastmod>2015-04-13T16:22:18+02:00</lastmod>
-      
-      
-        <changefreq>weekly</changefreq>
-      
-      
-        <priority>0.8</priority>
-      
-    </url>
-    
-  
-    
-    <url>
       <loc>http://czerasz.com/blog/</loc>
       
-        <lastmod>2015-04-13T16:22:18+02:00</lastmod>
+        <lastmod>2015-06-12T14:48:06+02:00</lastmod>
       
       
         <changefreq>daily</changefreq>
@@ -199,24 +169,9 @@
   
     
     <url>
-      <loc>http://czerasz.com/favicon/manifest/</loc>
-      
-        <lastmod>2015-04-13T16:22:18+02:00</lastmod>
-      
-      
-        <changefreq>weekly</changefreq>
-      
-      
-        <priority>0.6</priority>
-      
-    </url>
-    
-  
-    
-    <url>
       <loc>http://czerasz.com/robots.txt</loc>
       
-        <lastmod>2015-04-13T16:22:18+02:00</lastmod>
+        <lastmod>2015-06-12T14:48:06+02:00</lastmod>
       
       
         <changefreq>weekly</changefreq>

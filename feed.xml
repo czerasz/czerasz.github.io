@@ -6,541 +6,423 @@
 </description>
     <link>http://czerasz.com/</link>
     <atom:link href="http://czerasz.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 13 Apr 2015 16:22:18 +0200</pubDate>
-    <lastBuildDate>Mon, 13 Apr 2015 16:22:18 +0200</lastBuildDate>
+    <pubDate>Fri, 12 Jun 2015 14:48:06 +0200</pubDate>
+    <lastBuildDate>Fri, 12 Jun 2015 14:48:06 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
-        <title>Nginx Caching Tutorial - You Can Run Faster</title>
-        <description>&lt;p class=&quot;post__tldr&quot; itemprop=&quot;description&quot;&gt;Let&#39;s dive together into the world of web content caching with Nginx. Starting with basics we will quickly move to more advanced topics and see some real world examples. If you can make it to the end of this blog post... You will bear the title of a &quot;Caching King&quot;.&lt;/p&gt;
+        <title>Nginx Maintenance Mode with Integration Testing</title>
+        <description>&lt;p class=&quot;post__tldr&quot; itemprop=&quot;description&quot;&gt;This article shows how to enable a maintenance page in Nginx over HTTP and how to test such Nginx configuration with the Bats testing framework.&lt;/p&gt;
 
 &lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
 
-&lt;p&gt;Let me start with an inspiring story.&lt;/p&gt;
+&lt;p&gt;Whenever possible avoid downtime!&lt;/p&gt;
 
-&lt;blockquote&gt;
-  &lt;p&gt;A friend of mine took a contract for creating a simple web application. This app was used during a crowdfunding event, to visualize live statistics about the raised money for a children hospital. People donated money and the total amount with other details were displayed on a big screen. Additionally this service was available online. The application was very simple and the server strong. Luckily the generosity and love were much bigger. The server started to slow down. My friend got in panic but he found a clever and easy solution - he used Nginx’s caching capabilities.&lt;/p&gt;
-&lt;/blockquote&gt;
+&lt;p&gt;However sometimes it just happens so that we need to take our service offline for at least a few minutes of maintenance. To be able to act professionally in such situations we can configure Nginx, the popular web server to show a special maintenance page for all incoming requests. This page will inform users and search engine bots that our site is temporary down and will be back soon.&lt;/p&gt;
 
-&lt;p&gt;Today I will show you how to make the internet faster and more stable. How you can easily adapt Nginx’s caching, to boost your applications.&lt;/p&gt;
+&lt;p&gt;There is a really great &lt;a href=&quot;http://www.smashingmagazine.com/2009/06/12/effective-maintenance-pages-examples-and-best-practices/&quot; target=&quot;_blank&quot;&gt;article about effective maintenance pages&lt;/a&gt; with a bunch of tips which allow you to design the perfect maintenance page for your service. Proper communication is as important as a stable technical integration.&lt;/p&gt;
 
-&lt;p&gt;We will start with caching concepts and then jump into available Nginx caching configuration - directives. I will explain why they are useful and how you can profit from them. Armored with the right knowledge we will fight our way through a real world example.&lt;/p&gt;
+&lt;p&gt;Let’s quickly go through our plan for today.&lt;/p&gt;
 
-&lt;h2 id=&quot;the-caching-concept&quot;&gt;The Caching Concept&lt;/h2&gt;
+&lt;p&gt;Our initial situation is presented on the diagram below.&lt;/p&gt;
 
-&lt;p&gt;Before we start I need to make an a priori assumption. Namely that the content is quasi real time. This means that our data or if you wish our HTTP responses, do not change so often. Please note that the phrase &quot;not so often&quot; is not a strict definition. It can be 1 second, 1 hour, 1 week etc.&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1434113284585/img/posts/nginx-maintenance-mode/initial-situation.png&quot; alt=&quot;Nginx Maintenance Mode: initial situation application request&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Ok, having this in mind let’s start with our initial situation, with no caching involved, which looks like this. &lt;/p&gt;
+&lt;p&gt;For the sake of simplicity I have chosen the simplest scenario - one web application behind an Nginx server. The implementation for a more complex infrastructure is analogous and should be as simple as the one presented in this article. But if you have any troubles feel free to &lt;a href=&quot;/contact&quot;&gt;contact me&lt;/a&gt;. I’m sure I will be able to help.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/initial-situation-request.png&quot; alt=&quot;Nginx Caching: initial situation application request&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;And here comes the best part. With a simple HTTP &lt;code&gt;PUT&lt;/code&gt; request we can enable the Nginx’s maintenance mode.&lt;/p&gt;
 
-&lt;p&gt;The user does a request to the application and gets a response back.&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1434113284585/img/posts/nginx-maintenance-mode/enable-nginx-maintenance-mode-over-http.png&quot; alt=&quot;Nginx Maintenance Mode: enable maintenance mode with an http request&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/initial-situation-response.png&quot; alt=&quot;Nginx Caching: initial situation application response&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;From now on all responses will contain the content of the &lt;code&gt;/usr/share/nginx/html/maintenance.html&lt;/code&gt; file and will be returned with the &lt;code&gt;503&lt;/code&gt; status code.&lt;/p&gt;
 
-&lt;p&gt;Adding caching to this scenario is a simple way to improve performance, capacity and availability.
-It works by saving responses from servers or applications to local storage or memory.&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1434113284585/img/posts/nginx-maintenance-mode/nginx-maintenance-mode.png&quot; alt=&quot;Nginx Maintenance Mode: how maintenance mode works&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;Let’s consider this simple situation. The client does a request to the application like in the previous example but this time he goes through the cache.&lt;/p&gt;
+&lt;p&gt;For the full understanding the diagram above contains also the light blue path which represents the normal situation.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/caching-intro-first-request.png&quot; alt=&quot;Nginx Caching: caching intro first request&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;The maintenance mode persists until we disable it with an HTTP &lt;code&gt;DELETE&lt;/code&gt; request.&lt;/p&gt;
 
-&lt;p&gt;The application responses and the cache forwards this response to the client but it also saves it locally.&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1434113284585/img/posts/nginx-maintenance-mode/disable-nginx-maintenance-mode-over-http.png&quot; alt=&quot;Nginx Maintenance Mode: disable maintenance mode with an http request&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/caching-intro-first-response.png&quot; alt=&quot;Nginx Caching: caching intro first response&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;Now for a better overview let’s see everything at once. The following sequential diagram shows the full situation described in this chapter:&lt;/p&gt;
 
-&lt;p&gt;Next time the user does the same request the cache checks if it already has this information.&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1434113284585/img/posts/nginx-maintenance-mode/sequential-diagram.png&quot; alt=&quot;Nginx Maintenance Mode: sequential diagram&quot; /&gt;&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/caching-intro-second-request.png&quot; alt=&quot;Nginx Caching: caching intro second request&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;In this diagram the HTTP &lt;code&gt;PUT&lt;/code&gt; and &lt;code&gt;DELETE&lt;/code&gt; requests are fetched by the same client for the sake of simplicity. In a real world those requests are only available to the appropriate person/service.&lt;/p&gt;
 
-&lt;p&gt;And if that’s the case, it responds immediately to the user, by serving this cached content.&lt;/p&gt;
+&lt;h2 id=&quot;preparation-and-infrastructure&quot;&gt;Preparation and Infrastructure&lt;/h2&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/caching-intro-second-response.png&quot; alt=&quot;Nginx Caching: caching intro second response&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;The source code for the example presented in this article is available in the &lt;code&gt;0.0.1&lt;/code&gt; release of my &lt;a href=&quot;https://github.com/czerasz/nginx-configuration-examples/tree/0.0.1&quot; target=&quot;_blank&quot;&gt;Nginx Configuration Examples Github project&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;Please note that the second request doesn’t involve the application at all.&lt;/p&gt;
+&lt;p&gt;Simply clone the git repository with this command:&lt;/p&gt;
 
-&lt;p&gt;Caching adds complexity to the system but it comes with great &lt;strong&gt;benefits&lt;/strong&gt;:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;git clone --branch 0.0.1 git@github.com:czerasz/nginx-configuration-examples.git&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;it improves site performance&lt;/strong&gt; - requests doesn’t have to go through the whole rendering process&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;it increases capacity&lt;/strong&gt; - by reducing load on origin servers&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;it also gives greater availability&lt;/strong&gt; - by serving stale content when the origin server is down&lt;/li&gt;
-&lt;/ul&gt;
+&lt;p&gt;The project structure looks like this:&lt;/p&gt;
 
-&lt;p&gt;Before we start with Nginx, I want to mention that there are also alternatives for caching content. &lt;a href=&quot;http://www.squid-cache.org/&quot; target=&quot;_blank&quot;&gt;Squid Cache&lt;/a&gt; and &lt;a href=&quot;https://www.varnish-cache.org/&quot; target=&quot;_blank&quot;&gt;Varnish Cache&lt;/a&gt; are my favourite examples. The standard use case which I saw during my career looks like this:&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;.
+├── bin
+│   └── test.sh
+├── config
+│   ├── htpasswd
+│   ├── maintenance-page.conf
+│   └── nginx.conf
+├── Dockerfile
+└── &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;
+    └── nginx.bats&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/caching-alternatives-varnish-locally.png&quot; alt=&quot;Nginx Caching: caching alternatives varnish locally&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;You simply put the cache in front of the HTTP server. Either on the application server or on a specially dedicated machine:&lt;/p&gt;
-
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/caching-alternatives-varnish-load-balancer.png&quot; alt=&quot;Nginx Caching: caching alternatives varnish load balancer&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;This obviously adds even more complexity to the system, but it might be a better fit to your case. Read, compare features and decide.&lt;/p&gt;
-
-&lt;p&gt;In this post we will focus our attention only on Nginx.&lt;/p&gt;
-
-&lt;h2 id=&quot;caching-with-nginx&quot;&gt;Caching with Nginx&lt;/h2&gt;
-
-&lt;p&gt;Nginx is a HTTP server and it’s brilliant for serving static files and proxying requests.
-Because of its asynchronous nature it stands out with a light-weight resource utilization.&lt;/p&gt;
-
-&lt;p&gt;When it comes to caching, Nginx has integrations for:&lt;/p&gt;
+&lt;p&gt;It contains:&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;HTTP servers&lt;/li&gt;
-  &lt;li&gt;FastCGI&lt;/li&gt;
-  &lt;li&gt;uwsgi&lt;/li&gt;
-  &lt;li&gt;SCGI&lt;/li&gt;
+  &lt;li&gt;a helper script inside the &lt;code&gt;bin&lt;/code&gt; directory&lt;/li&gt;
+  &lt;li&gt;few Nginx configuration files in the &lt;code&gt;config&lt;/code&gt; directory&lt;/li&gt;
+  &lt;li&gt;test specs and a &lt;code&gt;Dockerfile&lt;/code&gt;&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Now that we know how caching works and what Nginx is. Let’s look at Nginx’s implementation of caching.&lt;/p&gt;
+&lt;p&gt;To be able to follow this tutorial you will just need &lt;a href=&quot;https://www.docker.com/&quot; target=&quot;_blank&quot;&gt;Docker&lt;/a&gt; installed on your machine. Follow this &lt;a href=&quot;https://docs.docker.com/installation/&quot; target=&quot;_blank&quot;&gt;installation guide&lt;/a&gt; if you haven’t installed Docker so far.&lt;/p&gt;
 
-&lt;p&gt;An example should make it clear. First the client does a request.&lt;/p&gt;
+&lt;h2 id=&quot;the-dockerfile&quot;&gt;The &lt;code&gt;Dockerfile&lt;/code&gt;&lt;/h2&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-1.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+&lt;p&gt;We will work on and test our Nginx configuration inside a &lt;a href=&quot;https://www.docker.com/&quot; target=&quot;_blank&quot;&gt;Docker&lt;/a&gt; container. This will allow us to keep everything inside a sandbox additionally providing a really fast environment.&lt;/p&gt;
 
-&lt;p&gt;A sample HTTP request is presented on the diagram below:&lt;/p&gt;
+&lt;p&gt;The mentioned Docker container is created based on the following &lt;a href=&quot;https://github.com/czerasz/nginx-configuration-examples/blob/0.0.1/Dockerfile&quot;&gt;&lt;code&gt;Dockerfile&lt;/code&gt;&lt;/a&gt;:&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/request.png&quot; alt=&quot;Nginx Caching: HTTP request visual example&quot; /&gt;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; FROM nginx:1.7.9
+&lt;span class=&quot;lineno&quot;&gt; 2&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 3&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Set the reset cache variable&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 4&lt;/span&gt; ENV REFRESHED_AT 2015-04-20
+&lt;span class=&quot;lineno&quot;&gt; 5&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt; 6&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Update repositories lists and install required tools and libraries&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt; 7&lt;/span&gt; RUN apt-get update
+&lt;span class=&quot;lineno&quot;&gt; 8&lt;/span&gt; RUN apt-get install -y wget curl git tree vim htop strace procps
+&lt;span class=&quot;lineno&quot;&gt; 9&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;10&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Install bats testing framework&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;11&lt;/span&gt; RUN git clone https://github.com/sstephenson/bats.git /tmp/bats &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;cd&lt;/span&gt; /tmp/bats &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; ./install.sh /usr/local
+&lt;span class=&quot;lineno&quot;&gt;12&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;13&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Create maintenance content file - this will be returned in maintenance mode&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;14&lt;/span&gt; RUN &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;Site in maintenance&amp;#39;&lt;/span&gt; &amp;gt; /usr/share/nginx/html/maintenance.html
+&lt;span class=&quot;lineno&quot;&gt;15&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;16&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Nginx owns the web content directory - required to save the maintenance file by WebDAV&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;17&lt;/span&gt; RUN chown -R nginx:nginx /usr/share/nginx/html/
+&lt;span class=&quot;lineno&quot;&gt;18&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;19&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Add configuration files&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;20&lt;/span&gt; ADD ./config/nginx.conf /etc/nginx/nginx.conf
+&lt;span class=&quot;lineno&quot;&gt;21&lt;/span&gt; ADD ./config/maintenance-page.conf /etc/nginx/maintenance-page.conf
+&lt;span class=&quot;lineno&quot;&gt;22&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;23&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Add the base auth credentials&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;24&lt;/span&gt; ADD ./config/htpasswd /etc/nginx/htpasswd
+&lt;span class=&quot;lineno&quot;&gt;25&lt;/span&gt; 
+&lt;span class=&quot;lineno&quot;&gt;26&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Add test spec&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;27&lt;/span&gt; ADD ./test/nginx.bats /&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Based on some details from it Nginx generates a hash key.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;Dockerfile&lt;/code&gt; should be straight forward because it’s well documented, but here are some things which are worth mentioning:&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-2.png&quot; alt=&quot;Nginx Caching: how the cache key is created&quot; /&gt;&lt;/p&gt;
+&lt;ul&gt;
+  &lt;li&gt;the line with &lt;code&gt;ENV REFRESHED_AT 2015-04-20&lt;/code&gt; is explained in my other article which is available &lt;a href=&quot;/2014/11/13/docker-tip-and-tricks/#use-refreshedat-variable-for-better-cache-control&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;the installed &lt;a href=&quot;https://packages.debian.org/sid/procps&quot; target=&quot;_blank&quot;&gt;&lt;code&gt;procps&lt;/code&gt; package&lt;/a&gt; (the &lt;code&gt;/proc&lt;/code&gt; file system utilities) contains &lt;code&gt;ps&lt;/code&gt; and &lt;code&gt;pgrep&lt;/code&gt; among many other useful tools. &lt;code&gt;pgrep&lt;/code&gt; is used later in our Nginx test catalogue&lt;/li&gt;
+  &lt;li&gt;in line &lt;code&gt;11&lt;/code&gt; Docker will install the &lt;a href=&quot;https://github.com/sstephenson/bats&quot; target=&quot;_blank&quot;&gt;Bats: Bash Automated Testing System&lt;/a&gt;. It’s a simle and easy to use Bash testing framework&lt;/li&gt;
+  &lt;li&gt;the &lt;code&gt;/usr/share/nginx/html/maintenance.html&lt;/code&gt; contains the maintenance information. If you want to add a nice looking page feel free to use the &lt;code&gt;ADD&lt;/code&gt; directive&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;Now Nginx checks if this hash key already exists in memory. If not, the request goes to the application.&lt;/p&gt;
+&lt;h2 id=&quot;nginx-configuration&quot;&gt;Nginx Configuration&lt;/h2&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-3.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;a href=&quot;https://github.com/czerasz/nginx-configuration-examples/blob/0.0.1/config/nginx.conf&quot; target=&quot;_blank&quot;&gt;&lt;code&gt;config/nginx.conf&lt;/code&gt;&lt;/a&gt; is the main Nginx configuration file which includes the most important file for us, mainly the &lt;a href=&quot;https://github.com/czerasz/nginx-configuration-examples/blob/0.0.1/config/maintenance-page.conf&quot; target=&quot;_blank&quot;&gt;&lt;code&gt;config/maintenance-page.conf&lt;/code&gt;&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;The application answers and its response is saved to the file system.&lt;/p&gt;
+&lt;p&gt;Let’s go through the &lt;code&gt;config/maintenance-page.conf&lt;/code&gt; file:&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-4.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$maintenance&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
-&lt;p&gt;Additionally the hash key, generated earlier, is saved into memory. To make it easier to understand I visualise the hash key value together with the location of the saved file. But remember that Nginx stores in memory only the hash key.&lt;/p&gt;
+location /maintenance-mode &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    limit_except PUT DELETE &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+        deny all&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
+    dav_methods PUT DELETE&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-5.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+    auth_basic &lt;span class=&quot;s2&quot;&gt;&amp;quot;Maintenance&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    auth_basic_user_file /etc/nginx/htpasswd&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 
-&lt;p&gt;Finally the user gets the response back.&lt;/p&gt;
+&lt;span class=&quot;c&quot;&gt;# Note: if is evil only in the location block&lt;/span&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; rc=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-6.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+&lt;span class=&quot;c&quot;&gt;# If the request goes to /maintenance-mode ignore the maintenance mode&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$uri&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;/maintenance-mode&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$maintenance&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;${maintenance}+disable&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 
-&lt;p&gt;When our client requests the same url a second time, Nginx again generates the hash key and checks if it exists in the memory. This time it’s there, so Nginx serves the cached file from the file system which is associated with the hash key.&lt;/p&gt;
+&lt;span class=&quot;c&quot;&gt;# Check if the maintenance mode is enabled&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;-f &lt;span class=&quot;nv&quot;&gt;$document_root&lt;/span&gt;/maintenance-mode&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;set&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$maintenance&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;${maintenance}+exists&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-7.png&quot; alt=&quot;Nginx Caching: &quot; /&gt;&lt;/p&gt;
+&lt;span class=&quot;c&quot;&gt;# If the request goes to anything different than /maintenance-mode return a 503 if the maintenance mode is enabled&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$maintenance&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;+exists&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; 503&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;# Service temporarily unavailable&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 
-&lt;p&gt;Please note that the second request doesn’t involve the application at all.&lt;/p&gt;
+error_page &lt;span class=&quot;m&quot;&gt;503&lt;/span&gt; @maintenance&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 
-&lt;p&gt;For the second request clients don’t wait for the application to first fetch data from the database and then render the page. Instead Nginx serves a static file with a cached version of the response.&lt;/p&gt;
+location @maintenance &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    rewrite ^&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;.*&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;/maintenance.html &lt;span class=&quot;nb&quot;&gt;break&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Additionally those files are most probably cached in memory. This time not by Nginx (although it gives the OS some hints) but by the operating system. It’s a Linux’s attribute to use the resources as efficient as possible. This makes reading files from the file system extremely fast.&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;/maintenance-mode&lt;/code&gt; location block contains directives which enable us to create or remove the &lt;code&gt;/usr/share/nginx/html/maintenance-mode&lt;/code&gt; file over HTTP. &lt;/p&gt;
 
-&lt;h3 id=&quot;configuration---available-directives&quot;&gt;Configuration - Available Directives&lt;/h3&gt;
+&lt;p&gt;We can create the file with &lt;code&gt;curl&lt;/code&gt;:&lt;/p&gt;
 
-&lt;p&gt;Now that we know the technical background, of how Nginx’s cache works, let’s see how we can configure it.&lt;/p&gt;
-
-&lt;p&gt;First on the &lt;code&gt;http&lt;/code&gt; level we define where the data should be stored. We specify the path on the file system and the memory zone and their size. The &lt;strong&gt;memory zone&lt;/strong&gt; stores &lt;strong&gt;only meta&lt;/strong&gt; information on cached items - hash keys.&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;curl -i -u czerasz:password1234567890 -XPUT localhost/maintenance-mode -d &lt;span class=&quot;s1&quot;&gt;&amp;#39;&amp;#39;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
-&lt;br /&gt; Each item takes about &lt;code&gt;0.125 kB&lt;/code&gt; of memory so we can store a lot of them. In &lt;code&gt;1MB&lt;/code&gt; for example Nginx can store about &lt;code&gt;8000&lt;/code&gt; cache keys.&lt;/p&gt;
+&lt;br /&gt;The &lt;code&gt;-u czerasz:password1234567890&lt;/code&gt; parameter is responsible for authentication. We could also use this url &lt;code&gt;http://czerasz:password1234567890@localhost/maintenance-mode&lt;/code&gt; instead.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;h3 id=&quot;basics&quot;&gt;Basics&lt;/h3&gt;
+&lt;p&gt;Or we can delete the file with:&lt;/p&gt;
 
-&lt;p&gt;The basic cache definition looks like this:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_path /data/nginx/cache &lt;span class=&quot;nv&quot;&gt;keys_zone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;zone_name_one:10m&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;To enable it we just use the &lt;code&gt;proxy_cache&lt;/code&gt; directive.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache zone_name_one&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;This video will show you the basics of Nginx caching.&lt;/p&gt;
-
-&lt;div class=&quot;embed-responsive embed-responsive-16by9&quot;&gt;
-    &lt;iframe class=&quot;embed-responsive-item&quot; src=&quot;https://www.youtube.com/embed/I07MEdsSMOs?rel=0&quot; frameborder=&quot;0&quot; allowfullscreen=&quot;&quot;&gt;&lt;/iframe&gt;
-&lt;/div&gt;
-
-&lt;p&gt;The Github project mentioned in the video can be found &lt;a href=&quot;https://github.com/czerasz/nginx-caching-example&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;It’s also possible to limit the size of the file system used to store cached content, simply by adding the &lt;code&gt;max_size&lt;/code&gt; parameter.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_path /data/nginx/cache &lt;span class=&quot;nv&quot;&gt;keys_zone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;one:10m &lt;span class=&quot;code-highlight-red&quot;&gt;max_size=200m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Then we have also the option to say when files should be removed (from the cache regardless of their freshness) when they are not used for a specific amount of time.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_path /data/nginx/cache &lt;span class=&quot;nv&quot;&gt;keys_zone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;one:10m &lt;span class=&quot;code-highlight-red&quot;&gt;inactive=60m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;And there is also a nice little parameter which let’s us define the hierarchy levels of a cache.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_path /data/nginx/cache &lt;span class=&quot;code-highlight-red&quot;&gt;levels=1:2&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;keys_zone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;one:10m&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;The image below illustrates the hierarchy levels configuration:&lt;/p&gt;
-
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/levels-example-1.png&quot; alt=&quot;Nginx Caching: proxy_cache_path levels example&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Now let’s see if you understand it correctly. Ready for a quiz? Based on the illustration below, what should the levels parameter be?&lt;/p&gt;
-
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/levels-example-2.png&quot; alt=&quot;Nginx Caching: proxy_cache_path levels example&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;The answer is &lt;code&gt;2:4&lt;/code&gt;, which is more clear if we look at the following image:&lt;/p&gt;
-
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/levels-example-3.png&quot; alt=&quot;Nginx Caching: proxy_cache_path levels example&quot; /&gt;&lt;/p&gt;
-
-&lt;h3 id=&quot;whatwhen-to-cache&quot;&gt;What/When to cache?&lt;/h3&gt;
-
-&lt;p&gt;By default Nginx caches only GET and HEAD requests. You can change this with the &lt;code&gt;proxy_cache_methods&lt;/code&gt; directive:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_methods GET HEAD POST&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;You can also instruct Nginx to cache the response only after it was requested at least 5 times. &lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_min_uses 5&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;This would be useful in a situation where you have a lot of content, but you would only like to cache only those requests which are really popular.&lt;/p&gt;
-
-&lt;p&gt;Nginx can save us upstream bandwidth and disk writes as well. By respecting cache headers and &lt;code&gt;304, not modified&lt;/code&gt; responses Nginx will not download the content again if the following directive is turned on:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_revalidate on&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;how-to-cache&quot;&gt;How to cache?&lt;/h3&gt;
-
-&lt;p&gt;With Nginx we are not limited to cache everything by the same rule. Instead we can tell Nginx which information should be used to generate the hash key. And we can do it on the &lt;code&gt;http&lt;/code&gt;, &lt;code&gt;server&lt;/code&gt; or &lt;code&gt;location&lt;/code&gt; level. Here are two examples:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_key &lt;span class=&quot;s2&quot;&gt;&amp;quot;$host$request_uri$cookie_user&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_key &lt;span class=&quot;s2&quot;&gt;&amp;quot;$scheme$proxy_host$uri$is_args$args&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;curl -i -u czerasz:password1234567890 -XDELETE localhost/maintenance-mode&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;&lt;strong&gt;Tip&lt;/strong&gt;
-&lt;br /&gt;How to generate a Nginx cache hash key? Use this command:&lt;/p&gt;
-
-  &lt;pre&gt;&lt;code&gt;echo -n ‘httpczerasz.com/time.php’ | md5sum
-&lt;/code&gt;&lt;/pre&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
+&lt;br /&gt;We are using base authentication which should be improved by enabling SSL.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;We can also tell Nginx, under which conditions the request shouldn’t be stored in the cache.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_no_cache &lt;span class=&quot;nv&quot;&gt;$http_pragma&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$http_authorization&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$cookie_nocache&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$arg_nocache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h3 id=&quot;how-long-to-cache&quot;&gt;How long to cache?&lt;/h3&gt;
-
-&lt;p&gt;There is a simple directive which tells Nginx how long to cache the responses of a certain type:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_valid any      1m&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-proxy_cache_valid &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;302&lt;/span&gt; 10m&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;But mainly the headers of the origin server define the cacheability of the content:&lt;/p&gt;
+&lt;p&gt;The existence of &lt;code&gt;/usr/share/nginx/html/maintenance-mode&lt;/code&gt; tells Nginx if it is in maintenance mode:&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;Expires&lt;/li&gt;
-  &lt;li&gt;Cache-Control&lt;/li&gt;
-  &lt;li&gt;X-Accel-Expires - Nginx special header.
-&lt;br /&gt;&lt;strong&gt;Overrides other headers&lt;/strong&gt;. Used when you need to serve different headers to the client.&lt;/li&gt;
+  &lt;li&gt;if the &lt;code&gt;/usr/share/nginx/html/maintenance-mode&lt;/code&gt; file exists then Nginx will respond with a &lt;code&gt;503&lt;/code&gt; status code - the service is in maintenance mode&lt;/li&gt;
+  &lt;li&gt;if the &lt;code&gt;/usr/share/nginx/html/maintenance-mode&lt;/code&gt; file doesn’t exists then Nginx works normally&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;The priority of the mentioned options are presented on the chart below, with the strongest priority on top:&lt;/p&gt;
+&lt;p&gt;If the &lt;code&gt;/usr/share/nginx/html/maintenance-mode&lt;/code&gt; file exists, Nginx will return the &lt;code&gt;/usr/share/nginx/html/maintenance.html&lt;/code&gt; file with the &lt;code&gt;503&lt;/code&gt; status code for all requests. The specific status code is important because it tells Google and co that the service is temporarily unavailable. And that they should try it later. I refer to &lt;a href=&quot;https://yoast.com/http-503-site-maintenance-seo/&quot; target=&quot;_blank&quot;&gt;this article&lt;/a&gt; which explains why it is so important from the seo perspective.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-cache-priority.png&quot; alt=&quot;Nginx Caching: caching headers priority&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;The config contains also few &lt;code&gt;if&lt;/code&gt; statements which allow us to do the &lt;code&gt;DELETE&lt;/code&gt; request (which was discussed before) in maintenance mode.&lt;/p&gt;
 
-&lt;h3 id=&quot;other&quot;&gt;Other&lt;/h3&gt;
+&lt;h2 id=&quot;integration-tests&quot;&gt;Integration Tests&lt;/h2&gt;
 
-&lt;p&gt;The following option adds a lot to the availability factor. It allows Nginx to serve stale (old, expired) content when the application response timed out or returned a &lt;code&gt;50x&lt;/code&gt; status code:&lt;/p&gt;
+&lt;p&gt;Now that we know how our configuration works, it’s time for a success experience. Let’s run our test suite and watch the tests pass:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_use_stale error timeout&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;./bin/test.sh 
+Build the container
+Remove the old container
+Start the container and run the tests
+1..6
+ok &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; Nginx binary is found in /usr/local/libexec:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ok &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; Nginx is installed in version 1.7.9
+ok &lt;span class=&quot;m&quot;&gt;3&lt;/span&gt; Upstream server shouldn&lt;span class=&quot;err&quot;&gt;&amp;#39;&lt;/span&gt;t be available
+ok &lt;span class=&quot;m&quot;&gt;4&lt;/span&gt; Nginx should be in maintenance mode &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; the /usr/share/nginx/html/maintenance-mode exists
+ok &lt;span class=&quot;m&quot;&gt;5&lt;/span&gt; Allow the client to create the /usr/share/nginx/html/maintenance-mode file over HTTP
+ok &lt;span class=&quot;m&quot;&gt;6&lt;/span&gt; Allow the client to remove the /usr/share/nginx/html/maintenance-mode file over HTTP&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Yet another cool feature is the ability to let only the first request through to the application. This can be enabled with:&lt;/p&gt;
+&lt;p&gt;The analysis of our &lt;a href=&quot;https://github.com/czerasz/nginx-configuration-examples/blob/0.0.1/bin/test.sh&quot; target=&quot;_blank&quot;&gt;&lt;code&gt;bin/test.sh&lt;/code&gt;&lt;/a&gt; helper script shows that it works according to this scenario/along those points:&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_lock on&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;ul&gt;
+  &lt;li&gt;a Docker image is build based on the already discussed &lt;code&gt;Dockerfile&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;the previous, old container is removed, if it exists&lt;/li&gt;
+  &lt;li&gt;a new container is created based on our build&lt;/li&gt;
+  &lt;li&gt;in the newly created container, the &lt;code&gt;bats /nginx.bats&lt;/code&gt; command is executed to run our tests&lt;/li&gt;
+  &lt;li&gt;the &lt;code&gt;--rm=true&lt;/code&gt; parameter tells Docker to remove our container after the tests have finished&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;You already know, that the returned content by the origin is streamed to disk. By default to a location defined in the &lt;code&gt;proxy_cache_path&lt;/code&gt; directive. You could also store those files in a temporary directory before they are moved to the cache path. If you need this behaviour use this:&lt;/p&gt;
+&lt;p&gt;We know that our tests pass, so let’s see how they are written. The &lt;a href=&quot;https://github.com/czerasz/nginx-configuration-examples/blob/0.0.1/test/nginx.bats&quot; target=&quot;_blank&quot;&gt;&lt;code&gt;test/nginx.bats&lt;/code&gt;&lt;/a&gt; file which represent our test catalogue, is a simple Bash script which uses the &lt;a href=&quot;https://github.com/sstephenson/bats&quot; target=&quot;_blank&quot;&gt;Bats testing framework&lt;/a&gt;: &lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_temp_path /tmp/custom_cache/&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;#!/usr/bin/env bats&lt;/span&gt;
 
-&lt;p&gt;This directive works good with multiple caches. But remember that it will be always less efficient than if the temp path is the same as the cache path&lt;/p&gt;
+wait_for_nginx&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# Start Nginx&lt;/span&gt;
+  nginx &lt;span class=&quot;p&quot;&gt;&amp;amp;&lt;/span&gt;
+  
+  &lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; ! pgrep -xf &lt;span class=&quot;s2&quot;&gt;&amp;quot;nginx: worker process&amp;quot;&lt;/span&gt; &amp;gt; /dev/null &lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;nb&quot;&gt;echo&lt;/span&gt; &lt;span class=&quot;s1&quot;&gt;&amp;#39;wait for nginx&amp;#39;&lt;/span&gt;
 
-&lt;h2 id=&quot;debugging-nginx39s-cache&quot;&gt;Debugging Nginx&#39;s Cache&lt;/h2&gt;
-
-&lt;p&gt;I believe that debugging any software the right way is even more important than actually knowing the software itself. A good debugging process guarantees a better understanding and most important, solving challenges really fast.&lt;/p&gt;
-
-&lt;p&gt;In this chapter I will show you few tricks to easily debug Nginx’s caching wold.&lt;/p&gt;
-
-&lt;p&gt;The first trick is about bypassing the cache.&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_bypass &lt;span class=&quot;nv&quot;&gt;$arg_nocache&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$cookie_nocache&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$arg_comment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;The directive above allows you to specify when to omit the cache. This means that each request with a &lt;code&gt;nocache=true&lt;/code&gt; query parameter goes to the origin. It might even be that Nginx will cache the result as well.&lt;/p&gt;
-
-&lt;p&gt;Another trick is adding a header with cache status information. You can do it simply by adding a header:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;add_header X-Cache-Status &lt;span class=&quot;nv&quot;&gt;$upstream_cache_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Or in a more sophisticated way presented below, which allows only local requests to view the header:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;map &lt;span class=&quot;nv&quot;&gt;$remote_addr&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;$cache_status&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    127.0.0.1 &lt;span class=&quot;nv&quot;&gt;$upstream_cache_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    default &lt;span class=&quot;s2&quot;&gt;&amp;quot;&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    sleep 0.1&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;done&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
-...
-add_header X-Cache-Status &lt;span class=&quot;nv&quot;&gt;$cache_status&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;By debugging the &lt;code&gt;X-Cache-Status&lt;/code&gt; header you will appreciate the following table:&lt;/p&gt;
+&lt;span class=&quot;nv&quot;&gt;maintenance_file_path&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;/usr/share/nginx/html/maintenance-mode
 
-&lt;table class=&quot;table  table-striped&quot;&gt;
-    &lt;tbody&gt;
-        &lt;tr&gt;
-            &lt;td&gt;&lt;strong&gt;MISS&lt;/strong&gt;&lt;/td&gt;
-            &lt;td&gt;Object was not found in the cache. Response was served from the origin. Response may have been saved to cache.&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr&gt;
-            &lt;td&gt;&lt;strong&gt;BYPASS&lt;/strong&gt;&lt;/td&gt;
-            &lt;td&gt;Got response from upstream. Response may have been saved to cache.&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr&gt;
-            &lt;td&gt;&lt;strong&gt;EXPIRED&lt;/strong&gt;&lt;/td&gt;
-            &lt;td&gt;Cached object has expired. Response was served from the upstream.&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr&gt;
-            &lt;td&gt;&lt;strong&gt;STALE&lt;/strong&gt;&lt;/td&gt;
-            &lt;td&gt;Object served from cache because of issues with origin server response&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr&gt;
-            &lt;td&gt;&lt;strong&gt;UPDATING&lt;/strong&gt;&lt;/td&gt;
-            &lt;td&gt;Serve stale content from cache because &lt;code&gt;proxy_cache_lock&lt;/code&gt; has timed out and &lt;code&gt;proxy_use_stale&lt;/code&gt; takes controll&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr&gt;
-            &lt;td&gt;&lt;strong&gt;REVALIDATED&lt;/strong&gt;&lt;/td&gt;
-            &lt;td&gt;&lt;code&gt;proxy_cache_revalidate&lt;/code&gt; verified that the current cached content was still valid&lt;/td&gt;
-        &lt;/tr&gt;
-        &lt;tr&gt;
-            &lt;td&gt;&lt;strong&gt;HIT&lt;/strong&gt;&lt;/td&gt;
-            &lt;td&gt;The object was found in the cache and it is served from there&lt;/td&gt;
-        &lt;/tr&gt;
-    &lt;/tbody&gt;
-&lt;/table&gt;
+teardown&lt;span class=&quot;o&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  pkill nginx &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;  &lt;/span&gt;rm -f &lt;span class=&quot;nv&quot;&gt;$maintenance_file_path&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;&amp;amp;&lt;/span&gt;&amp;gt; /dev/null
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 
-&lt;p&gt;In the following two chapters we will learn which processes are involved in the maintenance of cached files. This chapters are really short and right after we will jump into cool examples. So stay with me!&lt;/p&gt;
+@test &lt;span class=&quot;s2&quot;&gt;&amp;quot;Nginx binary is found in $PATH&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  run which nginx
 
-&lt;h2 id=&quot;cache-loader&quot;&gt;Cache Loader&lt;/h2&gt;
+  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$status&amp;quot;&lt;/span&gt; -eq &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 
-&lt;p&gt;The Nginx cache loader is a process responsible for loading cache from disk.&lt;/p&gt;
+@test &lt;span class=&quot;s2&quot;&gt;&amp;quot;Nginx is installed in version 1.7.9&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  run /usr/sbin/nginx -v
 
-&lt;p&gt;It is run only once (on startup) and loads the metadata into the memory zone. It runs in iterations until all keys are loaded.&lt;/p&gt;
+  &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$output&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;~ &lt;span class=&quot;s2&quot;&gt;&amp;quot;1.7.9&amp;quot;&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 
-&lt;p&gt;We can tune it’s behaviour (to utilize CPU the right way) with the following options:&lt;/p&gt;
+@test &lt;span class=&quot;s2&quot;&gt;&amp;quot;Upstream server shouldn&amp;#39;t be available&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  wait_for_nginx
 
-&lt;ul&gt;
-  &lt;li&gt;&lt;code&gt;loader_threshold&lt;/code&gt; - how long is one iteration time&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;loader_files&lt;/code&gt; - don’t load more items than&lt;/li&gt;
-  &lt;li&gt;&lt;code&gt;loader_sleeps&lt;/code&gt; - pause time between iterations&lt;/li&gt;
-&lt;/ul&gt;
+  &lt;span class=&quot;nv&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;$(curl -Is http://localhost/ | head -n1 | awk &amp;#39;{print $2}&amp;#39;)&amp;quot;&lt;/span&gt;
 
-&lt;p&gt;An example is presented below:&lt;/p&gt;
+  &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$result&amp;quot;&lt;/span&gt; -eq &lt;span class=&quot;s1&quot;&gt;&amp;#39;502&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;proxy_cache_path /data/nginx/cache &lt;span class=&quot;nv&quot;&gt;keys_zone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;one:10m &lt;span class=&quot;code-highlight-red&quot;&gt;[loader_files=number] [loader_sleep=time] [loader_threshold=time]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+@test &lt;span class=&quot;s2&quot;&gt;&amp;quot;Nginx should be in maintenance mode if the $maintenance_file_path exists&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  wait_for_nginx
 
-&lt;p&gt;The comic below shows that the cache loader is used only on startup and that it works in iterations defined by the described parameters.&lt;/p&gt;
+  touch &lt;span class=&quot;nv&quot;&gt;$maintenance_file_path&lt;/span&gt;
+  
+  run bash -c &lt;span class=&quot;s2&quot;&gt;&amp;quot;curl -s -w &amp;#39;%{http_code}&amp;#39; http://localhost/ -o /dev/null&amp;quot;&lt;/span&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-loader.png&quot; alt=&quot;Nginx Caching: how does the nginx cache loader works?&quot; /&gt;&lt;/p&gt;
+  &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$output&amp;quot;&lt;/span&gt; -eq &lt;span class=&quot;s1&quot;&gt;&amp;#39;503&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 
-&lt;h2 id=&quot;cache-manager&quot;&gt;Cache Manager&lt;/h2&gt;
+@test &lt;span class=&quot;s2&quot;&gt;&amp;quot;Allow the client to create the $maintenance_file_path file over HTTP&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  wait_for_nginx
 
-&lt;p&gt;The Nginx cache manager is a process which purges the cache over time.&lt;/p&gt;
+  &lt;span class=&quot;c&quot;&gt;# Shouldn&amp;#39;t be able to create the maintenance file without authentication&lt;/span&gt;
+  run bash -c &lt;span class=&quot;s2&quot;&gt;&amp;quot;curl -s -w &amp;#39;%{http_code}&amp;#39; -XPUT localhost/maintenance-mode -d &amp;#39;&amp;#39; -o /dev/null&amp;quot;&lt;/span&gt;
 
-&lt;p&gt;It periodically checks file storage and removes least recently used data if the file size exceeds &lt;code&gt;max_size&lt;/code&gt;. It also removes files which were not used independently of the cache settings.&lt;/p&gt;
+  &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$output&amp;quot;&lt;/span&gt; -eq &lt;span class=&quot;s1&quot;&gt;&amp;#39;401&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
 
-&lt;p&gt;Watch the comic below which illustrates cache manager duties.&lt;/p&gt;
+  &lt;span class=&quot;c&quot;&gt;# File shouldn&amp;#39;t be created yet&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; -f &lt;span class=&quot;s2&quot;&gt;&amp;quot;$maintenance_file_path&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; -eq &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; -eq &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-manager.png&quot; alt=&quot;Nginx Caching: how does the nginx cache manager works?&quot; /&gt;&lt;/p&gt;
+  &lt;span class=&quot;c&quot;&gt;# Allow with authentication&lt;/span&gt;
+  run bash -c &lt;span class=&quot;s2&quot;&gt;&amp;quot;curl -s -u czerasz:password1234567890 -w &amp;#39;%{http_code}&amp;#39; -XPUT localhost/maintenance-mode -d &amp;#39;&amp;#39; -o /dev/null&amp;quot;&lt;/span&gt;
 
-&lt;h2 id=&quot;examples&quot;&gt;Examples&lt;/h2&gt;
+  &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$output&amp;quot;&lt;/span&gt; -eq &lt;span class=&quot;s1&quot;&gt;&amp;#39;201&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
 
-&lt;p&gt;In this chapter I will present two real world examples. &lt;/p&gt;
+  &lt;span class=&quot;c&quot;&gt;# Check if maintenance file was successfully created&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; -f &lt;span class=&quot;s2&quot;&gt;&amp;quot;$maintenance_file_path&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; -eq &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; -eq &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;
 
-&lt;p&gt;The first one is based on what we have learned so far. We will see how to purge content which was previously cached. &lt;/p&gt;
+@test &lt;span class=&quot;s2&quot;&gt;&amp;quot;Allow the client to remove the $maintenance_file_path file over HTTP&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  wait_for_nginx
 
-&lt;p&gt;The second example is a little bit more advanced. I shows how to build a small CDN based on Nginx.&lt;/p&gt;
+  touch &lt;span class=&quot;nv&quot;&gt;$maintenance_file_path&lt;/span&gt;
+  chown nginx:nginx &lt;span class=&quot;nv&quot;&gt;$maintenance_file_path&lt;/span&gt;
 
-&lt;h3 id=&quot;how-to-create-a-small-cdn-with-nginx&quot;&gt;How to create a small CDN with Nginx?&lt;/h3&gt;
+  &lt;span class=&quot;c&quot;&gt;# Shouldn&amp;#39;t be able to delete the maintenance file without authentication&lt;/span&gt;
+  run bash -c &lt;span class=&quot;s2&quot;&gt;&amp;quot;curl -s -w &amp;#39;%{http_code}&amp;#39; -XDELETE localhost/maintenance-mode -o /dev/null&amp;quot;&lt;/span&gt;
 
-&lt;p&gt;This example describes how Nginx can help you create a simple, file based CDN with static content.&lt;/p&gt;
+  &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$output&amp;quot;&lt;/span&gt; -eq &lt;span class=&quot;s1&quot;&gt;&amp;#39;401&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
 
-&lt;p&gt;Let’s assume we have a distributed file system cluster. It can be based on &lt;a href=&quot;http://en.wikipedia.org/wiki/Network_File_System&quot; target=&quot;_blank&quot;&gt;NFS&lt;/a&gt; or &lt;a href=&quot;http://www.gluster.org/&quot; target=&quot;_blank&quot;&gt;GlusterFS&lt;/a&gt; or on anything you prefer. One thing those technologies have in common is that they are slow. Luckily Nginx together with the Slow FS module can overcome this weakness by caching files from a network file system on the local drive.&lt;/p&gt;
+  &lt;span class=&quot;c&quot;&gt;# File shouldn&amp;#39;t be deleted yet&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; -f &lt;span class=&quot;s2&quot;&gt;&amp;quot;$maintenance_file_path&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; -eq &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; -eq &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
 
-&lt;p&gt;For this example I prepared a project on Github which you can find &lt;a href=&quot;https://github.com/czerasz/nginx-slowfs-example/&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;. An overview is presented on the diagram below:&lt;/p&gt;
+  &lt;span class=&quot;c&quot;&gt;# Allow with authentication&lt;/span&gt;
+  run bash -c &lt;span class=&quot;s2&quot;&gt;&amp;quot;curl -s -u czerasz:password1234567890 -w &amp;#39;%{http_code}&amp;#39; -XDELETE localhost/maintenance-mode -o /dev/null&amp;quot;&lt;/span&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/nginx-slowfs.png&quot; alt=&quot;Nginx Caching: nginx slowfs overview&quot; /&gt;&lt;/p&gt;
+  &lt;span class=&quot;c&quot;&gt;# File should be deleted&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; -f &lt;span class=&quot;s2&quot;&gt;&amp;quot;$maintenance_file_path&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; -eq &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; -eq &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;fi&lt;/span&gt;
 
-&lt;p&gt;To get started simply clone the repository:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;git clone git@github.com:czerasz/nginx-slowfs-example.git&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;Once you have it go to the project’s directory and start the Docker container with:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;docker-compose up&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;This might take a while because a Nginx compilation process takes place inside the container. To be able to use the slowfs feature we need to compile Nginx together with the &lt;a href=&quot;http://labs.frickle.com/nginx_ngx_slowfs_cache/&quot; target=&quot;_blank&quot;&gt;Slow FS module&lt;/a&gt;. This is done in the &lt;code&gt;Dockerfile&lt;/code&gt;. If you are interested how this is done check it out &lt;a href=&quot;https://github.com/czerasz/nginx-slowfs-example/blob/master/Dockerfile&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;Then request Nginx with &lt;code&gt;curl&lt;/code&gt;:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;curl -i &lt;span class=&quot;s1&quot;&gt;&amp;#39;localhost:8000/test-file.txt&amp;#39;&lt;/span&gt;
-HTTP/1.1 &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; OK
-Server: nginx/1.6.2
-Date: Mon, &lt;span class=&quot;m&quot;&gt;23&lt;/span&gt; Mar &lt;span class=&quot;m&quot;&gt;2015&lt;/span&gt; 13:35:07 GMT
-Content-Type: text/plain
-Content-Length: 4
-Last-Modified: Mon, &lt;span class=&quot;m&quot;&gt;23&lt;/span&gt; Mar &lt;span class=&quot;m&quot;&gt;2015&lt;/span&gt; 12:48:15 GMT
-Connection: keep-alive
-Accept-Ranges: bytes
-
-&lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;What you see is (the content of) the file stored in the &quot;mounted&quot; &lt;a href=&quot;https://github.com/czerasz/nginx-slowfs-example/tree/master/nfs-dummy&quot; target=&quot;_blank&quot;&gt;&lt;code&gt;nfs-dummy&lt;/code&gt; directory&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;If this directory would be a busy NFS mount and the number of requests would be high, then the responses would be really slow.&lt;/p&gt;
-
-&lt;p&gt;But in our example the files are cached locally. You can inspect the cache directory with the following command:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;nginxslowfs_nginx_1 tree -A /data/cache/
-/data/cache/
-└── 1
-    └── 27
-        └── 2bba799df783554d8402137ca199a271&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;The Nginx configuration for our example is simple and consists of two parts. The cache definition:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;c&quot;&gt;# Configure slowfs module&lt;/span&gt;
-slowfs_cache_path  /data/cache &lt;span class=&quot;nv&quot;&gt;levels&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1:2 &lt;span class=&quot;nv&quot;&gt;keys_zone&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;fastcache:10m&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-slowfs_temp_path   /data/temp &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; 2&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;p&gt;And the cache enabling section:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;location / &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    root                /data/nfs&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    slowfs_cache        fastcache&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    slowfs_cache_key    &lt;span class=&quot;nv&quot;&gt;$uri&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    slowfs_cache_valid  1d&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-
-    index  index.html index.htm&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$output&amp;quot;&lt;/span&gt; -eq &lt;span class=&quot;s1&quot;&gt;&amp;#39;204&amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;One nifty feature of the Slow FS module is &lt;strong&gt;cache purging&lt;/strong&gt;. It can be enabled with the following configuration block:&lt;/p&gt;
+&lt;p&gt;If you have basic Bash understanding you should be able to easily understand it but let me explain the most important parts.&lt;/p&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;location ~ /purge&lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;/.*&lt;span class=&quot;o&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
-    allow               127.0.0.1&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    deny                all&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
-    slowfs_cache_purge  fastcache &lt;span class=&quot;nv&quot;&gt;$1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;p&gt;The spec contains &lt;code&gt;@test&lt;/code&gt; blocks, variables and functions.&lt;/p&gt;
+
+&lt;p&gt;The &lt;code&gt;@test&lt;/code&gt; block has the following structure:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;@test &lt;span class=&quot;s2&quot;&gt;&amp;quot;Name of the test&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;c&quot;&gt;# The test goes here&lt;/span&gt;
+  run /usr/sbin/nginx -v
+
+  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$status&amp;quot;&lt;/span&gt; -eq &lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;$output&amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;~ &lt;span class=&quot;s2&quot;&gt;&amp;quot;1.7.9&amp;quot;&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;]]&lt;/span&gt;
 &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;This allows purging for internal requests&lt;/p&gt;
+&lt;p&gt;Inside the &lt;code&gt;@test&lt;/code&gt; block we can &lt;code&gt;run&lt;/code&gt; any command afterwards analysing its output and its exit code.&lt;/p&gt;
 
-&lt;p&gt;Let’s test it with &lt;code&gt;curl&lt;/code&gt; from inside of the docker container:&lt;/p&gt;
+&lt;blockquote&gt;
+  &lt;p&gt;&lt;strong&gt;Note&lt;/strong&gt;
+&lt;br /&gt;A successful command returns a &lt;code&gt;0&lt;/code&gt;, while an unsuccessful one returns a non-zero value.&lt;/p&gt;
+&lt;/blockquote&gt;
 
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;nginxslowfs_nginx_1 curl -i &lt;span class=&quot;s1&quot;&gt;&amp;#39;localhost:80/purge/test-file.txt&amp;#39;&lt;/span&gt; 
-HTTP/1.1 &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; OK
-Server: nginx/1.6.2
-Date: Tue, &lt;span class=&quot;m&quot;&gt;24&lt;/span&gt; Mar &lt;span class=&quot;m&quot;&gt;2015&lt;/span&gt; 13:04:25 GMT
-Content-Type: text/html
-Content-Length: 263
-Connection: keep-alive
+&lt;p&gt;In case of more complex commands I use a &lt;code&gt;bash -c&lt;/code&gt; wrapper to encapsulate the entire command as presented in the example below:&lt;/p&gt;
 
-&amp;lt;html&amp;gt;
-&amp;lt;head&amp;gt;&amp;lt;title&amp;gt;Successful purge&amp;lt;/title&amp;gt;&amp;lt;/head&amp;gt;
-&amp;lt;body &lt;span class=&quot;nv&quot;&gt;bgcolor&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;white&amp;quot;&lt;/span&gt;&amp;gt;
-&amp;lt;center&amp;gt;&amp;lt;h1&amp;gt;Successful purge&amp;lt;/h1&amp;gt;
-&amp;lt;br&amp;gt;Key : /test-file.txt
-&amp;lt;br&amp;gt;Path: /data/cache/1/27/2bba799df783554d8402137ca199a271
-&amp;lt;/center&amp;gt;
-&amp;lt;hr&amp;gt;&amp;lt;center&amp;gt;nginx/1.6.2&amp;lt;/center&amp;gt;
-&amp;lt;/body&amp;gt;
-&amp;lt;/html&amp;gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;run bash -c &lt;span class=&quot;s2&quot;&gt;&amp;quot;curl -s -u czerasz:password1234567890 -w &amp;#39;%{http_code}&amp;#39; -XDELETE localhost/maintenance-mode -o /dev/null&amp;quot;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;Nginx says that it was successful but you can always double-check with the following command:&lt;/p&gt;
-
-&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;docker &lt;span class=&quot;nb&quot;&gt;exec &lt;/span&gt;nginxslowfs_nginx_1 tree -A /data/cache/                        
-/data/cache/
-└── 1
-    └── 27&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
-
-&lt;h2 id=&quot;bonus&quot;&gt;Bonus&lt;/h2&gt;
-
-&lt;p&gt;Now, because you came so far, I would like to honour your effort. I want to appoint you as the Cache King of Nginx’s land.&lt;/p&gt;
-
-&lt;p&gt;&lt;img class=&quot;img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/crown-foto-preview.jpg&quot; alt=&quot;Nginx Caching: paper crown photo&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;Please wear &lt;a href=&quot;/assets/1428934936700/caching-king-paper-crown.pdf&quot; target=&quot;_blank&quot;&gt;this crone&lt;/a&gt; with pride and swear to use cache wisely and spread its power all over the world.&lt;/p&gt;
-
-&lt;p&gt;&lt;img class=&quot;img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1428934936700/img/posts/nginx-caching/crown-preview.png&quot; alt=&quot;Nginx Caching: paper crown template&quot; /&gt;&lt;/p&gt;
-
-&lt;h2 id=&quot;resources&quot;&gt;Resources:&lt;/h2&gt;
+&lt;p&gt;Because we need to test a web server, what could be better than the &lt;code&gt;curl&lt;/code&gt; command to achieve this task? The following parameters have proved to be very useful:&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;&lt;a href=&quot;http://nginx.com/resources/admin-guide/caching/&quot;&gt;NGINX Content Caching&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;http://nginx.org/en/docs/http/ngx_http_proxy_module.html&quot;&gt;Nginx Caching Manual&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://kura.io/2010/02/14/more-nginx-proxy_cache-optimizations-and-nginx-load-balancing/&quot;&gt;More nginx proxy_cache optimizations and nginx load balancing&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;a href=&quot;https://www.digitalocean.com/community/tutorials/understanding-nginx-http-proxying-load-balancing-buffering-and-caching&quot;&gt;Understanding Nginx HTTP Proxying, Load Balancing, Buffering, and Caching&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-</description>
-        <pubDate>Mon, 30 Mar 2015 00:00:00 +0200</pubDate>
-        <link>http://czerasz.com/2015/03/30/nginx-caching-tutorial/</link>
-        <guid isPermaLink="true">http://czerasz.com/2015/03/30/nginx-caching-tutorial/</guid>
-        
-        <category>nginx</category>
-        
-        <category>caching</category>
-        
-        <category>performance</category>
-        
-        <category>web server</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>New Face for czerasz.com - Logotype Analysis</title>
-        <description>&lt;p class=&quot;post__tldr&quot; itemprop=&quot;description&quot;&gt;Read about czerasz.com new logotype. In this article you can follow the logotype creative process - from keywords through associations to achieve a new logotype.&lt;/p&gt;
-
-&lt;p&gt;Today I have an important announcement: the website czerasz.com got a fresh face. We created a new logotype which respresents the things we believe in. Ladies and gentlemen here is the brand new appearance of czerasz.com:&lt;/p&gt;
-
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;new-logotype&quot; width=&quot;400&quot; height=&quot;300&quot; src=&quot;/assets/1428934936700/img/posts/new-logotype.png&quot; alt=&quot;new czerasz.com logotype&quot; title=&quot;&quot; class=&quot;img-responsive center-block&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;We thought that some of you might be interested in the paths which we followed to reach this goal.&lt;/p&gt;
-
-&lt;p&gt;One of the methods which apeared for us to be efficient during a creative process is mind mapping. The method as efficient as it is brings additionally a huge fun factor. It’s very simple - during a brainstorming session start with a single keyword and continue with others which are related. Watch out, it can quickly get very complex as shown in &lt;a href=&quot;http://www.mindmeister.com/104477225/summary-of-eric-ries-talk-at-google&quot; target=&quot;_blank&quot;&gt;this example&lt;/a&gt;. To be sure that your map is always readable use the right tool like &lt;a href=&quot;http://www.mindmeister.com/&quot; target=&quot;_blank&quot; title=&quot;mind map online tool&quot;&gt;mindmeister.com&lt;/a&gt; or &lt;a href=&quot;http://www.lucidchart.com/&quot; target=&quot;_blank&quot; title=&quot;mind map online tool&quot;&gt;lucidchart.com&lt;/a&gt;.&lt;/p&gt;
-
-&lt;p&gt;The mind map below visualises the path from brand attributes, various associations to finally achieve the logotype we love.&lt;/p&gt;
-
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;logotype-mind-map&quot; width=&quot;100%&quot; src=&quot;/assets/1428934936700/img/posts/brand-mind-map.png&quot; alt=&quot;czerasz.com logotype mind-map&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
-
-&lt;p&gt;During this process we used the following keywords:&lt;/p&gt;
-
-&lt;p&gt;&lt;span class=&quot;label label-default&quot;&gt;strength&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;gladiator&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;goal oriented&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;will&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;idea&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;science&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;phisics&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;Möbius strip&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;atom&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;octagon&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;solution&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;complexity&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;think different&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;limitless&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;infinity&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;technology&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;IT&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;code&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;international&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;multilingual&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;communication&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;passion&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;energy&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;fire&lt;/span&gt; &lt;span class=&quot;label label-default&quot;&gt;flame&lt;/span&gt;&lt;/p&gt;
-
-&lt;p&gt;We analysed word after word, trying to find something on the abstract field. Something that has a clear shape and meaningful appearance. Finaly after  several tries and failures we found the basic shapes:&lt;/p&gt;
-
-&lt;ul&gt;
-  &lt;li&gt;&lt;strong&gt;octagon&lt;/strong&gt; represents our warrior nature, the nature to achieve… through a scientific approach&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;infinity&lt;/strong&gt; means for us that impossible is nothing&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;code&lt;/strong&gt; says that we are technology driven, that everything IT related fascinates us&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;communication&lt;/strong&gt; is our basic tool, whose importance we weight with the &lt;a href=&quot;http://en.wikipedia.org/wiki/Chandrasekhar_limit&quot;&gt;chandrasekhar limit&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;&lt;strong&gt;flame&lt;/strong&gt; stands for our passion, our will to lighten the internet sky more than a supernova&lt;/li&gt;
+    &lt;li&gt;&lt;code&gt;-s&lt;/code&gt; - silent mode. Don&#39;t output anything&lt;/li&gt;
+    &lt;li&gt;&lt;code&gt;-w &#39;%{http_code}&#39;&lt;/code&gt; - return only the status code&lt;/li&gt;
+    &lt;li&gt;&lt;code&gt;-XPUT&lt;/code&gt; - specify the request method&lt;/li&gt;
+    &lt;li&gt;&lt;code&gt;-d &#39;&#39;&lt;/code&gt; - specify the &lt;code&gt;POST&lt;/code&gt; request data&lt;/li&gt;
+    &lt;li&gt;&lt;code&gt;-u user:password&lt;/code&gt; - specifies the user and password for the base authentication&lt;/li&gt;
+    &lt;li&gt;&lt;code&gt;-I&lt;/code&gt; - show response status with headers
+    &lt;br /&gt;&lt;br /&gt;
+    &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nv&quot;&gt;$ &lt;/span&gt;curl -I google.com
+HTTP/1.1 &lt;span class=&quot;m&quot;&gt;302&lt;/span&gt; Found
+Cache-Control: private
+Content-Type: text/html&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;charset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;UTF-8
+Location: http://www.google.de/?gfe_rd&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;cr&lt;span class=&quot;p&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;ei&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;uBo2VdWMAqSF8Qfex4DACA
+Content-Length: 258
+Date: Tue, &lt;span class=&quot;m&quot;&gt;21&lt;/span&gt; Apr &lt;span class=&quot;m&quot;&gt;2015&lt;/span&gt; 09:39:04 GMT
+Server: GFE/2.0
+Alternate-Protocol: 80:quic,p&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+    &lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;Building on those entities we were able to combine the shapes into one clear homogeneous logotype.&lt;/p&gt;
+&lt;p&gt;Bats has also some conventions. One of them is the &lt;code&gt;teardown&lt;/code&gt; function, which is executed after each test case to clean up the environment. In our script the cleanup consists of killing Nginx and removing the &lt;code&gt;/usr/share/nginx/html/maintenance-mode&lt;/code&gt; file.&lt;/p&gt;
 
-&lt;p&gt;You can find the above diagram/mind map also as a PDF version &lt;a href=&quot;/assets/1428934936700/brand-mind-map.pdf&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;You also noticed the &lt;code&gt;wait_for_nginx&lt;/code&gt; function which is there to spin up the Nginx process and wait until it’s up. This code could be also wrapped inside the &lt;code&gt;setup&lt;/code&gt; helper which is executed before each test.&lt;/p&gt;
 
-&lt;p&gt;The whole process was more complex but we wanted to share at least a part of it with you. The one which we think is the most important.&lt;/p&gt;
+&lt;p&gt;You can read more about the &lt;code&gt;teardown&lt;/code&gt; and the &lt;code&gt;setup&lt;/code&gt; helpers &lt;a href=&quot;https://github.com/sstephenson/bats#setup-and-teardown-pre--and-post-test-hooks&quot; target=&quot;_blank&quot;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;In summary our tests consist of Bash commands which are later analysed in Bash for their correctness. &lt;/p&gt;
+
+&lt;p&gt;Make sure you visit the &lt;a href=&quot;https://github.com/sstephenson/bats&quot; target=&quot;_blank&quot;&gt;Bats Github repository&lt;/a&gt; to star this awesome project.&lt;/p&gt;
+
+&lt;h2 id=&quot;performance-considerations&quot;&gt;Performance Considerations&lt;/h2&gt;
+
+&lt;p&gt;Swapping the Nginx configuration file by a another configuration file that contains only the maintenance logic would save Nginx a lot of processing power. I can imagine this could be achieved with &lt;a href=&quot;http://www.ansible.com/&quot; target=&quot;_blank&quot;&gt;Ansible&lt;/a&gt; or &lt;a href=&quot;https://puppetlabs.com/&quot; target=&quot;_blank&quot;&gt;Puppet&lt;/a&gt; fairly easy. But depending on your situation it might be harder to implement (than a HTTP request) and might also require an additional service/process which makes the architecture more complex. Read, compare features and decide.&lt;/p&gt;
 
 &lt;h2 id=&quot;resources&quot;&gt;Resources&lt;/h2&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;icons for the infographic were taken from &lt;a href=&quot;http://iconmonstr.com/&quot; target=&quot;_blank&quot;&gt;iconmonstr&lt;/a&gt;&lt;/li&gt;
-  &lt;li&gt;icons for the infographic were made by &lt;a href=&quot;http://fontawesome.io&quot; title=&quot;Dave Gandy&quot; target=&quot;_blank&quot;&gt;Dave Gandy&lt;/a&gt;, &lt;a href=&quot;http://www.freepik.com&quot; title=&quot;Freepik&quot; target=&quot;_blank&quot;&gt;Freepik&lt;/a&gt; from &lt;a href=&quot;http://www.flaticon.com&quot; title=&quot;Flaticon&quot; target=&quot;_blank&quot;&gt;www.flaticon.com&lt;/a&gt; is licensed by &lt;a href=&quot;http://creativecommons.org/licenses/by/3.0/&quot; title=&quot;Creative Commons BY 3.0&quot; target=&quot;_blank&quot;&gt;CC BY 3.0&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/aptible/docker-nginx&quot; target=&quot;_blank&quot;&gt;Nginx Docker Image&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=XGIY9ezIzyE&quot; target=&quot;_blank&quot;&gt;Youtube: Test Drive Your Config File!&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/sstephenson/bats&quot; target=&quot;_blank&quot;&gt;Bats: Bash Automated Testing System&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://blog.engineyard.com/2014/bats-test-command-line-tools&quot; target=&quot;_blank&quot;&gt;How to use Bats to test your command line tools&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 </description>
-        <pubDate>Thu, 12 Feb 2015 00:00:00 +0100</pubDate>
-        <link>http://czerasz.com/2015/02/12/new-czerasz-logotype/</link>
-        <guid isPermaLink="true">http://czerasz.com/2015/02/12/new-czerasz-logotype/</guid>
+        <pubDate>Tue, 21 Apr 2015 00:00:00 +0200</pubDate>
+        <link>http://czerasz.com/2015/04/21/nginx-maintenance-mode/</link>
+        <guid isPermaLink="true">http://czerasz.com/2015/04/21/nginx-maintenance-mode/</guid>
+        
+        <category>nginx</category>
+        
+        <category>nginx testing</category>
+        
+        <category>maintenance</category>
+        
+        <category>web server</category>
+        
+        <category>bats tutorial</category>
+        
+        <category>bash testing</category>
+        
+        <category>web server test</category>
+        
+        <category>integration testing</category>
         
         
       </item>
@@ -556,7 +438,7 @@ Connection: keep-alive
 &lt;p&gt;We will discuss five stages/phases which represent a typical Vagrant workflow/life cycle.
 &lt;br /&gt;They are presented on the diagram below.&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;image-vagrant-workflows-phases&quot; width=&quot;100%&quot; src=&quot;/assets/1428934936700/img/posts/vagrant-workflows-phases.png&quot; alt=&quot;five main phases in the vagrant workflow&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;image-vagrant-workflows-phases&quot; width=&quot;100%&quot; src=&quot;/assets/1434113284585/img/posts/vagrant-workflows-phases.png&quot; alt=&quot;five main phases in the vagrant workflow&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;
@@ -597,8 +479,8 @@ Connection: keep-alive
 &lt;p&gt;To be able to execute commands in the chapters below you need the following:&lt;/p&gt;
 
 &lt;ul&gt;
-    &lt;li&gt;&lt;a href=&quot;https://www.virtualbox.org/&quot; target=&quot;_blank&quot;&gt;Virtualbox&lt;/a&gt; or any other provider&lt;/li&gt;
-    &lt;li&gt;&lt;a href=&quot;http://www.vagrantup.com/&quot; target=&quot;_blank&quot;&gt;Vagrant&lt;/a&gt;&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;https://www.virtualbox.org/&quot;&gt;Virtualbox&lt;/a&gt; or any other provider&lt;/li&gt;
+    &lt;li&gt;&lt;a href=&quot;http://www.vagrantup.com/&quot;&gt;Vagrant&lt;/a&gt;&lt;/li&gt;
     &lt;li&gt;On Ubuntu host install NFS (on Mac it&#39;s already there):
 &lt;p&gt;
 
@@ -753,7 +635,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;We can summarize this chapter with this diagram:&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1428934936700/img/posts/vagrant-workflows-1st-run.png&quot; alt=&quot;Vagrant workflows 1st run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1434113284585/img/posts/vagrant-workflows-1st-run.png&quot; alt=&quot;Vagrant workflows 1st run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Please note the shaded element on the right side of the diagram above. By executing &lt;code&gt;vagrant up&lt;/code&gt; for the first time, vagrant will also trigger the provisioning process. But because we didn’t configure it yet it will not run - that’s why it’s makred it as disabled.&lt;/p&gt;
 
@@ -771,7 +653,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;In this chapter we want to achieve the &lt;strong&gt;Configured VM&lt;/strong&gt; state presented on the diagram below - we want to install/update software on our previously created virtual machine.&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1428934936700/img/posts/vagrant-workflows-full-run.png&quot; alt=&quot;Vagrant workflows full run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1434113284585/img/posts/vagrant-workflows-full-run.png&quot; alt=&quot;Vagrant workflows full run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As an example we will add a simple shell script which updates Ubuntu on every start (or provisioning) but just once a month.&lt;/p&gt;
 
@@ -865,7 +747,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;For those of you who are tough enough and reached the end of this article I prepared a bonus in form of a Vagrant life cycle diagram. It represents which command can be used during each phase of the Vagrant life cycle. Enjoy!&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1428934936700/img/posts/vagrant-main-workflow.png&quot; alt=&quot;&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1434113284585/img/posts/vagrant-main-workflow.png&quot; alt=&quot;&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 </description>
         <pubDate>Tue, 06 Jan 2015 00:00:00 +0100</pubDate>
         <link>http://czerasz.com/2015/01/06/vagrant-workflows/</link>
@@ -908,7 +790,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;The diagram below helps you understand this simple but effective logic:&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1428934936700/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1434113284585/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;requirements&quot;&gt;Requirements&lt;/h3&gt;
 
@@ -1924,8 +1806,8 @@ Response from: web-server
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
 &lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; 
-&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;script_directory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;$( cd &amp;quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt; dirname &lt;span class=&quot;s2&quot;&gt;&amp;quot;$0&amp;quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot; &amp;amp;&amp;amp; pwd )&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;project_directory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$script_directory&lt;/span&gt;/..&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;script_dirirectory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;$( cd &amp;quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt; dirname &lt;span class=&quot;s2&quot;&gt;&amp;quot;$0&amp;quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot; &amp;amp;&amp;amp; pwd )&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;project_dirirectory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$script_dirirectory&lt;/span&gt;/..&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Thanks to a cool &lt;a href=&quot;http://www.sublimetext.com/3&quot;&gt;Sublime&lt;/a&gt; package called &lt;a href=&quot;https://github.com/weslly/Nettuts-Fetch&quot;&gt;Fetch&lt;/a&gt; I can reuse this template by taking just two steps.
 You can reuse my &lt;a href=&quot;https://github.com/weslly/Nettuts-Fetch&quot;&gt;Fetch&lt;/a&gt; config which looks like this:&lt;/p&gt;
