@@ -6,8 +6,8 @@
 </description>
     <link>http://czerasz.com/</link>
     <atom:link href="http://czerasz.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Mon, 29 Jun 2015 20:40:01 +0200</pubDate>
-    <lastBuildDate>Mon, 29 Jun 2015 20:40:01 +0200</lastBuildDate>
+    <pubDate>Thu, 16 Jul 2015 13:52:24 +0200</pubDate>
+    <lastBuildDate>Thu, 16 Jul 2015 13:52:24 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
     
       <item>
@@ -26,27 +26,27 @@
 
 &lt;p&gt;Our initial situation is presented on the diagram below.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1435603199854/img/posts/nginx-maintenance-mode/initial-situation.png&quot; alt=&quot;Nginx Maintenance Mode: initial situation application request&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437047542491/img/posts/nginx-maintenance-mode/initial-situation.png&quot; alt=&quot;Nginx Maintenance Mode: initial situation application request&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;For the sake of simplicity I have chosen the simplest scenario - one web application behind an Nginx server. The implementation for a more complex infrastructure is analogous and should be as simple as the one presented in this article. But if you have any troubles feel free to &lt;a href=&quot;/contact&quot;&gt;contact me&lt;/a&gt;. I’m sure I will be able to help.&lt;/p&gt;
 
 &lt;p&gt;And here comes the best part. With a simple HTTP &lt;code&gt;PUT&lt;/code&gt; request we can enable the Nginx’s maintenance mode.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1435603199854/img/posts/nginx-maintenance-mode/enable-nginx-maintenance-mode-over-http.png&quot; alt=&quot;Nginx Maintenance Mode: enable maintenance mode with an http request&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437047542491/img/posts/nginx-maintenance-mode/enable-nginx-maintenance-mode-over-http.png&quot; alt=&quot;Nginx Maintenance Mode: enable maintenance mode with an http request&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;From now on all responses will contain the content of the &lt;code&gt;/usr/share/nginx/html/maintenance.html&lt;/code&gt; file and will be returned with the &lt;code&gt;503&lt;/code&gt; status code.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1435603199854/img/posts/nginx-maintenance-mode/nginx-maintenance-mode.png&quot; alt=&quot;Nginx Maintenance Mode: how maintenance mode works&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437047542491/img/posts/nginx-maintenance-mode/nginx-maintenance-mode.png&quot; alt=&quot;Nginx Maintenance Mode: how maintenance mode works&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;For the full understanding the diagram above contains also the light blue path which represents the normal situation.&lt;/p&gt;
 
 &lt;p&gt;The maintenance mode persists until we disable it with an HTTP &lt;code&gt;DELETE&lt;/code&gt; request.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1435603199854/img/posts/nginx-maintenance-mode/disable-nginx-maintenance-mode-over-http.png&quot; alt=&quot;Nginx Maintenance Mode: disable maintenance mode with an http request&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437047542491/img/posts/nginx-maintenance-mode/disable-nginx-maintenance-mode-over-http.png&quot; alt=&quot;Nginx Maintenance Mode: disable maintenance mode with an http request&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Now for a better overview let’s see everything at once. The following sequential diagram shows the full situation described in this chapter:&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1435603199854/img/posts/nginx-maintenance-mode/sequential-diagram.png&quot; alt=&quot;Nginx Maintenance Mode: sequential diagram&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437047542491/img/posts/nginx-maintenance-mode/sequential-diagram.png&quot; alt=&quot;Nginx Maintenance Mode: sequential diagram&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;In this diagram the HTTP &lt;code&gt;PUT&lt;/code&gt; and &lt;code&gt;DELETE&lt;/code&gt; requests are fetched by the same client for the sake of simplicity. In a real world those requests are only available to the appropriate person/service.&lt;/p&gt;
 
@@ -438,7 +438,7 @@ Alternate-Protocol: 80:quic,p&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1&lt;
 &lt;p&gt;We will discuss five stages/phases which represent a typical Vagrant workflow/life cycle.
 &lt;br /&gt;They are presented on the diagram below.&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;image-vagrant-workflows-phases&quot; width=&quot;100%&quot; src=&quot;/assets/1435603199854/img/posts/vagrant-workflows-phases.png&quot; alt=&quot;five main phases in the vagrant workflow&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;image-vagrant-workflows-phases&quot; width=&quot;100%&quot; src=&quot;/assets/1437047542491/img/posts/vagrant-workflows-phases.png&quot; alt=&quot;five main phases in the vagrant workflow&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;
@@ -635,7 +635,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;We can summarize this chapter with this diagram:&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1435603199854/img/posts/vagrant-workflows-1st-run.png&quot; alt=&quot;Vagrant workflows 1st run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1437047542491/img/posts/vagrant-workflows-1st-run.png&quot; alt=&quot;Vagrant workflows 1st run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Please note the shaded element on the right side of the diagram above. By executing &lt;code&gt;vagrant up&lt;/code&gt; for the first time, vagrant will also trigger the provisioning process. But because we didn’t configure it yet it will not run - that’s why it’s makred it as disabled.&lt;/p&gt;
 
@@ -653,7 +653,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;In this chapter we want to achieve the &lt;strong&gt;Configured VM&lt;/strong&gt; state presented on the diagram below - we want to install/update software on our previously created virtual machine.&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1435603199854/img/posts/vagrant-workflows-full-run.png&quot; alt=&quot;Vagrant workflows full run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1437047542491/img/posts/vagrant-workflows-full-run.png&quot; alt=&quot;Vagrant workflows full run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As an example we will add a simple shell script which updates Ubuntu on every start (or provisioning) but just once a month.&lt;/p&gt;
 
@@ -747,7 +747,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;For those of you who are tough enough and reached the end of this article I prepared a bonus in form of a Vagrant life cycle diagram. It represents which command can be used during each phase of the Vagrant life cycle. Enjoy!&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1435603199854/img/posts/vagrant-main-workflow.png&quot; alt=&quot;&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1437047542491/img/posts/vagrant-main-workflow.png&quot; alt=&quot;&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 </description>
         <pubDate>Tue, 06 Jan 2015 00:00:00 +0100</pubDate>
         <link>http://czerasz.com/2015/01/06/vagrant-workflows/</link>
@@ -790,7 +790,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;The diagram below helps you understand this simple but effective logic:&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1435603199854/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1437047542491/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;requirements&quot;&gt;Requirements&lt;/h3&gt;
 
