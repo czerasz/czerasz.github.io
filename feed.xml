@@ -6,9 +6,340 @@
 </description>
     <link>http://czerasz.com/</link>
     <atom:link href="http://czerasz.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Thu, 16 Jul 2015 13:52:24 +0200</pubDate>
-    <lastBuildDate>Thu, 16 Jul 2015 13:52:24 +0200</lastBuildDate>
+    <pubDate>Wed, 22 Jul 2015 01:03:29 +0200</pubDate>
+    <lastBuildDate>Wed, 22 Jul 2015 01:03:29 +0200</lastBuildDate>
     <generator>Jekyll v2.4.0</generator>
+    
+      <item>
+        <title>WRK the HTTP benchmarking tool - Advanced Example</title>
+        <description>&lt;p class=&quot;post__tldr&quot; itemprop=&quot;description&quot;&gt;wrk is the HTTP benchmarking tool which combined with Lua scripts can be the bazooka in your benchmarking arsenal. This article shows an advanced example of using Lua scripts with wrk. I will also show you how to debug wrk.&lt;/p&gt;
+
+&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
+
+&lt;p&gt;Recently I published an &lt;a href=&quot;https://www.digitalocean.com/community/tutorials/how-to-benchmark-http-latency-with-wrk-on-ubuntu-14-04&quot;&gt;article on Digital Ocean&lt;/a&gt; which is an introduction to a great HTTP benchmarking tool called &lt;a href=&quot;https://github.com/wg/wrk&quot;&gt;wrk&lt;/a&gt;. It describes the basic concepts and shows usage examples. I recommend you read it before continuing with this post.&lt;/p&gt;
+
+&lt;p&gt;And after you are back we will focus on a more advanced example.&lt;/p&gt;
+
+&lt;h2 id=&quot;requirements&quot;&gt;Requirements&lt;/h2&gt;
+
+&lt;p&gt;For some time now I use Docker instead of virtual machines when possible.&lt;/p&gt;
+
+&lt;p&gt;I would like to share the Docker awesomeness with you, so please make sure you have the following tools installed:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://docs.docker.com/installation/&quot;&gt;Docker&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://docs.docker.com/compose/install/&quot;&gt;Docker Compose&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&quot;json-file-example&quot;&gt;JSON File Example&lt;/h2&gt;
+
+&lt;p&gt;The idea is very simple. We have an JSON file with request details and wrk will use this information in its benchmark. wrk doesn’t have this feature build in but we will use a Lua script to tell it what to do.&lt;/p&gt;
+
+&lt;p&gt;The JSON file might look like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-json&quot; data-lang=&quot;json&quot;&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;path&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;/path-1&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;body&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;some content&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;method&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;GET&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;headers&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;&amp;quot;X-Custom-Header-1&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;test 1&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;&amp;quot;X-Custom-Header-2&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;test 2&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;},&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;path&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;/path-2&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;body&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;some content&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;method&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;POST&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+    &lt;span class=&quot;nt&quot;&gt;&amp;quot;headers&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;&amp;quot;X-Custom-Header-1&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;test 3&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+      &lt;span class=&quot;nt&quot;&gt;&amp;quot;X-Custom-Header-2&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;test 4&amp;quot;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+  &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;As you can see each request has different properties.&lt;/p&gt;
+
+&lt;p&gt;Save it in the &lt;code&gt;data&lt;/code&gt; directory as &lt;code&gt;data/requests.json&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now we need a proper lua script.&lt;/p&gt;
+
+&lt;p&gt;I prepared one below, save it as &lt;code&gt;scripts/multi-request-json.lua&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-lua&quot; data-lang=&quot;lua&quot;&gt;&lt;span class=&quot;c1&quot;&gt;-- Module instantiation&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;local&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cjson&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;cjson&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;local&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cjson2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cjson&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;new&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;kd&quot;&gt;local&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cjson_safe&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;cjson.safe&amp;quot;&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;-- Initialize the pseudo random number generator&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- Resource: http://lua-users.org/wiki/MathLibraryTutorial&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;math.randomseed&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;os.time&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+&lt;span class=&quot;nb&quot;&gt;math.random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;math.random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;math.random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;-- Shuffle array&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;-- Returns a randomly shuffled array&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;shuffle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;paths&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;local&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;local&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;paths&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;i&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;n&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;do&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;k&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;math.random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;math.random&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;n&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;paths&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;paths&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;paths&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;k&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;paths&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;j&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;paths&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;-- Load URL paths from the file&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;load_request_objects_from_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;local&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{}&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;local&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;content&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;-- Check if the file exists&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;-- Resource: http://stackoverflow.com/a/4991602/325852&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;local&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;io.open&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;r&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;~=&lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;content&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;*all&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+    &lt;span class=&quot;nb&quot;&gt;io.close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;f&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;c1&quot;&gt;-- Return the empty array&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lines&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;-- Translate Lua value to/from JSON&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cjson&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;decode&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;content&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;shuffle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;-- Load URL requests from file&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;requests&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;load_request_objects_from_file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;/data/requests.json&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;-- Check if at least one path was found in the file&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;requests&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;lt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;multiplerequests: No requests found.&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;nb&quot;&gt;os.exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;nb&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;multiplerequests: Found &amp;quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;..&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;requests&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;..&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;&lt;/span&gt;&lt;span class=&quot;s&quot;&gt; requests&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;-- Initialize the requests array iterator&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;counter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+
+&lt;span class=&quot;n&quot;&gt;request&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;-- Get the next requests array element&lt;/span&gt;
+  &lt;span class=&quot;kd&quot;&gt;local&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request_object&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;requests&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;counter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;-- Increment the counter&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;counter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;counter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;-- If the counter is longer than the requests array length then reset it&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;counter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;gt;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;#&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;requests&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;then&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;counter&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;
+
+  &lt;span class=&quot;c1&quot;&gt;-- Return the request object with the current URL path&lt;/span&gt;
+  &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;wrk&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;request_object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;method&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request_object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request_object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;headers&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request_object&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;body&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;end&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This script is similar to the example presented in the &lt;a href=&quot;https://www.digitalocean.com/community/tutorials/how-to-benchmark-http-latency-with-wrk-on-ubuntu-14-04#&quot;&gt;Digital Ocean artilce&lt;/a&gt;. It is extended with an shuffle functionality and instead of loading URL paths line by line we laod a JSON file. Parsing JSON requires a JSON library, which is loaded at the very top. This library transforms the request details from a JSON string into an Lua array.&lt;/p&gt;
+
+&lt;p&gt;The only thing that stops us from testing this example is the missing JSON library itself - we need to install it. To save time for the installation and setup, I prepared a Docker image, which is &lt;a href=&quot;https://registry.hub.docker.com/u/czerasz/wrk-json/&quot;&gt;available here&lt;/a&gt;. If you are interested in how the library is installed simply take a look at the &lt;a href=&quot;https://github.com/czerasz/docker-wrk-json/blob/master/Dockerfile&quot;&gt;&lt;code&gt;Dockerfile&lt;/code&gt;&lt;/a&gt; - it’s well documented.&lt;/p&gt;
+
+&lt;p&gt;Let’s summarise: you need to save the JSON file as &lt;code&gt;data/requests.json&lt;/code&gt; and the Lua script as &lt;code&gt;scripts/multi-request-json.lua&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;We will run wrk in a Docker container. This diagram will give you a good overview of how this is done:&lt;/p&gt;
+
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1437519807441/img/posts/wrk/container-overview-json-example.png&quot; alt=&quot;container overview for the wrk JSON example&quot; title=&quot;container overview for the wrk JSON example&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Run the benchmark with:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;docker run --rm &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           -v &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;/scripts:/scripts &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           -v &lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;pwd&lt;/span&gt;&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;/data:/data &lt;span class=&quot;se&quot;&gt;\&lt;/span&gt;
+           czerasz/wrk-json wrk -c1 -t1 -d5s -s /scripts/multi-request-json.lua http://&lt;span class=&quot;nv&quot;&gt;$APPLICATION_IP&lt;/span&gt;:&lt;span class=&quot;nv&quot;&gt;$APPLICATION_PORT&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;This command will pull the &lt;a href=&quot;https://registry.hub.docker.com/u/czerasz/wrk-json/&quot;&gt;&lt;code&gt;czerasz/wrk-json&lt;/code&gt;&lt;/a&gt; image from the public Docker registry. Then it executes the wrk command (inside the Docker container) which additionally takes the Lua script. The Lua script opens the &lt;code&gt;/data/requests.json&lt;/code&gt; file, parses it and feeds wrk with the data. Everything is possible because we shared the appropriate direcotries with the Docker container by using the &lt;code&gt;-v&lt;/code&gt; option.&lt;/p&gt;
+
+&lt;p&gt;The returned output might look like this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;multiplerequests: Found &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; requests
+multiplerequests: Found &lt;span class=&quot;m&quot;&gt;2&lt;/span&gt; requests
+Running 5s &lt;span class=&quot;nb&quot;&gt;test&lt;/span&gt; @ http://10.135.232.163:3000
+  &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; threads and &lt;span class=&quot;m&quot;&gt;1&lt;/span&gt; connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     1.32ms    1.41ms  18.91ms   91.81%
+    Req/Sec     0.89k   304.69     1.47k    64.00%
+  &lt;span class=&quot;m&quot;&gt;4447&lt;/span&gt; requests in 5.00s, 0.85MB &lt;span class=&quot;nb&quot;&gt;read&lt;/span&gt;
+Requests/sec:    888.67
+Transfer/sec:    174.44KB&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Adding weights to this example could be also very easy: just duplicate the request objects or adjust the Lua script to recognize a &lt;code&gt;weight&lt;/code&gt; property.&lt;/p&gt;
+
+&lt;p&gt;I hope that you understand now that “sky is the limit” with wrk and Lua.&lt;/p&gt;
+
+&lt;h2 id=&quot;debugging-wrk&quot;&gt;Debugging WRK&lt;/h2&gt;
+
+&lt;p&gt;The ability to debug a technology properly is worth more than knowing the technology itself.&lt;/p&gt;
+
+&lt;p&gt;To debug wrk I use a special Node.js application and a custom Lua script. The whole environment (based on Docker) is &lt;a href=&quot;https://github.com/czerasz/wrk-debugging-environment&quot;&gt;available on Github&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;If you want to use it, then we need to install the required software. We just need:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;code&gt;git&lt;/code&gt; - to download the project&lt;/li&gt;
+  &lt;li&gt;&lt;code&gt;docker-compose&lt;/code&gt; - to start the Docker container environment&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;I will help you setup them on Ubuntu.&lt;/p&gt;
+
+&lt;p&gt;Install &lt;code&gt;git&lt;/code&gt; simply by using Ubuntu’s package manager:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;apt-get install -y git&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Docker Compose can be installed with this commands:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;sudo curl -L https://github.com/docker/compose/releases/download/1.3.1/docker-compose-&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;uname -s&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;-&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt;uname -m&lt;span class=&quot;sb&quot;&gt;`&lt;/span&gt; &amp;gt; /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;If you have any trouble or want to install &lt;code&gt;docker-compose&lt;/code&gt; on another system please refer to this &lt;a href=&quot;https://docs.docker.com/compose/install/&quot;&gt;Docker Compose installation guide&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;Now clone the project:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;git clone https://github.com/czerasz/wrk-debugging-environment.git&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Enter it:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;wrk-debugging-environment&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;And spin up the required containers with:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;docker-compose run --rm wrk bash&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;The command above will create two containers - one for the &lt;strong&gt;application&lt;/strong&gt; and one for &lt;strong&gt;wrk&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;p&gt;An overview is presented below:&lt;/p&gt;
+
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1437519807441/img/posts/wrk/debugging-container-overview.png&quot; alt=&quot;container overview for the wrk debugging scenario&quot; title=&quot;container overview for the wrk debugging scenario&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;The command will also automatically log you in to the &lt;strong&gt;wrk&lt;/strong&gt; container.&lt;/p&gt;
+
+&lt;p&gt;Now whenever you execute this command inside the &lt;strong&gt;wrk&lt;/strong&gt; Docker container:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;wrk -c3 -d1s -t2 -s /scripts/debug.lua http://app:3000 -- debug &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;You will see what happens inside wrk because &lt;a href=&quot;https://github.com/czerasz/wrk-debugging-environment/blob/master/environments/wrk/scripts/debug.lua&quot;&gt;the debugging scipt&lt;/a&gt; has a lot of debugging messages (integrated simply with &lt;code&gt;io.write&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;Sample output is presented below:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;...
+------------------------------
+Response &lt;span class=&quot;m&quot;&gt;114&lt;/span&gt; with status: &lt;span class=&quot;m&quot;&gt;200&lt;/span&gt; on thread 1
+------------------------------
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;response&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; Headers:
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;response&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;  - Content-Length: 2
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;response&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;  - ETag: W/&lt;span class=&quot;s2&quot;&gt;&amp;quot;2-REvLOj/Pg4kpbElGfyfh1g&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;response&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;  - Connection: keep-alive
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;response&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;  - Date: Tue, &lt;span class=&quot;m&quot;&gt;23&lt;/span&gt; Jun &lt;span class=&quot;m&quot;&gt;2015&lt;/span&gt; 20:18:01 GMT
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;response&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;  - Content-Type: text/html&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;charset&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;utf-8
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;response&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;  - X-Debug: &lt;span class=&quot;nb&quot;&gt;true&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;response&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;  - X-Powered-By: Express
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;response&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; Body:
+ok
+
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency     3.42ms    4.23ms  36.86ms   93.15%
+    Req/Sec   305.55    162.64   590.00     70.00%
+  &lt;span class=&quot;m&quot;&gt;611&lt;/span&gt; requests in 1.00s, 128.29KB &lt;span class=&quot;nb&quot;&gt;read&lt;/span&gt;
+Requests/sec:    608.23
+Transfer/sec:    127.70KB
+------------------------------
+Requests
+------------------------------
+userdata&lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;bytes&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;49020&amp;quot;&lt;/span&gt;,
+  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;errors&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;   &lt;span class=&quot;o&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;write&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;0&amp;quot;&lt;/span&gt;,
+    &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;read&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;0&amp;quot;&lt;/span&gt;,
+    &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;status&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;0&amp;quot;&lt;/span&gt;,
+    &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;timeout&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;0&amp;quot;&lt;/span&gt;,
+    &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;connect&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;0&amp;quot;&lt;/span&gt;
+  &lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;,
+  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;duration&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;1009245&amp;quot;&lt;/span&gt;,
+  &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;requests&amp;quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s2&quot;&gt;&amp;quot;228&amp;quot;&lt;/span&gt;
+&lt;span class=&quot;o&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Additionally the application container will log all request details. Simply open another terminal, enter the &lt;code&gt;wrk-debugging-environment&lt;/code&gt; directory:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;nb&quot;&gt;cd &lt;/span&gt;wrk-debugging-environment&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Then execute this command:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;docker logs -f --tail&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt;docker-compose ps &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; grep &lt;span class=&quot;s1&quot;&gt;&amp;#39;_application_1&amp;#39;&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;|&lt;/span&gt; awk &lt;span class=&quot;s1&quot;&gt;&amp;#39;{print $1}&amp;#39;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Whenever you execute the previous benchmak command (in the previous terminal) you should see output simmilar to this:&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;...
+
+--- --- --- --- --- --- --- --- --- --- --- --- ---
+
+&lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;2015-06-23 20:28:30&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; Request 486
+
+GET/1.1 / on :::3000
+
+Headers:
+ - host: app:3000
+
+No cookies
+
+Body:&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;Now just edit the &lt;a href=&quot;https://github.com/czerasz/wrk-debugging-environment/blob/master/environments/wrk/scripts/debug.lua&quot;&gt;&lt;code&gt;environments/wrk/scripts/debug.lua&lt;/code&gt;&lt;/a&gt; file and see the output changing. Play around and have fun.&lt;/p&gt;
+
+&lt;h2 id=&quot;summary&quot;&gt;Summary&lt;/h2&gt;
+
+&lt;p&gt;I hope that this article and &lt;a href=&quot;https://www.digitalocean.com/community/tutorials/how-to-benchmark-http-latency-with-wrk-on-ubuntu-14-04&quot;&gt;the one on Digital Ocean&lt;/a&gt; gave you a better understanding about wrk and explained how to precisely shoot with heavy benchmarking bullets.&lt;/p&gt;
+
+&lt;h2 id=&quot;resources&quot;&gt;Resources&lt;/h2&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;http://charmyin.github.io/informationtechnology/2014/08/11/multiple-file-upload-express/&quot;&gt;WRK - A HTTP benchmarking tool&lt;/a&gt; - very good article about &lt;code&gt;wrk&lt;/code&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://revision3.com/haktip/understanding-high-latency/&quot;&gt;Wireshark 101: Understanding High Latency&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://nirajrules.wordpress.com/2009/09/17/measuring-performance-response-vs-latency-vs-throughput-vs-load-vs-scalability-vs-stress-vs-robustness/&quot;&gt;Performance Testing - Response vs. Latency vs. Throughput vs. Load vs. Scalability vs. Stress vs. Robustness&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://www.youtube.com/watch?v=6Rs0p3mPNr0&quot;&gt;How NOT to measure latency - Gil Tene at USI&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://danielmendel.github.io/blog/2013/04/07/benchmarkers-beware-the-ephemeral-port-limit/&quot;&gt;Benchmarkers, Beware the Ephemeral Port Limit&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://kellabyte.com/2014/02/12/create-benchmarks-and-results-that-have-value/&quot;&gt;Create benchmarks and results that have value&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;http://www.infoq.com/presentations/latency-pitfalls&quot;&gt;How NOT to Measure Latency&lt;/a&gt; - must watch presentation&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/giltene/jHiccup&quot;&gt;jHiccup Project&lt;/a&gt;&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/HdrHistogram/HdrHistogram&quot;&gt;HdrHistogram Project&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+        <pubDate>Sun, 19 Jul 2015 00:00:00 +0200</pubDate>
+        <link>http://czerasz.com/2015/07/19/wrk-http-benchmarking-tool-example/</link>
+        <guid isPermaLink="true">http://czerasz.com/2015/07/19/wrk-http-benchmarking-tool-example/</guid>
+        
+        <category>wrk</category>
+        
+        <category>lua</category>
+        
+        <category>benchmarking</category>
+        
+        <category>http</category>
+        
+        <category>http benchmarking</category>
+        
+        <category>json</category>
+        
+        <category>debugging wrk</category>
+        
+        <category>wrk documentation</category>
+        
+        <category>lua script</category>
+        
+        
+      </item>
     
       <item>
         <title>Nginx Maintenance Mode with Integration Testing</title>
@@ -26,27 +357,27 @@
 
 &lt;p&gt;Our initial situation is presented on the diagram below.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437047542491/img/posts/nginx-maintenance-mode/initial-situation.png&quot; alt=&quot;Nginx Maintenance Mode: initial situation application request&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437519807441/img/posts/nginx-maintenance-mode/initial-situation.png&quot; alt=&quot;Nginx Maintenance Mode: initial situation application request&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;For the sake of simplicity I have chosen the simplest scenario - one web application behind an Nginx server. The implementation for a more complex infrastructure is analogous and should be as simple as the one presented in this article. But if you have any troubles feel free to &lt;a href=&quot;/contact&quot;&gt;contact me&lt;/a&gt;. I’m sure I will be able to help.&lt;/p&gt;
 
 &lt;p&gt;And here comes the best part. With a simple HTTP &lt;code&gt;PUT&lt;/code&gt; request we can enable the Nginx’s maintenance mode.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437047542491/img/posts/nginx-maintenance-mode/enable-nginx-maintenance-mode-over-http.png&quot; alt=&quot;Nginx Maintenance Mode: enable maintenance mode with an http request&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437519807441/img/posts/nginx-maintenance-mode/enable-nginx-maintenance-mode-over-http.png&quot; alt=&quot;Nginx Maintenance Mode: enable maintenance mode with an http request&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;From now on all responses will contain the content of the &lt;code&gt;/usr/share/nginx/html/maintenance.html&lt;/code&gt; file and will be returned with the &lt;code&gt;503&lt;/code&gt; status code.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437047542491/img/posts/nginx-maintenance-mode/nginx-maintenance-mode.png&quot; alt=&quot;Nginx Maintenance Mode: how maintenance mode works&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437519807441/img/posts/nginx-maintenance-mode/nginx-maintenance-mode.png&quot; alt=&quot;Nginx Maintenance Mode: how maintenance mode works&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;For the full understanding the diagram above contains also the light blue path which represents the normal situation.&lt;/p&gt;
 
 &lt;p&gt;The maintenance mode persists until we disable it with an HTTP &lt;code&gt;DELETE&lt;/code&gt; request.&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437047542491/img/posts/nginx-maintenance-mode/disable-nginx-maintenance-mode-over-http.png&quot; alt=&quot;Nginx Maintenance Mode: disable maintenance mode with an http request&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437519807441/img/posts/nginx-maintenance-mode/disable-nginx-maintenance-mode-over-http.png&quot; alt=&quot;Nginx Maintenance Mode: disable maintenance mode with an http request&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Now for a better overview let’s see everything at once. The following sequential diagram shows the full situation described in this chapter:&lt;/p&gt;
 
-&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437047542491/img/posts/nginx-maintenance-mode/sequential-diagram.png&quot; alt=&quot;Nginx Maintenance Mode: sequential diagram&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img class=&quot;post__image--spacy  img-responsive&quot; itemprop=&quot;image&quot; src=&quot;/assets/1437519807441/img/posts/nginx-maintenance-mode/sequential-diagram.png&quot; alt=&quot;Nginx Maintenance Mode: sequential diagram&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;In this diagram the HTTP &lt;code&gt;PUT&lt;/code&gt; and &lt;code&gt;DELETE&lt;/code&gt; requests are fetched by the same client for the sake of simplicity. In a real world those requests are only available to the appropriate person/service.&lt;/p&gt;
 
@@ -438,7 +769,7 @@ Alternate-Protocol: 80:quic,p&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;1&lt;
 &lt;p&gt;We will discuss five stages/phases which represent a typical Vagrant workflow/life cycle.
 &lt;br /&gt;They are presented on the diagram below.&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;image-vagrant-workflows-phases&quot; width=&quot;100%&quot; src=&quot;/assets/1437047542491/img/posts/vagrant-workflows-phases.png&quot; alt=&quot;five main phases in the vagrant workflow&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; id=&quot;image-vagrant-workflows-phases&quot; width=&quot;100%&quot; src=&quot;/assets/1437519807441/img/posts/vagrant-workflows-phases.png&quot; alt=&quot;five main phases in the vagrant workflow&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;ol&gt;
   &lt;li&gt;
@@ -635,7 +966,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;We can summarize this chapter with this diagram:&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1437047542491/img/posts/vagrant-workflows-1st-run.png&quot; alt=&quot;Vagrant workflows 1st run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1437519807441/img/posts/vagrant-workflows-1st-run.png&quot; alt=&quot;Vagrant workflows 1st run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;Please note the shaded element on the right side of the diagram above. By executing &lt;code&gt;vagrant up&lt;/code&gt; for the first time, vagrant will also trigger the provisioning process. But because we didn’t configure it yet it will not run - that’s why it’s makred it as disabled.&lt;/p&gt;
 
@@ -653,7 +984,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;In this chapter we want to achieve the &lt;strong&gt;Configured VM&lt;/strong&gt; state presented on the diagram below - we want to install/update software on our previously created virtual machine.&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1437047542491/img/posts/vagrant-workflows-full-run.png&quot; alt=&quot;Vagrant workflows full run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1437519807441/img/posts/vagrant-workflows-full-run.png&quot; alt=&quot;Vagrant workflows full run&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;As an example we will add a simple shell script which updates Ubuntu on every start (or provisioning) but just once a month.&lt;/p&gt;
 
@@ -747,7 +1078,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;For those of you who are tough enough and reached the end of this article I prepared a bonus in form of a Vagrant life cycle diagram. It represents which command can be used during each phase of the Vagrant life cycle. Enjoy!&lt;/p&gt;
 
-&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1437047542491/img/posts/vagrant-main-workflow.png&quot; alt=&quot;&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img width=&quot;100%&quot; src=&quot;/assets/1437519807441/img/posts/vagrant-main-workflow.png&quot; alt=&quot;&quot; title=&quot;&quot; /&gt;&lt;/p&gt;
 </description>
         <pubDate>Tue, 06 Jan 2015 00:00:00 +0100</pubDate>
         <link>http://czerasz.com/2015/01/06/vagrant-workflows/</link>
@@ -790,7 +1121,7 @@ default                   running &lt;span class=&quot;o&quot;&gt;(&lt;/span&gt;
 
 &lt;p&gt;The diagram below helps you understand this simple but effective logic:&lt;/p&gt;
 
-&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1437047542491/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img itemprop=&quot;image&quot; width=&quot;100%&quot; src=&quot;/assets/1437519807441/img/posts/vagrant-cachier-plugin-deb-packages-overview.png&quot; alt=&quot;Vagrant Cachier Plugin - deb packages overview&quot; title=&quot;Vagrant Cachier Plugin - deb packages overview&quot; /&gt;&lt;/p&gt;
 
 &lt;h3 id=&quot;requirements&quot;&gt;Requirements&lt;/h3&gt;
 
@@ -1807,7 +2138,7 @@ Response from: web-server
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;&lt;span class=&quot;lineno&quot;&gt;1&lt;/span&gt; &lt;span class=&quot;c&quot;&gt;#!/bin/bash&lt;/span&gt;
 &lt;span class=&quot;lineno&quot;&gt;2&lt;/span&gt; 
 &lt;span class=&quot;lineno&quot;&gt;3&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;script_dirirectory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;$( cd &amp;quot;&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;$(&lt;/span&gt; dirname &lt;span class=&quot;s2&quot;&gt;&amp;quot;$0&amp;quot;&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot; &amp;amp;&amp;amp; pwd )&amp;quot;&lt;/span&gt;
-&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;project_dirirectory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$script_dirirectory&lt;/span&gt;/..&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+&lt;span class=&quot;lineno&quot;&gt;4&lt;/span&gt; &lt;span class=&quot;nv&quot;&gt;project_directory&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;$script_dirirectory&lt;/span&gt;/..&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
 &lt;p&gt;Thanks to a cool &lt;a href=&quot;http://www.sublimetext.com/3&quot;&gt;Sublime&lt;/a&gt; package called &lt;a href=&quot;https://github.com/weslly/Nettuts-Fetch&quot;&gt;Fetch&lt;/a&gt; I can reuse this template by taking just two steps.
 You can reuse my &lt;a href=&quot;https://github.com/weslly/Nettuts-Fetch&quot;&gt;Fetch&lt;/a&gt; config which looks like this:&lt;/p&gt;
